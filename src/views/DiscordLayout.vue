@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="card">
-      <h2>Discord Server Layout</h2>
+      <h2>Communication Channels</h2>
       <p style="color: #8b949e; margin-bottom: 1.5rem;">
-        Channel routing determines which agent handles the conversation. Most channels route to York
-        who dispatches. Some route directly to domain agents for interactive sessions.
+        Currently Discord only. Channel routing determines which agent handles the conversation. 
+        Most channels route to York who dispatches. Some route directly to domain agents for interactive sessions.
       </p>
     </div>
 

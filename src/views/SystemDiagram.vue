@@ -2,10 +2,15 @@
   <div>
     <div class="card">
       <h2>System Overview</h2>
-      <p style="color: #8b949e; margin-bottom: 1.5rem;">
+      <p style="color: #8b949e; margin-bottom: 1rem;">
         One OpenClaw instance on RPi. York orchestrates everything. Specialized agents handle domains.
         Scripts replace LLMs where possible. Cron for scheduled work, heartbeat for contextual awareness.
         Model selection is by task complexity, not brand loyalty.
+      </p>
+      <p style="color: #c9d1d9; margin-bottom: 0; line-height: 1.6; font-size: 0.9rem; border-left: 3px solid #1f6feb; padding-left: 1rem;">
+        This is about being <strong style="color: #58a6ff;">intentional</strong>, not cheap. Every agent gets the model
+        that matches its task complexity. More focused contexts mean better performance AND lower cost.
+        The system gets better and cheaper at the same time.
       </p>
     </div>
 

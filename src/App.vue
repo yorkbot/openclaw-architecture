@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <header>
-      <h1>🦝 OpenClaw Architecture</h1>
+      <h1>🦞 OpenClaw Architecture 🦝</h1>
       <p class="subtitle">Proposed multi-agent setup for James's RPi</p>
     </header>
 
@@ -17,10 +17,8 @@
     <SystemDiagram v-if="currentView === 'system'" />
     <AgentDetail v-if="currentView === 'agents'" />
     <SelfImprovement v-if="currentView === 'improve'" />
-    <DiscordLayout v-if="currentView === 'discord'" />
+    <DiscordLayout v-if="currentView === 'comms'" />
     <DataFlow v-if="currentView === 'dataflow'" />
-    <CostEstimate v-if="currentView === 'cost'" />
-    <MigrationPlan v-if="currentView === 'migration'" />
   </div>
 </template>
 
@@ -30,8 +28,6 @@ import SystemDiagram from './views/SystemDiagram.vue'
 import AgentDetail from './views/AgentDetail.vue'
 import DiscordLayout from './views/DiscordLayout.vue'
 import DataFlow from './views/DataFlow.vue'
-import CostEstimate from './views/CostEstimate.vue'
-import MigrationPlan from './views/MigrationPlan.vue'
 import SelfImprovement from './views/SelfImprovement.vue'
 
 const currentView = ref('system')
@@ -40,10 +36,8 @@ const views = [
   { id: 'system', label: 'System Overview' },
   { id: 'agents', label: 'Agent Details' },
   { id: 'improve', label: 'Self-Improvement' },
-  { id: 'discord', label: 'Discord Channels' },
+  { id: 'comms', label: 'Communication Channels' },
   { id: 'dataflow', label: 'Data Flow' },
-  { id: 'cost', label: 'Cost Estimate' },
-  { id: 'migration', label: 'Migration Plan' },
 ]
 </script>
 
