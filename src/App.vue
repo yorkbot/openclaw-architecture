@@ -16,6 +16,7 @@
 
     <SystemDiagram v-if="currentView === 'system'" />
     <AgentDetail v-if="currentView === 'agents'" />
+    <SelfImprovement v-if="currentView === 'improve'" />
     <DiscordLayout v-if="currentView === 'discord'" />
     <DataFlow v-if="currentView === 'dataflow'" />
     <CostEstimate v-if="currentView === 'cost'" />
@@ -31,12 +32,14 @@ import DiscordLayout from './views/DiscordLayout.vue'
 import DataFlow from './views/DataFlow.vue'
 import CostEstimate from './views/CostEstimate.vue'
 import MigrationPlan from './views/MigrationPlan.vue'
+import SelfImprovement from './views/SelfImprovement.vue'
 
 const currentView = ref('system')
 
 const views = [
   { id: 'system', label: 'System Overview' },
   { id: 'agents', label: 'Agent Details' },
+  { id: 'improve', label: 'Self-Improvement' },
   { id: 'discord', label: 'Discord Channels' },
   { id: 'dataflow', label: 'Data Flow' },
   { id: 'cost', label: 'Cost Estimate' },
