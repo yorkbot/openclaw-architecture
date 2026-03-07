@@ -1,19 +1,5 @@
-# OpenClaw Architecture Plan
+# Vue 3 + Vite
 
-Proposed multi-agent architecture for James's OpenClaw setup.
+This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-## Goals
-- Replace monolithic York agent with specialized, cost-efficient agents
-- Mix API providers (Anthropic, OpenAI, xAI) based on task complexity
-- Run on Raspberry Pi hardware
-- Better results at lower monthly cost
-
-## Viewing the Diagram
-```bash
-npm install
-npm run dev
-```
-Open http://localhost:5173
-
-## Status
-🚧 Work in progress — first pass March 7, 2026
+Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
