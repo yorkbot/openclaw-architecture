@@ -6,6 +6,12 @@
         How data moves between agents, scripts, and storage. Cron jobs produce cached files that other agents consume.
         This eliminates redundant API calls and keeps agent context small.
       </p>
+      <p style="color: #c9d1d9; margin-bottom: 0; line-height: 1.6; font-size: 0.9rem; border-left: 3px solid #d29922; padding-left: 1rem;">
+        <strong style="color: #d29922;">Service layer principle:</strong> All structured data (consumption, weight, workouts, chores)
+        flows through typed service functions. Agents call <code style="color: #d29922;">log_food()</code>, not raw DB queries.
+        External services that stay (Google Calendar) keep their existing MCP tools.
+        The DB engine behind the service layer is an open question — any will work.
+      </p>
     </div>
 
     <div class="card">
@@ -166,7 +172,7 @@ const timeline = [
     time: 'Throughout day',
     events: [
       { name: 'James conversations', tag: 'On-demand', tagClass: 'small', flow: '#general → York → sub-agents' },
-      { name: 'Food/weight logging', tag: 'On-demand', tagClass: 'small', flow: 'York → Health agent → spreadsheet' },
+      { name: 'Food/weight logging', tag: 'On-demand', tagClass: 'small', flow: 'York → Health agent → york-data service → local DB' },
       { name: 'Cannabis gate', tag: 'On-demand', tagClass: 'small', flow: 'York → Chores + Health → judgment' },
     ],
   },
@@ -204,10 +210,10 @@ const flows = [
   {
     producer: 'Nutrition Cache',
     producerClass: 'small',
-    file: 'memory/YYYY-MM-DD.md ## Nutrition',
+    file: 'york-data.get_consumption(yesterday) → memory file',
     consumer: 'Morning Brief',
     consumerClass: 'medium',
-    desc: 'Yesterday\'s totals, trends, gaps',
+    desc: 'Yesterday\'s totals, trends, gaps — pulled from local DB, cached to memory',
   },
   {
     producer: 'DnD Research',
@@ -220,10 +226,10 @@ const flows = [
   {
     producer: 'Health Agent',
     producerClass: 'small',
-    file: 'Fitness Spreadsheet',
+    file: 'york-data.get_trends(7d)',
     consumer: 'Weekly Review',
     consumerClass: 'large',
-    desc: 'Full week of consumption/weight data',
+    desc: 'Full week of consumption/weight data via service layer',
   },
   {
     producer: 'Overnight Worker',
@@ -239,10 +245,10 @@ const gateSteps = [
   { actor: 'James', actorClass: 'small', action: '"Can I smoke?"' },
   { actor: 'York (Large)', actorClass: 'large', action: 'Receives request. Checks time of day, location, recent context.' },
   { actor: 'Chores (Small)', actorClass: 'small', action: 'Spawned: grab camera snapshots, read chore-state.md, assess house state.' },
-  { actor: 'Health (Small)', actorClass: 'small', action: 'Spawned: pull today\'s consumption, calculate calorie pace, check dinner plan status.' },
+  { actor: 'Health (Small)', actorClass: 'small', action: 'Spawned: calls york-data.get_consumption(today) for calorie pace, checks dinner plan status.' },
   { actor: 'York (Large)', actorClass: 'large', action: 'Receives both reports. Makes judgment call: approve, deny, or negotiate. Considers patterns, time of day, calorie risk.' },
   { actor: 'York (Large)', actorClass: 'large', action: 'Delivers decision conversationally. If approved: logs session, mentions pending quick tasks (momentum stacking).' },
-  { actor: 'Health (Small)', actorClass: 'small', action: 'Spawned: log cannabis session to spreadsheet.' },
+  { actor: 'Health (Small)', actorClass: 'small', action: 'Spawned: calls york-data.log_cannabis(time, session_number) to record the session.' },
 ]
 </script>
 

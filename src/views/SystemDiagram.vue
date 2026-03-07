@@ -99,7 +99,24 @@
         </div>
       </div>
 
-      <div class="connector-down">▼</div>
+      <div class="connector-down">▼ typed function calls</div>
+
+      <!-- Service Layer -->
+      <div class="layer service-layer">
+        <div class="layer-label">SERVICE LAYER (MCP Server)</div>
+        <div class="layer-content">
+          <div class="node service-node">
+            <div class="node-title">york-data</div>
+            <div class="node-desc">
+              Typed functions: log_food(), log_weight(), log_workout(), get_consumption(), get_trends().
+              Validates inputs, enforces schema, handles all DB operations.
+              LLMs never see raw DB queries, column indices, or JSON blobs.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector-down">▼ validated writes</div>
 
       <!-- Data Layer -->
       <div class="layer">
@@ -108,6 +125,7 @@
           <div class="node data-node" v-for="d in dataStores" :key="d.name">
             <div class="node-icon">{{ d.icon }}</div>
             <div class="node-title">{{ d.name }}</div>
+            <div class="node-status" v-if="d.status">{{ d.status }}</div>
           </div>
         </div>
       </div>
@@ -226,8 +244,8 @@ const agents = [
 const scripts = [
   { name: 'weather-cache', desc: 'curl wttr.in → memory file' },
   { name: 'calendar-cache', desc: 'mcporter → memory file' },
-  { name: 'weight-log', desc: 'mcporter → spreadsheet row' },
-  { name: 'workout-log', desc: 'mcporter → spreadsheet row' },
+  { name: 'weight-log', desc: 'york-data.log_weight() → local DB' },
+  { name: 'workout-log', desc: 'york-data.log_workout() → local DB' },
   { name: 'queue-audit', desc: 'Cleanup improvement-queue.md' },
   { name: 'camera-snapshot', desc: 'ffmpeg RTSP → /tmp/ images' },
   { name: 'avatar-set', desc: 'Discord API avatar upload' },
@@ -235,12 +253,13 @@ const scripts = [
 ]
 
 const dataStores = [
-  { icon: '📊', name: 'Google Sheets' },
-  { icon: '📅', name: 'Google Calendar' },
-  { icon: '📁', name: 'Memory Files' },
-  { icon: '📖', name: 'D&D Wiki' },
-  { icon: '📷', name: 'Cameras (RTSP)' },
-  { icon: '🖥️', name: 'Panel (Genmon)' },
+  { icon: '🗄️', name: 'Local DB', status: 'New — replaces Sheets for owned data. DB engine TBD.' },
+  { icon: '📅', name: 'Google Calendar', status: 'Stays — external service, read-only via MCP' },
+  { icon: '📊', name: 'Google Sheets', status: 'Demoted — ad-hoc tool only. Data migrates to local DB.' },
+  { icon: '📁', name: 'Memory Files', status: 'Stays — daily context, agent communication' },
+  { icon: '📖', name: 'D&D Wiki', status: 'Stays — markdown files' },
+  { icon: '📷', name: 'Cameras (RTSP)', status: 'Stays — snapshots via ffmpeg' },
+  { icon: '🖥️', name: 'Panel (Genmon)', status: 'Stays — status.json on disk' },
 ]
 </script>
 
@@ -346,9 +365,27 @@ const dataStores = [
   max-width: 200px;
 }
 
+.service-layer {
+  border-color: #d29922;
+  background: #1a1815;
+}
+
+.service-node {
+  border-color: #d29922;
+  min-width: 400px;
+  max-width: 600px;
+}
+
 .data-node {
-  min-width: 120px;
+  min-width: 140px;
   border-color: #484f58;
+}
+
+.node-status {
+  font-size: 0.7rem;
+  color: #d29922;
+  margin-top: 0.25rem;
+  font-style: italic;
 }
 
 .border-blue { border-color: #58a6ff; }
