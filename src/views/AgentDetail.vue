@@ -5,7 +5,6 @@
         <h2>{{ agent.icon }} {{ agent.name }}</h2>
         <div>
           <span :class="['tag', agent.tierClass]">{{ agent.tierLabel }}</span>
-          <span :class="['tag', agent.modelClass]">{{ agent.model }}</span>
           <span :class="['tag', agent.scheduleClass]" v-if="agent.schedule">{{ agent.schedule }}</span>
         </div>
       </div>
@@ -31,6 +30,11 @@
         </div>
       </div>
 
+      <div class="agent-section" v-if="agent.whyThisTier">
+        <h3>Why This Tier</h3>
+        <p class="notes">{{ agent.whyThisTier }}</p>
+      </div>
+
       <div class="agent-section" v-if="agent.notes">
         <h3>Design Notes</h3>
         <p class="notes">{{ agent.notes }}</p>
@@ -48,8 +52,6 @@ const agents = [
     tier: 'red',
     tierClass: 'large',
     tierLabel: 'Large',
-    modelClass: 'opus',
-    model: 'Opus / Large',
     scheduleClass: 'heartbeat',
     schedule: 'Heartbeat 30m',
     purpose: 'The brain. Holds conversation with James, makes judgment calls, routes tasks to specialists. Owns the cannabis gate, accountability nudges, and panel presence. Minimal workspace — delegates data work.',
@@ -61,7 +63,8 @@ const agents = [
       'Heartbeat — every 30 min for contextual awareness, nudges, panel updates',
     ],
     spawns: ['health', 'chores', 'dnd', 'research', 'builder', 'morning-brief'],
-    notes: 'This is the most expensive agent per-call but runs the fewest calls. Most heartbeats are silent (NO_REPLY). The value is judgment quality: knowing when to push back on the cannabis gate, when to nudge, when to stay quiet. Cheaper models fail at this nuance.',
+    whyThisTier: 'The orchestrator makes nuanced judgment calls: when to push back on the cannabis gate, when to nudge vs stay quiet, how to read tone in a conversation. This is where model quality directly impacts the user experience. A smaller model would rubber-stamp the gate and miss conversational nuance.',
+    notes: 'Most heartbeats are silent (NO_REPLY). The value is quality of judgment, not volume of calls. This agent runs the fewest tokens per day but they matter the most.',
   },
   {
     id: 'health',
@@ -70,11 +73,9 @@ const agents = [
     tier: 'blue',
     tierClass: 'small',
     tierLabel: 'Small',
-    modelClass: 'sonnet',
-    model: 'Sonnet',
     scheduleClass: 'cron',
     schedule: 'Cron (caches)',
-    purpose: 'All health data operations: food logging, calorie calculation, dashboard updates, nutrition summaries, consumption gap detection, weight trend analysis.',
+    purpose: 'All health data operations: food logging, calorie calculation, dashboard updates, nutrition summaries, consumption gap detection.',
     workspace: 'Own workspace with: spreadsheet reference, consumption logging skill, dashboard skill, nutrition-cache skill. Sees fitness spreadsheet only. No chores, no D&D, no work context.',
     triggers: [
       'Spawned by York when James reports food/drinks/weight',
@@ -82,7 +83,8 @@ const agents = [
       'Spawned by York for cannabis gate calorie check',
     ],
     spawns: [],
-    notes: 'Most calls are structured writes (log X to row Y). Sonnet handles this perfectly. The weekly analysis sub-task might benefit from a larger model, but that\'s handled by the weekly review agent separately.',
+    whyThisTier: 'Structured data operations: "log X to row Y with these calories." Follows skill file instructions. The hardest part is calorie estimation for ambiguous foods, which any reasonable model handles fine.',
+    notes: 'Weekly trend analysis is handled by the Weekly Review agent, not this one. This agent does writes and simple reads.',
   },
   {
     id: 'chores',
@@ -91,8 +93,7 @@ const agents = [
     tier: 'blue',
     tierClass: 'small',
     tierLabel: 'Small',
-    modelClass: 'sonnet',
-    model: 'Sonnet',
+    scheduleClass: null,
     schedule: null,
     purpose: 'Manage chore state, analyze camera snapshots, prepare data for the cannabis gate. York makes the gate decision; this agent gathers the data.',
     workspace: 'Own workspace with: chore-state.md, camera skill, chore definitions. Sees cameras and chore spreadsheet only.',
@@ -101,17 +102,16 @@ const agents = [
       'Spawned by York for chore status checks',
     ],
     spawns: [],
-    notes: 'Camera analysis (image recognition of kitchen state) is the only non-trivial part. Sonnet vision handles this fine. The judgment call ("is this clean enough?") stays with York.',
+    whyThisTier: 'Camera analysis (is the kitchen clean?) plus reading/writing chore state. Vision capability needed but the judgment is simple: dishes or no dishes, clutter or clean.',
+    notes: 'The nuanced judgment ("is this clean enough given Audrey is visiting?") stays with York. This agent just reports what it sees.',
   },
   {
     id: 'dnd',
     icon: '🎲',
     name: 'D&D Campaign',
-    tier: 'blue',
-    tierClass: 'medium',
-    tierLabel: 'Medium',
-    modelClass: 'sonnet',
-    model: 'Sonnet',
+    tier: 'red',
+    tierClass: 'large',
+    tierLabel: 'Large',
     scheduleClass: 'cron',
     schedule: 'Cron + Direct Channel',
     purpose: 'Campaign wiki management, lore questions, worldbuilding research, session prep. Interactive conversations route here directly via #dnd channel.',
@@ -123,17 +123,16 @@ const agents = [
       'Morning brief pulls pre-cached questions from memory files',
     ],
     spawns: [],
-    notes: 'The "It\'s Complicated" agent. Lore lookup is Small, worldbuilding generation is Medium, session prep with cross-referencing is Large. Having its own channel means interactive sessions don\'t burn York\'s expensive context. Overnight research runs as cron (isolated, cheap). The hardest tasks (session prep) could escalate to a larger model via York spawning a builder-tier sub-agent with DnD context.',
+    whyThisTier: 'The wiki is massive and deeply interconnected. A lore question about one character touches factions, timelines, locations, and other characters across dozens of articles. The model needs to hold all that context and reason about connections, contradictions, and implications. Session prep is even harder — cross-referencing player histories, NPC motivations, and plot threads. A smaller model would give shallow, disconnected answers.',
+    notes: 'Having its own channel means interactive sessions don\'t burn York\'s context. Overnight research runs as cron (isolated). The combination of creative worldbuilding + large context + interconnected reasoning makes this genuinely Large.',
   },
   {
     id: 'morning',
     icon: '☀️',
     name: 'Morning Brief',
-    tier: 'blue',
+    tier: 'yellow',
     tierClass: 'medium',
     tierLabel: 'Medium',
-    modelClass: 'sonnet',
-    model: 'Sonnet',
     scheduleClass: 'cron',
     schedule: 'Cron 8AM',
     purpose: 'Compile morning brief from pre-cached data. Weather, calendar, nutrition summary, chore state, D&D questions, workout nudge. Posts to #general.',
@@ -142,7 +141,8 @@ const agents = [
       'Cron: 8:00 AM daily',
     ],
     spawns: [],
-    notes: 'This agent\'s job is formatting and editorial judgment (what to include, tone, what to skip). All data is pre-cached by scripts and other agents\' cron jobs. Medium complexity because the brief needs to read well and adapt to context (Audrey visiting, unusual weight, etc).',
+    whyThisTier: 'The data is pre-cached, so no heavy lifting. But the brief needs editorial judgment: what to include, what tone to use, how to frame the weight number, when to skip a section. It needs to read well and adapt to context (Audrey visiting, bad calorie day, etc).',
+    notes: 'All data is pre-cached by scripts and other agents\' cron jobs. This agent formats and editorializes.',
   },
   {
     id: 'research',
@@ -151,27 +151,26 @@ const agents = [
     tier: 'yellow',
     tierClass: 'medium',
     tierLabel: 'Varies',
-    modelClass: 'grok',
-    model: 'Model varies by task',
+    scheduleClass: null,
     schedule: null,
-    purpose: 'General research: web search, browsing, comparison, synthesis. Model scales with complexity.',
+    purpose: 'General research: web search, browsing, comparison, synthesis. Complexity varies per task.',
     workspace: 'Minimal workspace. Each research task is mostly self-contained.',
     triggers: [
       'Spawned by York when James asks to research something',
       'Spawned by overnight agent for improvement research',
     ],
     spawns: [],
-    notes: 'Quick lookups (game prices, API docs) → cheapest model. Deep comparisons (camera systems, hardware options) → medium. Technical deep-dives → large. York decides the model at spawn time based on the request.',
+    whyThisTier: 'Range is huge. Quick lookups (game prices, API docs) are Small. Deep comparisons (hardware options, architecture decisions) are Large. York decides the model at spawn time based on the request.',
+    notes: 'The model is selected per-spawn, not fixed. This is the most variable agent in terms of what it needs.',
   },
   {
     id: 'builder',
     icon: '🔨',
     name: 'Builder',
-    tier: 'red',
+    tier: 'purple',
     tierClass: 'xl',
     tierLabel: 'XL',
-    modelClass: 'opus',
-    model: 'Opus',
+    scheduleClass: null,
     schedule: null,
     purpose: 'Implement features, create skills, debug complex issues, write non-trivial code. The heavy lifter.',
     workspace: 'Gets the relevant workspace for the task. Can operate on any agent\'s workspace when building/fixing.',
@@ -181,7 +180,8 @@ const agents = [
       'Spawned for work-prep (processing transcripts, rewriting priorities)',
     ],
     spawns: [],
-    notes: 'This is where Opus earns its keep. Called infrequently but for the hardest tasks. A session might cost $2-5 but it\'s doing work that cheaper models would fail at. Think: "the Claude Code equivalent."',
+    whyThisTier: 'This is Claude Code territory. Multi-file implementation, debugging from logs, architectural decisions, writing code that needs to work on the first try. Called infrequently but for the hardest tasks.',
+    notes: 'A session might be expensive but it\'s doing work that smaller models would fail at or iterate on endlessly. The right model here saves money by getting it right the first time.',
   },
   {
     id: 'weekly',
@@ -190,8 +190,6 @@ const agents = [
     tier: 'red',
     tierClass: 'large',
     tierLabel: 'Large',
-    modelClass: 'opus',
-    model: 'Large / Opus',
     scheduleClass: 'cron',
     schedule: 'Cron Sun 8PM',
     purpose: 'Pull full week of data, calculate trends, identify patterns, form opinions, deliver accountability review.',
@@ -200,17 +198,16 @@ const agents = [
       'Cron: Sunday 8:00 PM',
     ],
     spawns: [],
-    notes: 'Once per week, worth the cost. Needs to identify patterns across 7 days of data, form genuine opinions ("the almond incident pattern"), and deliver them with the right tone. This is analytical reasoning + writing quality, both of which benefit from a larger model.',
+    whyThisTier: 'Needs to identify patterns across 7 days of data, correlate behaviors (post-smoke eating, A2 vs Cleveland habits), and form genuine opinions that James will actually listen to. Surface-level summary isn\'t useful — the value is in the analysis.',
+    notes: 'Once per week. Worth investing in quality here because this is the primary feedback loop for behavior change.',
   },
   {
     id: 'overnight',
     icon: '🌙',
     name: 'Overnight Worker',
-    tier: 'blue',
+    tier: 'yellow',
     tierClass: 'medium',
     tierLabel: 'Medium',
-    modelClass: 'sonnet',
-    model: 'Sonnet (dispatches to Builder)',
     scheduleClass: 'cron',
     schedule: 'Cron every 30m, 1-6AM',
     purpose: 'Self-improvement dispatcher. Picks tasks from queue, executes simple ones, spawns Builder for complex ones.',
@@ -219,7 +216,8 @@ const agents = [
       'Cron: every 30 minutes, 1:00-6:00 AM',
     ],
     spawns: ['builder'],
-    notes: 'The dispatcher itself is Medium (pick a task, decide complexity, route appropriately). The actual work varies from Trivial (move a file) to XL (build a feature). Sonnet handles the dispatch; Builder handles the hard stuff.',
+    whyThisTier: 'The dispatcher itself is Medium: read the queue, assess task complexity, decide whether to do it inline or spawn Builder. The actual hard work is delegated to Builder.',
+    notes: 'Runs 12 times per night. Most runs are quick (pick task, do simple fix or spawn Builder, log result). The medium model handles the routing judgment fine.',
   },
 ]
 </script>
@@ -288,4 +286,5 @@ const agents = [
 .border-red { border-color: #f85149; }
 .border-blue { border-color: #58a6ff; }
 .border-yellow { border-color: #d29922; }
+.border-purple { border-color: #bc8cff; }
 </style>

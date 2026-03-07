@@ -71,14 +71,14 @@ const categories = [
       {
         name: 'general',
         agent: 'York',
-        agentClass: 'opus',
+        agentClass: 'large',
         desc: 'Main conversation, morning briefs, accountability',
         private: false,
       },
       {
         name: 'health',
         agent: 'York → Health',
-        agentClass: 'sonnet',
+        agentClass: 'small',
         desc: 'Private health data, food logging, weight discussion',
         private: true,
       },
@@ -90,7 +90,7 @@ const categories = [
       {
         name: 'dnd',
         agent: 'DnD Agent',
-        agentClass: 'sonnet',
+        agentClass: 'large',
         desc: 'Campaign wiki, lore, worldbuilding, session prep',
         private: false,
       },
@@ -102,7 +102,7 @@ const categories = [
       {
         name: 'reviews',
         agent: 'York',
-        agentClass: 'opus',
+        agentClass: 'large',
         desc: 'York-initiated proposals, improvement ideas',
         private: false,
       },

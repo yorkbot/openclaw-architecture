@@ -18,7 +18,6 @@
               class="time-event"
               v-for="event in block.events"
               :key="event.name"
-              :class="'event-' + event.type"
             >
               <span :class="['tag', event.tagClass]">{{ event.tag }}</span>
               <span class="event-name">{{ event.name }}</span>
@@ -116,71 +115,71 @@ const timeline = [
   {
     time: '1:00-6:00 AM',
     events: [
-      { name: 'Overnight Worker', tag: 'Cron', tagClass: 'cron', type: 'cron', flow: 'Picks task → executes or spawns Builder' },
+      { name: 'Overnight Worker', tag: 'Cron', tagClass: 'cron', flow: 'Picks task → executes or spawns Builder' },
     ],
   },
   {
     time: '3:45 AM',
     events: [
-      { name: 'DnD Wiki Research', tag: 'Cron', tagClass: 'cron', type: 'cron', flow: 'Explores wiki → writes questions to memory' },
+      { name: 'DnD Wiki Research', tag: 'Cron', tagClass: 'cron', flow: 'Explores wiki → writes questions to memory' },
     ],
   },
   {
     time: '4:15 AM',
     events: [
-      { name: 'Nutrition Cache', tag: 'Cron', tagClass: 'cron', type: 'cron', flow: 'Spreadsheet → memory/YYYY-MM-DD.md' },
+      { name: 'Nutrition Cache', tag: 'Cron', tagClass: 'cron', flow: 'Spreadsheet → memory/YYYY-MM-DD.md' },
     ],
   },
   {
     time: '5:15 AM',
     events: [
-      { name: 'Consumption Gap Cache', tag: 'Cron', tagClass: 'cron', type: 'cron', flow: 'Analyzes gaps → writes questions to memory' },
+      { name: 'Consumption Gap Cache', tag: 'Cron', tagClass: 'cron', flow: 'Analyzes gaps → writes questions to memory' },
     ],
   },
   {
     time: '6:30 AM',
     events: [
-      { name: 'Calendar Cache', tag: 'Script', tagClass: 'script', type: 'script', flow: 'Google Calendar → memory file' },
+      { name: 'Calendar Cache', tag: 'Script', tagClass: 'script', flow: 'Google Calendar → memory file' },
     ],
   },
   {
     time: '7:30 AM',
     events: [
-      { name: 'Weather Cache', tag: 'Script', tagClass: 'script', type: 'script', flow: 'wttr.in → memory file' },
-      { name: 'Compile Overnight', tag: 'Cron', tagClass: 'cron', type: 'cron', flow: 'Sessions → overnight-results.md' },
+      { name: 'Weather Cache', tag: 'Script', tagClass: 'script', flow: 'wttr.in → memory file' },
+      { name: 'Compile Overnight', tag: 'Cron', tagClass: 'cron', flow: 'Sessions → overnight-results.md' },
     ],
   },
   {
     time: '7:45 AM',
     events: [
-      { name: 'Daily Avatar', tag: 'Cron', tagClass: 'cron', type: 'cron', flow: 'Memory → prompt → image → Discord' },
+      { name: 'Daily Avatar', tag: 'Cron', tagClass: 'cron', flow: 'Memory → prompt → image → Discord' },
     ],
   },
   {
     time: '8:00 AM',
     events: [
-      { name: 'Morning Brief', tag: 'Cron', tagClass: 'cron', type: 'cron', flow: 'Reads ALL cached files → #general' },
-      { name: 'York Heartbeat begins', tag: 'Heartbeat', tagClass: 'heartbeat', type: 'heartbeat', flow: 'Every 30m until 12:30 AM' },
+      { name: 'Morning Brief', tag: 'Cron', tagClass: 'cron', flow: 'Reads ALL cached files → #general' },
+      { name: 'York Heartbeat begins', tag: 'Heartbeat', tagClass: 'heartbeat', flow: 'Every 30m until 12:30 AM' },
     ],
   },
   {
     time: 'Throughout day',
     events: [
-      { name: 'James conversations', tag: 'On-demand', tagClass: 'small', type: 'demand', flow: '#general → York → sub-agents' },
-      { name: 'Food/weight logging', tag: 'On-demand', tagClass: 'small', type: 'demand', flow: 'York → Health agent → spreadsheet' },
-      { name: 'Cannabis gate', tag: 'On-demand', tagClass: 'small', type: 'demand', flow: 'York → Chores + Health → judgment' },
+      { name: 'James conversations', tag: 'On-demand', tagClass: 'small', flow: '#general → York → sub-agents' },
+      { name: 'Food/weight logging', tag: 'On-demand', tagClass: 'small', flow: 'York → Health agent → spreadsheet' },
+      { name: 'Cannabis gate', tag: 'On-demand', tagClass: 'small', flow: 'York → Chores + Health → judgment' },
     ],
   },
   {
     time: '8:00 PM Sun',
     events: [
-      { name: 'Weekly Review', tag: 'Cron', tagClass: 'cron', type: 'cron', flow: 'Full week data → analysis → #general' },
+      { name: 'Weekly Review', tag: 'Cron', tagClass: 'cron', flow: 'Full week data → analysis → #general' },
     ],
   },
   {
     time: '11:00 PM',
     events: [
-      { name: 'Daily Memory Summary', tag: 'Cron', tagClass: 'cron', type: 'cron', flow: 'Sessions → memory/YYYY-MM-DD.md' },
+      { name: 'Daily Memory Summary', tag: 'Cron', tagClass: 'cron', flow: 'Sessions → memory/YYYY-MM-DD.md' },
     ],
   },
 ]
@@ -191,7 +190,7 @@ const flows = [
     producerClass: 'script',
     file: 'memory/YYYY-MM-DD.md ## Weather',
     consumer: 'Morning Brief',
-    consumerClass: 'sonnet',
+    consumerClass: 'medium',
     desc: 'Pre-cached weather data, no live fetch at brief time',
   },
   {
@@ -199,51 +198,51 @@ const flows = [
     producerClass: 'script',
     file: 'memory/YYYY-MM-DD.md ## Calendar',
     consumer: 'Morning Brief',
-    consumerClass: 'sonnet',
+    consumerClass: 'medium',
     desc: 'Pre-cached calendar events in ET',
   },
   {
     producer: 'Nutrition Cache',
-    producerClass: 'sonnet',
+    producerClass: 'small',
     file: 'memory/YYYY-MM-DD.md ## Nutrition',
     consumer: 'Morning Brief',
-    consumerClass: 'sonnet',
+    consumerClass: 'medium',
     desc: 'Yesterday\'s totals, trends, gaps',
   },
   {
     producer: 'DnD Research',
-    producerClass: 'sonnet',
+    producerClass: 'large',
     file: 'memory/YYYY-MM-DD.md ## DnD Questions',
     consumer: 'Morning Brief',
-    consumerClass: 'sonnet',
+    consumerClass: 'medium',
     desc: 'Overnight wiki questions for James',
   },
   {
     producer: 'Health Agent',
-    producerClass: 'sonnet',
+    producerClass: 'small',
     file: 'Fitness Spreadsheet',
     consumer: 'Weekly Review',
-    consumerClass: 'opus',
+    consumerClass: 'large',
     desc: 'Full week of consumption/weight data',
   },
   {
     producer: 'Overnight Worker',
-    producerClass: 'sonnet',
+    producerClass: 'medium',
     file: 'overnight-results.md',
     consumer: 'Morning Brief',
-    consumerClass: 'sonnet',
+    consumerClass: 'medium',
     desc: 'What York did overnight',
   },
 ]
 
 const gateSteps = [
   { actor: 'James', actorClass: 'small', action: '"Can I smoke?"' },
-  { actor: 'York', actorClass: 'opus', action: 'Receives request. Checks time of day, location, recent context.' },
-  { actor: 'York → Chores', actorClass: 'sonnet', action: 'Spawns chores agent: grab camera snapshots, read chore-state.md, assess house state.' },
-  { actor: 'York → Health', actorClass: 'sonnet', action: 'Spawns health agent: pull today\'s consumption, calculate calorie pace, check dinner plan status.' },
-  { actor: 'York', actorClass: 'opus', action: 'Receives both reports. Makes judgment call: approve, deny, or negotiate. Considers patterns, time of day, calorie risk.' },
-  { actor: 'York', actorClass: 'opus', action: 'Delivers decision conversationally. If approved: logs session, mentions pending quick tasks (momentum stacking).' },
-  { actor: 'York → Health', actorClass: 'sonnet', action: 'Spawns health agent: log cannabis session to spreadsheet.' },
+  { actor: 'York (Large)', actorClass: 'large', action: 'Receives request. Checks time of day, location, recent context.' },
+  { actor: 'Chores (Small)', actorClass: 'small', action: 'Spawned: grab camera snapshots, read chore-state.md, assess house state.' },
+  { actor: 'Health (Small)', actorClass: 'small', action: 'Spawned: pull today\'s consumption, calculate calorie pace, check dinner plan status.' },
+  { actor: 'York (Large)', actorClass: 'large', action: 'Receives both reports. Makes judgment call: approve, deny, or negotiate. Considers patterns, time of day, calorie risk.' },
+  { actor: 'York (Large)', actorClass: 'large', action: 'Delivers decision conversationally. If approved: logs session, mentions pending quick tasks (momentum stacking).' },
+  { actor: 'Health (Small)', actorClass: 'small', action: 'Spawned: log cannabis session to spreadsheet.' },
 ]
 </script>
 

@@ -3,105 +3,116 @@
     <div class="card">
       <h2>Cost Estimate</h2>
       <p style="color: #8b949e; margin-bottom: 1rem;">
-        Estimated monthly cost with mixed API providers vs current $200/mo flat plan.
-        Based on observed usage patterns from the last week.
+        Estimated monthly cost with right-sized models vs current $200/mo flat plan.
+        The goal is performance, not penny-pinching. Waste elimination, not cost cutting.
       </p>
     </div>
 
     <div class="card">
       <h3>Per-Agent Monthly Estimate</h3>
+      <p style="color: #8b949e; margin-bottom: 1rem; font-size: 0.85rem;">
+        Costs depend heavily on which specific models fill each tier. These estimates use
+        mid-range pricing for each tier. Actual costs will vary by provider choice.
+      </p>
       <table>
         <thead>
           <tr>
             <th>Agent</th>
-            <th>Model</th>
+            <th>Tier</th>
             <th>Calls/Day</th>
-            <th>Avg Tokens</th>
-            <th>$/Month</th>
+            <th>Why This Tier</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="row in costRows" :key="row.agent" :class="{ 'row-total': row.total }">
             <td>{{ row.agent }}</td>
-            <td><span :class="['tag', row.modelClass]" v-if="row.model">{{ row.model }}</span></td>
+            <td><span :class="['tag', row.tierClass]" v-if="row.tier">{{ row.tier }}</span></td>
             <td>{{ row.calls }}</td>
-            <td>{{ row.tokens }}</td>
-            <td class="cost-cell">{{ row.cost }}</td>
+            <td class="why-cell">{{ row.why }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="card">
-      <h3>Comparison</h3>
-      <div class="compare-grid">
-        <div class="compare-card current">
-          <div class="compare-label">Current</div>
-          <div class="compare-price">$200/mo</div>
-          <div class="compare-desc">Claude Max flat plan</div>
-          <ul>
-            <li>✓ Unlimited Opus calls</li>
-            <li>✗ Rate limited on heavy use</li>
-            <li>✗ Single provider only</li>
-            <li>✗ Paying for Opus on trivial tasks</li>
-          </ul>
-        </div>
-        <div class="compare-card proposed">
-          <div class="compare-label">Proposed</div>
-          <div class="compare-price">~$75-120/mo</div>
-          <div class="compare-desc">Mixed API pricing</div>
-          <ul>
-            <li>✓ Right model for each task</li>
-            <li>✓ No rate limits</li>
-            <li>✓ Multi-provider flexibility</li>
-            <li>✓ Scripts eliminate LLM costs for trivial work</li>
-            <li>✗ Heavy building days could spike</li>
-          </ul>
-        </div>
-        <div class="compare-card savings">
-          <div class="compare-label">Savings</div>
-          <div class="compare-price">$80-125/mo</div>
-          <div class="compare-desc">40-60% reduction</div>
-          <ul>
-            <li>Biggest savings: replacing Opus sub-agents with Sonnet</li>
-            <li>Second biggest: scripts replacing LLM for trivial tasks</li>
-            <li>Variance: heavy building weeks cost more</li>
-          </ul>
+      <h3>Where the Current Setup Wastes</h3>
+      <div class="waste-grid">
+        <div class="waste-item" v-for="w in wastes" :key="w.task">
+          <div class="waste-header">
+            <span class="waste-task">{{ w.task }}</span>
+            <span class="waste-arrow">→</span>
+          </div>
+          <div class="waste-detail">
+            <div class="waste-current">
+              <span class="waste-label">Now:</span> {{ w.current }}
+            </div>
+            <div class="waste-proposed">
+              <span class="waste-label">Should be:</span> {{ w.proposed }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h3>Assumptions & Caveats</h3>
-      <ul class="caveats">
-        <li>Token estimates based on observed session sizes from this week</li>
-        <li>Cached input pricing assumed where OpenClaw supports it (Anthropic, OpenAI)</li>
-        <li>Builder agent is highly variable — one big project day could be $10-20 alone</li>
-        <li>"Calls/Day" for weekly agents are averaged (e.g., 1 call/week = 0.14/day)</li>
-        <li>OpenRouter adds ~10-20% markup over direct API pricing</li>
-        <li>Image generation costs not included (Gemini free tier or separate budget)</li>
-        <li>These are estimates. First month of API usage will give real numbers.</li>
-      </ul>
+      <h3>Key Principle</h3>
+      <div class="principle">
+        <p>
+          The current $200/mo flat plan was the right call for learning the system.
+          The migration isn't about being cheaper — it's about being <strong>intentional</strong>.
+          Every agent gets the model that matches its task complexity. No more, no less.
+        </p>
+        <p>
+          The savings are a side effect of not being wasteful, not the goal.
+          If a task needs a large model, it gets one. The point is that logging
+          "2 lattes, a bagel" to a spreadsheet doesn't.
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 const costRows = [
-  { agent: 'York (Orchestrator)', model: 'Opus', modelClass: 'opus', calls: '~15', tokens: '50k in / 2k out', cost: '$25-40' },
-  { agent: 'Health & Nutrition', model: 'Sonnet', modelClass: 'sonnet', calls: '~3', tokens: '20k in / 1k out', cost: '$3-5' },
-  { agent: 'Morning Brief', model: 'Sonnet', modelClass: 'sonnet', calls: '1', tokens: '30k in / 2k out', cost: '$2-3' },
-  { agent: 'DnD Campaign', model: 'Sonnet', modelClass: 'sonnet', calls: '~2', tokens: '25k in / 2k out', cost: '$3-5' },
-  { agent: 'Weekly Review', model: 'Opus', modelClass: 'opus', calls: '0.14', tokens: '40k in / 3k out', cost: '$3-5' },
-  { agent: 'Overnight Worker', model: 'Sonnet', modelClass: 'sonnet', calls: '~10', tokens: '15k in / 1k out', cost: '$5-8' },
-  { agent: 'DnD Research (cron)', model: 'Sonnet', modelClass: 'sonnet', calls: '1', tokens: '30k in / 3k out', cost: '$2-3' },
-  { agent: 'Chores', model: 'Sonnet', modelClass: 'sonnet', calls: '~2', tokens: '15k in / 1k out', cost: '$1-2' },
-  { agent: 'Research', model: 'Varies', modelClass: 'grok', calls: '~1', tokens: '20k in / 2k out', cost: '$2-5' },
-  { agent: 'Builder', model: 'Opus', modelClass: 'opus', calls: '~0.5', tokens: '80k in / 5k out', cost: '$8-15' },
-  { agent: 'Memory/Compile/Other', model: 'Sonnet', modelClass: 'sonnet', calls: '~3', tokens: '15k in / 1k out', cost: '$3-5' },
-  { agent: 'Scripts (no LLM)', model: null, modelClass: '', calls: '~8', tokens: 'N/A', cost: '$0' },
-  { agent: '', model: null, modelClass: '', calls: '', tokens: '', cost: '', total: false },
-  { agent: 'TOTAL (estimated)', model: null, modelClass: '', calls: '~45', tokens: '', cost: '$57-96', total: true },
+  { agent: 'York (Orchestrator)', tier: 'Large', tierClass: 'large', calls: '~15', why: 'Judgment calls, conversation quality, gate decisions' },
+  { agent: 'Health & Nutrition', tier: 'Small', tierClass: 'small', calls: '~3', why: 'Structured spreadsheet writes following skill instructions' },
+  { agent: 'D&D Campaign', tier: 'Large', tierClass: 'large', calls: '~2', why: 'Interconnected wiki, creative reasoning, large context' },
+  { agent: 'Morning Brief', tier: 'Medium', tierClass: 'medium', calls: '1', why: 'Editorial judgment on pre-cached data' },
+  { agent: 'Weekly Review', tier: 'Large', tierClass: 'large', calls: '0.14', why: 'Week-long pattern analysis, opinion forming' },
+  { agent: 'Overnight Worker', tier: 'Medium', tierClass: 'medium', calls: '~10', why: 'Task routing, simple fixes inline' },
+  { agent: 'Chores', tier: 'Small', tierClass: 'small', calls: '~2', why: 'Camera vision + state tracking' },
+  { agent: 'Research', tier: 'Varies', tierClass: 'medium', calls: '~1', why: 'Model chosen per-spawn based on task' },
+  { agent: 'Builder', tier: 'XL', tierClass: 'xl', calls: '~0.5', why: 'Implementation, debugging, architecture. Claude Code territory.' },
+  { agent: 'Memory/Compile/Other', tier: 'Small', tierClass: 'small', calls: '~3', why: 'Summarization, session review' },
+  { agent: 'Scripts (no LLM)', tier: 'Script', tierClass: 'script', calls: '~8', why: 'Weather, calendar, weight, workout — no model needed' },
+]
+
+const wastes = [
+  {
+    task: 'Logging "258.2 lbs" to a spreadsheet',
+    current: 'Spawns a full LLM sub-agent with Opus-level context',
+    proposed: 'A bash script calling mcporter. Zero LLM tokens.',
+  },
+  {
+    task: 'Fetching weather from wttr.in',
+    current: 'Spawns an LLM agent that runs curl, then writes to a file',
+    proposed: 'A 3-line bash script on cron.',
+  },
+  {
+    task: 'Logging "2 lattes and a bagel with cream cheese"',
+    current: 'Full Opus sub-agent loads workspace context, reads skill files, writes to spreadsheet',
+    proposed: 'Small model with minimal context follows a structured skill file.',
+  },
+  {
+    task: 'DnD lore conversation (20 back-and-forth messages)',
+    current: 'Runs through York orchestrator — burns expensive orchestrator context on wiki lookups',
+    proposed: 'Routes directly to DnD agent via #dnd channel. Orchestrator never involved.',
+  },
+  {
+    task: 'Cannabis gate check',
+    current: 'York does everything inline — reads chores, checks calories, makes decision',
+    proposed: 'York spawns Small agents for data gathering, keeps only the judgment call.',
+  },
 ]
 </script>
 
@@ -127,9 +138,9 @@ td {
   font-size: 0.9rem;
 }
 
-.cost-cell {
-  color: #3fb950;
-  font-weight: 600;
+.why-cell {
+  color: #8b949e;
+  font-size: 0.85rem;
 }
 
 .row-total td {
@@ -139,79 +150,83 @@ td {
   font-size: 1rem;
 }
 
-.row-total .cost-cell {
-  color: #58a6ff;
-  font-size: 1.1rem;
-}
-
-.compare-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.waste-grid {
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
 }
 
-.compare-card {
+.waste-item {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.waste-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.waste-task {
+  color: #f0f6fc;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.waste-arrow {
+  color: #484f58;
+}
+
+.waste-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.waste-label {
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.waste-current {
+  color: #f85149;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.waste-proposed {
+  color: #3fb950;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.principle {
   background: #0d1117;
   border: 1px solid #30363d;
   border-radius: 6px;
   padding: 1.5rem;
-  text-align: center;
 }
 
-.compare-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #8b949e;
-  margin-bottom: 0.5rem;
-}
-
-.compare-price {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-}
-
-.current .compare-price { color: #f85149; }
-.proposed .compare-price { color: #3fb950; }
-.savings .compare-price { color: #58a6ff; }
-
-.compare-desc {
-  color: #8b949e;
-  font-size: 0.85rem;
+.principle p {
+  color: #c9d1d9;
+  line-height: 1.7;
+  font-size: 0.95rem;
   margin-bottom: 1rem;
 }
 
-.compare-card ul {
-  list-style: none;
-  padding: 0;
-  text-align: left;
+.principle p:last-child {
+  margin-bottom: 0;
 }
 
-.compare-card li {
-  padding: 0.25rem 0;
-  font-size: 0.8rem;
-  color: #c9d1d9;
-}
-
-.caveats {
-  list-style: none;
-  padding: 0;
-}
-
-.caveats li {
-  padding: 0.4rem 0;
-  font-size: 0.85rem;
-  color: #8b949e;
-  border-bottom: 1px solid #21262d;
-}
-
-.caveats li::before {
-  content: '⚠️ ';
+.principle strong {
+  color: #58a6ff;
 }
 
 @media (max-width: 768px) {
-  .compare-grid {
+  .waste-detail {
     grid-template-columns: 1fr;
   }
 }

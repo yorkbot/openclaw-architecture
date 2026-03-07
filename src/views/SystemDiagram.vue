@@ -5,6 +5,7 @@
       <p style="color: #8b949e; margin-bottom: 1.5rem;">
         One OpenClaw instance on RPi. York orchestrates everything. Specialized agents handle domains.
         Scripts replace LLMs where possible. Cron for scheduled work, heartbeat for contextual awareness.
+        Model selection is by task complexity, not brand loyalty.
       </p>
     </div>
 
@@ -44,7 +45,7 @@
             <div class="node-icon">🦝</div>
             <div class="node-title">York</div>
             <div class="node-detail">
-              <span class="tag large">Large Model</span>
+              <span class="tag large">Large</span>
               <span class="tag heartbeat">Heartbeat 30m</span>
             </div>
             <div class="node-desc">
@@ -69,7 +70,7 @@
           >
             <div class="node-title">{{ agent.name }}</div>
             <div class="node-detail">
-              <span :class="['tag', agent.model]">{{ agent.modelLabel }}</span>
+              <span :class="['tag', agent.tierClass]">{{ agent.tierLabel }}</span>
               <span :class="['tag', agent.schedule]" v-if="agent.scheduleLabel">{{ agent.scheduleLabel }}</span>
             </div>
             <div class="node-desc">{{ agent.desc }}</div>
@@ -114,7 +115,7 @@
         <div class="node agent-node border-yellow">
           <div class="node-title">MTG Agent</div>
           <div class="node-detail">
-            <span class="tag medium">Medium Model</span>
+            <span class="tag medium">Medium</span>
           </div>
           <div class="node-desc">
             Own install, own Discord server or channel, own workspace.
@@ -138,18 +139,18 @@ const agents = [
   {
     id: 'health',
     name: '🍎 Health & Nutrition',
-    model: 'sonnet',
-    modelLabel: 'Sonnet',
+    tierClass: 'small',
+    tierLabel: 'Small',
     schedule: 'cron',
     scheduleLabel: 'Cron',
-    desc: 'Food logging, calorie tracking, dashboard updates, weight trends, weekly analysis',
+    desc: 'Food logging, calorie tracking, dashboard updates, weight trends',
     border: 'border-blue',
   },
   {
     id: 'chores',
     name: '🏠 Chores & Home',
-    model: 'sonnet',
-    modelLabel: 'Sonnet',
+    tierClass: 'small',
+    tierLabel: 'Small',
     schedule: null,
     scheduleLabel: null,
     desc: 'Chore state, camera analysis, gate data prep. Spawned by York for gate checks.',
@@ -158,58 +159,58 @@ const agents = [
   {
     id: 'dnd',
     name: '🎲 D&D Campaign',
-    model: 'sonnet',
-    modelLabel: 'Sonnet',
-    schedule: 'heartbeat',
-    scheduleLabel: 'Heartbeat',
-    desc: 'Wiki lookups, lore questions, worldbuilding. Direct channel routing for interactive sessions. Overnight research via cron.',
-    border: 'border-blue',
+    tierClass: 'large',
+    tierLabel: 'Large',
+    schedule: 'cron',
+    scheduleLabel: 'Cron + Direct Channel',
+    desc: 'Wiki lookups, lore, worldbuilding. Large context needed for interconnected wiki. Direct channel routing for interactive sessions.',
+    border: 'border-red',
   },
   {
     id: 'morning',
     name: '☀️ Morning Brief',
-    model: 'sonnet',
-    modelLabel: 'Sonnet',
+    tierClass: 'medium',
+    tierLabel: 'Medium',
     schedule: 'cron',
     scheduleLabel: 'Cron 8AM',
     desc: 'Read cached data files, format brief, post to #general. No live data fetching.',
-    border: 'border-blue',
+    border: 'border-yellow',
   },
   {
     id: 'research',
     name: '🔍 Research',
-    model: 'grok',
-    modelLabel: 'Varies',
+    tierClass: 'medium',
+    tierLabel: 'Varies',
     schedule: null,
     scheduleLabel: null,
-    desc: 'Web search, browsing, synthesis. Model scales with task: quick lookup = cheap, deep research = Opus.',
+    desc: 'Web search, browsing, synthesis. Model scales with task complexity at spawn time.',
     border: 'border-yellow',
   },
   {
     id: 'builder',
     name: '🔨 Builder',
-    model: 'opus',
-    modelLabel: 'Opus',
+    tierClass: 'xl',
+    tierLabel: 'XL',
     schedule: null,
     scheduleLabel: null,
     desc: 'Feature implementation, skill creation, debugging. The hard stuff. Spawned on-demand.',
-    border: 'border-red',
+    border: 'border-purple',
   },
   {
     id: 'overnight',
     name: '🌙 Overnight',
-    model: 'sonnet',
-    modelLabel: 'Sonnet',
+    tierClass: 'medium',
+    tierLabel: 'Medium',
     schedule: 'cron',
     scheduleLabel: 'Cron 1-6AM',
-    desc: 'Self-improvement, queue work, wiki research. Dispatches to Builder for hard tasks.',
-    border: 'border-blue',
+    desc: 'Self-improvement dispatcher. Picks tasks, executes simple ones, spawns Builder for hard ones.',
+    border: 'border-yellow',
   },
   {
     id: 'weekly',
     name: '📊 Weekly Review',
-    model: 'opus',
-    modelLabel: 'Large',
+    tierClass: 'large',
+    tierLabel: 'Large',
     schedule: 'cron',
     scheduleLabel: 'Cron Sun 8PM',
     desc: 'Pull full week data, calculate trends, form opinions. Needs analytical depth.',
@@ -349,6 +350,7 @@ const dataStores = [
 .border-red { border-color: #f85149; }
 .border-yellow { border-color: #d29922; }
 .border-green { border-color: #3fb950; }
+.border-purple { border-color: #bc8cff; }
 
 .agents-grid {
   display: grid;
