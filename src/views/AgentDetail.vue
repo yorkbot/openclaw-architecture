@@ -109,7 +109,21 @@
         </ul>
       </div>
 
-      <div class="agent-section">
+      <div class="agent-section" v-if="agent.skillSections">
+        <h3>Skills</h3>
+        <div class="skill-category" v-for="cat in agent.skillSections" :key="cat.name">
+          <h4 class="skill-cat-header">{{ cat.name }}</h4>
+          <div class="skill-items">
+            <div class="skill-item" v-for="sk in cat.skills" :key="sk.name">
+              <div class="skill-name">{{ sk.name }}</div>
+              <div class="skill-desc">{{ sk.desc }}</div>
+            </div>
+            <div class="skill-tbd" v-if="cat.tbd">+ more TBD as agents are defined</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="agent-section" v-else-if="agent.skills">
         <h3>Skills</h3>
         <ul>
           <li v-for="sk in agent.skills" :key="sk">{{ sk }}</li>
@@ -154,8 +168,10 @@ const draftAgents = [
         skills: [
           { name: 'Collect Transcripts', desc: 'Read session transcripts from all agents. Extract corrections, errors, retries, frustration signals. The universal collection skill — every agent produces transcripts.' },
           { name: 'Collect Health Pulse', desc: 'Frequent, lightweight. Runs every few hours. Keeps a rolling tab of last ~2 days of health data from york-data (Wynn\'s domain). Can\'t be more than a handful of hours behind.' },
+          { name: 'Collect Health Daily', desc: 'Daily compilation. Pulls yesterday\'s consumption, calculates calorie/protein totals, weight entry, workout activity. Structured summary to york-data. Used by morning brief and other agents.' },
           { name: 'Collect Health Deep', desc: 'Weekly, comprehensive. Bigger model. Pulls full week of health data, calculates trends, identifies patterns across domains. Writes detailed analysis to york-data.' },
-          { name: 'Collect Self-Review', desc: 'Collects build results and verification status from Offa. Did what got built actually work? Feeds into the improvement loop.' },
+          { name: 'Collect Consumption Gaps', desc: 'Analyze recent days for missing data — no food logged, missing daily metrics, cannabis sessions unrecorded. Write specific gap questions to york-data for follow-up.' },
+          { name: 'Collect Build Results', desc: 'Collects build results and verification status from Offa. Did what got built actually work? Feeds into the improvement loop.' },
         ],
         tbd: true,
       },
@@ -163,6 +179,7 @@ const draftAgents = [
         name: 'Analyze',
         skills: [
           { name: 'Measure Outcomes', desc: 'Check whether implemented suggestions actually reduced recurrence. Compare before and after. Write measurement results to york-data.' },
+          { name: 'Verify Build', desc: 'Confirm Offa\'s changes were made correctly. Read files back, test where possible, validate that the implementation matches the suggestion\'s intent. Uses Collect Build Results as input.' },
         ],
         tbd: true,
       },
@@ -183,7 +200,7 @@ const draftAgents = [
     borderColor: 'opus',
     model: 'Opus 4.6',
     cron: 'None. Spawned on-demand.',
-    purpose: 'Implements changes. Reads suggestions from york-data, builds what\'s described: new skills, skill adjustments, config changes, scripts. Verifies its own work before reporting completion.',
+    purpose: 'Implements changes. Reads suggestions from york-data, builds what\'s described: new skills, skill adjustments, config changes, scripts. Reports build results to york-data for Bede to verify.',
     workspace: 'Task-specific. Can operate on any agent\'s workspace when building or fixing skills.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Methodical, test-before-ship. Reads existing code before writing. Verification gate.' },
@@ -197,9 +214,15 @@ const draftAgents = [
       'Reads suggestions from york-data',
       'Writes build results and verification status back to york-data',
     ],
-    skills: [
-      { name: 'Build', desc: 'Implement the changes described in a suggestion. New skills, skill edits, config changes, scripts. Receives specific context about what and why.' },
-      { name: 'Verify', desc: 'Confirm the changes were made correctly. Read files back, test where possible, validate that the implementation matches the suggestion\'s intent.' },
+    skillSections: [
+      {
+        name: 'Build',
+        skills: [
+          { name: 'New Skills', desc: 'Create a new skill from scratch. SKILL.md, supporting scripts, reference data. Follows skill structure conventions.' },
+          { name: 'Skill Edits', desc: 'Modify an existing skill. Read current state, apply changes, preserve what works. Handles prompt tuning, logic changes, data format updates.' },
+        ],
+        tbd: true,
+      },
     ],
     spawns: [],
   },
@@ -209,8 +232,8 @@ const draftAgents = [
     name: 'Wynn',
     borderColor: 'sonnet',
     model: 'Sonnet (can spawn Opus sub-agent for complex tasks)',
-    cron: 'Overnight caches (nutrition, consumption gaps). On-demand for logging and coaching.',
-    purpose: 'All health and fitness operations. Nutrition logging, calorie estimation, weight tracking, workout programming, exercise guidance, consumption gap detection, and trend analysis. Combines data operations (logging) with coaching intelligence (programming, suggestions).',
+    cron: 'On-demand for logging and coaching.',
+    purpose: 'All health and fitness data operations. Nutrition logging, calorie estimation, weight tracking, workout logging, exercise guidance. Owns the data entry layer — Bede handles collection and analysis of that data.',
     workspace: 'Dedicated workspace. york-data access for all health domains (consumption, daily metrics, workouts, cannabis).',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Precise on data, encouraging on fitness. Logs exactly what\'s told, estimates clearly labeled. Exercise suggestions are practical and adaptive.' },
@@ -224,16 +247,24 @@ const draftAgents = [
       'Writes all health/fitness data via york-data',
       'Writes nutrition and workout caches to shared memory for morning brief',
     ],
-    skills: [
-      { name: 'Log Consumption', desc: 'Parse food/drink descriptions, estimate calories and protein, write to york-data via log_food(). Handle corrections via update_consumption() and delete_consumption().' },
-      { name: 'Log Daily Metrics', desc: 'Write weight, wake time, bedtime, sleep, energy, kitchen closed to york-data via log_daily(). Upsert pattern — partial updates are fine.' },
-      { name: 'Log Workout', desc: 'Record workout sessions and individual exercises with sets, reps, weight via log_workout() and log_exercises().' },
-      { name: 'Log Cannabis', desc: 'Record cannabis sessions with time via log_cannabis().' },
-      { name: 'Nutrition Summary', desc: 'Compile daily/weekly totals and trends. Pull via get_consumption(), get_daily_range(), get_weight_trend(). Used by morning brief and weekly review.' },
-      { name: 'Consumption Gap Detection', desc: 'Analyze recent days for missing data — no food logged, missing Dashboard fields, cannabis sessions unrecorded. Write gap questions for follow-up.' },
-      { name: 'Workout Programming', desc: 'Suggest exercises based on equipment availability, recent workout history (get_workouts(), get_last_workout()), and progressive overload goals. Adapt to schedule and energy. May spawn Opus sub-agent for complex program design.' },
-      { name: 'Calorie Estimation', desc: 'Reference data for estimating calories and protein from natural language food descriptions. Restaurant lookup when possible.' },
-      { name: 'Nutrition Cache', desc: 'Overnight cron: pre-cache yesterday\'s nutrition data, weight trend, and consumption gaps to shared memory for the morning brief.' },
+    skillSections: [
+      {
+        name: 'Log',
+        skills: [
+          { name: 'Log Consumption', desc: 'Parse food/drink descriptions, estimate calories and protein, write to york-data via log_food(). Handle corrections via update_consumption() and delete_consumption().' },
+          { name: 'Log Daily Metrics', desc: 'Write weight, wake time, bedtime, sleep, energy, kitchen closed to york-data via log_daily(). Upsert pattern — partial updates are fine.' },
+          { name: 'Log Workout', desc: 'Record workout sessions and individual exercises with sets, reps, weight via log_workout() and log_exercises().' },
+          { name: 'Log Cannabis', desc: 'Record cannabis sessions with time via log_cannabis().' },
+        ],
+      },
+      {
+        name: 'Coach',
+        skills: [
+          { name: 'Workout Programming', desc: 'Suggest exercises based on equipment availability, recent workout history, and progressive overload goals. Adapt to schedule and energy. May spawn Opus sub-agent for complex program design.' },
+          { name: 'Calorie Estimation', desc: 'Reference data for estimating calories and protein from natural language food descriptions. Restaurant lookup when possible.' },
+        ],
+        tbd: true,
+      },
     ],
     spawns: [
       'Opus sub-agent (for complex workout programming or deep nutrition analysis)',
