@@ -19,7 +19,7 @@
     <Tools v-if="currentView === 'tools'" />
     <DiscordLayout v-if="currentView === 'comms'" />
     <YorkData v-if="currentView === 'yorkdata'" />
-    <DataFlow v-if="currentView === 'dataflow'" />
+
     <Brainstorm v-if="currentView === 'brainstorm'" />
   </div>
 </template>
@@ -29,7 +29,7 @@ import { ref } from 'vue'
 import SystemDiagram from './views/SystemDiagram.vue'
 import AgentDetail from './views/AgentDetail.vue'
 import DiscordLayout from './views/DiscordLayout.vue'
-import DataFlow from './views/DataFlow.vue'
+
 import Tools from './views/Tools.vue'
 import Brainstorm from './views/Brainstorm.vue'
 import YorkData from './views/YorkData.vue'
@@ -42,7 +42,7 @@ const views = [
   { id: 'tools', label: 'Tools' },
   { id: 'comms', label: 'Communication Channels' },
   { id: 'yorkdata', label: 'york-data' },
-  { id: 'dataflow', label: 'Data Flow' },
+
   { id: 'brainstorm', label: 'Brainstorm' },
 ]
 </script>
