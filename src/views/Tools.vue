@@ -1,0 +1,190 @@
+<template>
+  <div>
+    <div class="card">
+      <h2>🔧 Tools</h2>
+      <p style="color: #8b949e; margin-bottom: 1rem;">
+        Things that need to be built. Services, scripts, and infrastructure that agents depend on.
+        Not agents themselves — these are the tools agents call.
+      </p>
+    </div>
+
+    <div class="card" v-for="tool in tools" :key="tool.name" :class="'border-' + tool.color">
+      <div class="tool-header">
+        <h3>{{ tool.icon }} {{ tool.name }}</h3>
+        <span :class="['tag', tool.statusClass]">{{ tool.status }}</span>
+      </div>
+      <p class="tool-desc">{{ tool.desc }}</p>
+
+      <div class="tool-details" v-if="tool.details?.length">
+        <div class="tool-detail" v-for="d in tool.details" :key="d.label">
+          <span class="detail-label">{{ d.label }}</span>
+          <span class="detail-value">{{ d.value }}</span>
+        </div>
+      </div>
+
+      <div class="tool-used-by" v-if="tool.usedBy">
+        <span class="used-by-label">Used by:</span> {{ tool.usedBy }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+const tools = [
+  {
+    icon: '🗄️',
+    name: 'york-data',
+    color: 'yellow',
+    status: 'To Build',
+    statusClass: 'medium',
+    desc: 'Custom MCP server. The central data layer between agents and storage. Typed functions with validation, schema enforcement, and no raw DB access for LLMs. Replaces direct Google Sheets calls.',
+    details: [
+      { label: 'Type', value: 'MCP Server (Node.js)' },
+      { label: 'Domains', value: 'Consumption, Daily Metrics, Workouts, Cannabis, Chores & Home, Observations' },
+      { label: 'DB Engine', value: 'TBD — likely Node built-in SQLite (node:sqlite)' },
+      { label: 'Access', value: 'All agents via mcporter call york-data.<function>(...)' },
+    ],
+    usedBy: 'Every agent. This is the backbone.',
+  },
+  {
+    icon: '📷',
+    name: 'camera-snapshot',
+    color: 'green',
+    status: 'Exists',
+    statusClass: 'small',
+    desc: 'Simple ffmpeg script. Grabs a single frame from an RTSP camera feed and writes it to /tmp/. That\'s it. No analysis, no state, no LLM.',
+    details: [
+      { label: 'Type', value: 'Bash script' },
+      { label: 'How', value: 'ffmpeg -i rtsp://camera/stream -frames:v 1 /tmp/snapshot.jpg' },
+      { label: 'Cameras', value: 'Kitchen (Tapo C103). More planned.' },
+    ],
+    usedBy: 'Hild (on-demand snapshots for chore/gate context), camera-monitor (as a building block).',
+  },
+  {
+    icon: '📹',
+    name: 'camera-monitor',
+    color: 'purple',
+    status: 'To Build',
+    statusClass: 'xl',
+    desc: 'Non-LLM camera processing pipeline. Frame-diff motion detection, state change tracking, structured output to york-data. The LLM only gets involved when an agent needs to interpret what\'s in an image — the monitoring itself is script-tier.',
+    details: [
+      { label: 'Type', value: 'Script / daemon (no LLM)' },
+      { label: 'Detection', value: 'Frame-diff for motion, periodic snapshots for state' },
+      { label: 'Output', value: 'Structured events to york-data: "kitchen_state_changed", "motion_detected"' },
+      { label: 'Open questions', value: 'How often to sample? What triggers an event vs noise? How to handle night/IR mode?' },
+    ],
+    usedBy: 'Bede (pattern analysis over time), Hild (chore state awareness), York (gate context).',
+  },
+  {
+    icon: '🌤️',
+    name: 'weather-cache',
+    color: 'green',
+    status: 'Exists',
+    statusClass: 'script',
+    desc: 'Curl wttr.in or Open-Meteo, write result to a memory file. Runs on cron before morning brief.',
+    details: [
+      { label: 'Type', value: 'Bash script / cron job' },
+    ],
+    usedBy: 'Brief (morning brief weather section).',
+  },
+  {
+    icon: '📅',
+    name: 'calendar-cache',
+    color: 'green',
+    status: 'Exists',
+    statusClass: 'script',
+    desc: 'mcporter call to Google Calendar, write events to a memory file. Runs on cron before morning brief.',
+    details: [
+      { label: 'Type', value: 'mcporter call / cron job' },
+    ],
+    usedBy: 'Brief (morning brief calendar section), York (schedule awareness).',
+  },
+  {
+    icon: '🖼️',
+    name: 'avatar-set',
+    color: 'green',
+    status: 'Exists',
+    statusClass: 'script',
+    desc: 'Discord API call to update bot avatar. Simple curl script.',
+    details: [
+      { label: 'Type', value: 'Bash script' },
+    ],
+    usedBy: 'York (identity management).',
+  },
+  {
+    icon: '🖥️',
+    name: 'panel-update',
+    color: 'green',
+    status: 'Exists',
+    statusClass: 'script',
+    desc: 'Write status.json for the XFCE genmon panel widget. York\'s face on the desktop.',
+    details: [
+      { label: 'Type', value: 'Bash script' },
+    ],
+    usedBy: 'York (panel presence).',
+  },
+]
+</script>
+
+<style scoped>
+.tool-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tool-header h3 {
+  margin-bottom: 0;
+}
+
+.tool-desc {
+  color: #c9d1d9;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.tool-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.tool-detail {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.4rem 0.65rem;
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.detail-label {
+  color: #8b949e;
+  min-width: 100px;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #c9d1d9;
+}
+
+.tool-used-by {
+  font-size: 0.8rem;
+  color: #8b949e;
+  font-style: italic;
+}
+
+.used-by-label {
+  font-weight: 600;
+}
+
+.border-green { border-color: #3fb950; }
+.border-yellow { border-color: #d29922; }
+.border-purple { border-color: #bc8cff; }
+</style>
