@@ -3,7 +3,7 @@
     <div class="card">
       <h2>System Overview</h2>
       <p style="color: #8b949e; margin-bottom: 1rem;">
-        One OpenClaw instance on RPi. York orchestrates everything. Specialized agents handle domains.
+        One OpenClaw instance on yorks-vm. York orchestrates everything. Specialized agents handle domains.
         Scripts replace LLMs where possible. Cron for scheduled work, heartbeat for contextual awareness.
         Model selection is by task complexity, not brand loyalty.
       </p>
@@ -23,6 +23,11 @@
             <div class="node-icon">💬</div>
             <div class="node-title">Discord</div>
             <div class="node-detail">Primary interface</div>
+          </div>
+          <div class="node sms-node">
+            <div class="node-icon">📱</div>
+            <div class="node-title">SMS (Twilio)</div>
+            <div class="node-detail">Nudges & alerts</div>
           </div>
         </div>
       </div>
@@ -50,12 +55,12 @@
             <div class="node-icon">🦝</div>
             <div class="node-title">York</div>
             <div class="node-detail">
-              <span class="tag large">Large</span>
+              <span class="tag large">Opus 4.6</span>
               <span class="tag heartbeat">Heartbeat 30m</span>
             </div>
             <div class="node-desc">
               Conversation, judgment calls, routing, cannabis gate, accountability.
-              Minimal own workspace — delegates everything else.
+              Reads york-data + Google Tasks directly for gate decisions. Spawns specialists.
             </div>
           </div>
         </div>
@@ -83,7 +88,7 @@
         </div>
       </div>
 
-      <div class="connector-down">▼ read/write</div>
+      <div class="connector-down">▼ read/write · 🦉 Bede reads transcripts from ALL agents + collects from york-data</div>
 
       <!-- Scripts Layer -->
       <div class="layer">
@@ -153,113 +158,90 @@
 <script setup>
 const channels = [
   { name: 'general', routes: '→ York (orchestrator)' },
-  { name: 'dnd', routes: '→ DnD agent direct' },
-  { name: 'reviews', routes: '→ York (proposals)' },
-  { name: 'health', routes: '→ York (private data)' },
+  { name: 'reviews', routes: '→ York (proposals from Bede/Offa)' },
 ]
 
 const agents = [
   {
-    id: 'health',
-    name: '🍎 Health & Nutrition',
-    tierClass: 'small',
-    tierLabel: 'Small',
-    schedule: 'cron',
-    scheduleLabel: 'Cron',
-    desc: 'Food logging, calorie tracking, dashboard updates, weight trends',
-    border: 'border-blue',
-  },
-  {
-    id: 'chores',
-    name: '🏠 Chores & Home',
-    tierClass: 'small',
-    tierLabel: 'Small',
-    schedule: null,
-    scheduleLabel: null,
-    desc: 'Chore state, camera analysis, gate data prep. Spawned by York for gate checks.',
-    border: 'border-blue',
-  },
-  {
-    id: 'dnd',
-    name: '🎲 D&D Campaign',
+    id: 'bede',
+    name: '🦉 Bede',
     tierClass: 'large',
-    tierLabel: 'Large',
+    tierLabel: 'Opus 4.6',
     schedule: 'cron',
-    scheduleLabel: 'Cron + Direct Channel',
-    desc: 'Wiki lookups, lore, worldbuilding. Large context needed for interconnected wiki. Direct channel routing for interactive sessions.',
-    border: 'border-red',
-  },
-  {
-    id: 'morning',
-    name: '☀️ Morning Brief',
-    tierClass: 'medium',
-    tierLabel: 'Medium',
-    schedule: 'cron',
-    scheduleLabel: 'Cron 8AM',
-    desc: 'Read cached data files, format brief, post to #general. No live data fetching.',
+    scheduleLabel: 'Cron (varied)',
+    desc: 'Analyst. Collects data from all agents, analyzes patterns, suggests improvements, measures outcomes.',
     border: 'border-yellow',
   },
   {
-    id: 'research',
-    name: '🔍 Research',
-    tierClass: 'medium',
-    tierLabel: 'Varies',
+    id: 'offa',
+    name: '🦫 Offa',
+    tierClass: 'large',
+    tierLabel: 'Opus 4.6',
     schedule: null,
     scheduleLabel: null,
-    desc: 'Web search, browsing, synthesis. Model scales with task complexity at spawn time.',
+    desc: 'Builder. Reads suggestions from york-data, implements new skills and skill edits.',
     border: 'border-yellow',
   },
   {
-    id: 'builder',
-    name: '🔨 Builder',
-    tierClass: 'xl',
-    tierLabel: 'XL',
+    id: 'wynn',
+    name: '🦌 Wynn',
+    tierClass: 'sonnet',
+    tierLabel: 'Sonnet',
     schedule: null,
     scheduleLabel: null,
-    desc: 'Feature implementation, skill creation, debugging. The hard stuff. Spawned on-demand.',
-    border: 'border-purple',
+    desc: 'Health & fitness. Logging (consumption, weight, workouts, cannabis) and coaching.',
+    border: 'border-blue',
   },
   {
-    id: 'analyst',
-    name: '🔬 Improvement Analyst',
+    id: 'hild',
+    name: '🦡 Hild',
+    tierClass: 'sonnet',
+    tierLabel: 'Sonnet',
+    schedule: null,
+    scheduleLabel: null,
+    desc: 'Home management. Chore tracking via Google Tasks, smart scheduling.',
+    border: 'border-blue',
+  },
+  {
+    id: 'caedmon',
+    name: '🐉 Caedmon',
     tierClass: 'large',
-    tierLabel: 'Large',
+    tierLabel: 'Opus 4.6',
     schedule: 'cron',
     scheduleLabel: 'Cron overnight',
-    desc: 'Reads friction journal, finds patterns across domains, diagnoses failures, spawns experiments.',
-    border: 'border-red',
+    desc: 'D&D campaign. Wiki, lore, session prep/recap, art generation, overnight research.',
+    border: 'border-yellow',
   },
   {
-    id: 'weekly',
-    name: '📊 Weekly Review',
-    tierClass: 'large',
-    tierLabel: 'Large',
+    id: 'dagr',
+    name: '🐓 Dagr',
+    tierClass: 'sonnet',
+    tierLabel: 'Sonnet',
     schedule: 'cron',
-    scheduleLabel: 'Cron Sun 8PM',
-    desc: 'Pull full week data, calculate trends, form opinions. Needs analytical depth.',
-    border: 'border-red',
+    scheduleLabel: 'Cron 8AM',
+    desc: 'Morning brief. Compile cached data, editorialize, post.',
+    border: 'border-blue',
   },
 ]
 
 const scripts = [
   { name: 'weather-cache', desc: 'curl wttr.in → memory file' },
   { name: 'calendar-cache', desc: 'mcporter → memory file' },
-  { name: 'weight-log', desc: 'york-data.log_weight() → local DB' },
-  { name: 'workout-log', desc: 'york-data.log_workout() → local DB' },
-  { name: 'task-check', desc: 'Query pending tasks from york-data' },
   { name: 'camera-snapshot', desc: 'ffmpeg RTSP → /tmp/ images' },
-  { name: 'avatar-set', desc: 'Discord API avatar upload' },
+  { name: 'camera-monitor', desc: 'Frame-diff motion detection, state events → york-data' },
   { name: 'panel-update', desc: 'Write status.json for genmon' },
+  { name: 'avatar-set', desc: 'Discord API avatar upload' },
 ]
 
 const dataStores = [
-  { icon: '🗄️', name: 'Local DB', status: 'New — replaces Sheets for owned data. DB engine TBD.' },
-  { icon: '📅', name: 'Google Calendar', status: 'Stays — external service, read-only via MCP' },
-  { icon: '📊', name: 'Google Sheets', status: 'Demoted — ad-hoc tool only. Data migrates to local DB.' },
-  { icon: '📁', name: 'Memory Files', status: 'Stays — daily context, agent communication' },
-  { icon: '📖', name: 'D&D Wiki', status: 'Stays — markdown files' },
-  { icon: '📷', name: 'Cameras (RTSP)', status: 'Stays — snapshots via ffmpeg' },
-  { icon: '🖥️', name: 'Panel (Genmon)', status: 'Stays — status.json on disk' },
+  { icon: '🗄️', name: 'Local DB (york-data)', status: 'New — MCP server, typed functions, replaces Sheets' },
+  { icon: '📅', name: 'Google Calendar', status: 'Read + write via MCP' },
+  { icon: '✅', name: 'Google Tasks', status: 'New — chore tracking for Hild' },
+  { icon: '📁', name: 'Memory Files', status: 'Daily context, agent communication, Bede reflections' },
+  { icon: '📖', name: 'D&D Wiki', status: 'Git repo — markdown files, PRs' },
+  { icon: '📷', name: 'Cameras (RTSP)', status: 'Tapo C103 + planned expansions' },
+  { icon: '🖥️', name: 'Panel (Genmon)', status: 'status.json on disk' },
+  { icon: '📱', name: 'Twilio SMS', status: 'Planned — nudges and alerts' },
 ]
 </script>
 
@@ -341,6 +323,12 @@ const dataStores = [
 .discord-node {
   border-color: #5865f2;
   min-width: 200px;
+}
+
+.sms-node {
+  border-color: #f22f46;
+  min-width: 160px;
+  border-style: dashed;
 }
 
 .channel-node {
