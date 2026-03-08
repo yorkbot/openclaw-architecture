@@ -89,15 +89,7 @@ const agentIdeas = [
     desc: 'Budget tracking, YNAB integration, spending pattern analysis, monthly reviews. James already has the YNAB MCP built.',
     why: 'Natural fit with weekly review: weight + spending + consumption in one analysis. Cross-domain pattern recognition is the killer feature.',
   },
-  {
-    icon: '🐙',
-    name: 'Indexer',
-    priority: 'likely',
-    priorityClass: 'small',
-    priorityLabel: 'Likely',
-    desc: 'Pre-processes session transcripts into structured summaries. Spawned by Analyst to reduce transcript volume before pattern analysis.',
-    why: 'Small tier. Makes the Analyst more efficient — read summaries instead of full transcripts. Could also index by domain, error type, correction type.',
-  },
+
   {
     icon: '🐕',
     name: 'Car',
@@ -174,11 +166,7 @@ const skillIdeas = [
     name: 'Proactive calendar awareness',
     desc: '"You have a meeting in 45 minutes, might want to wrap up that D&D conversation." Calendar-driven nudges via heartbeat.',
   },
-  {
-    agent: '🦉 Analyst',
-    name: 'A/B testing',
-    desc: 'Try two different approaches to the same problem and measure which produces fewer corrections over time.',
-  },
+
   {
     agent: '🐝 Health',
     name: 'Meal pattern learning',
@@ -261,7 +249,7 @@ const roster = [
   { icon: '🦊', name: 'Research', role: 'Web search, comparison, synthesis', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
   { icon: '🦫', name: 'Builder', role: 'Implementation, debugging, skill creation', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
   { icon: '🦅', name: 'Review', role: 'Weekly accountability, trend analysis', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
-  { icon: '🐙', name: 'Indexer', role: 'Transcript pre-processing for Analyst', tagClass: 'idea-tag', tagLabel: 'Idea', status: 'idea' },
+
   { icon: '🦎', name: 'Finance', role: 'Budget, YNAB, spending patterns', tagClass: 'idea-tag', tagLabel: 'Idea', status: 'idea' },
   { icon: '🐺', name: 'Coach', role: 'Workout programming, exercise guidance', tagClass: 'idea-tag', tagLabel: 'Idea', status: 'idea' },
   { icon: '🐢', name: 'Maintain', role: 'Home maintenance calendar, seasonal tasks', tagClass: 'idea-tag', tagLabel: 'Idea', status: 'idea' },
@@ -273,7 +261,7 @@ const thinks = [
   'Is Brief really its own agent or just a cron skill that York runs? It doesn\'t have persistent state or interactive sessions.',
   'Review and Analyst both do pattern analysis. Should Review be a skill of Analyst, or do they have different enough concerns?',
   'Finance ties into Health (spending on food), Home (project costs), and Social (gift budgets). How much cross-domain access does it need?',
-  'If Indexer pre-processes transcripts, should it also index memory files? Or is that overcomplicating it?',
+
   'Should agents be able to flag things for the Analyst directly? "Hey, something weird happened in this session." Or is transcript-only observation cleaner?',
   'How much personality should non-York agents have? Should Lore sound different from Health? Or should York\'s voice be the only personality?',
   'Maintain (home maintenance) on a 1920s house could get complex. Plumbing, electrical, seasonal. Does it need Large tier for reasoning about old-house quirks?',
