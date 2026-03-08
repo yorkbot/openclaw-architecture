@@ -106,6 +106,21 @@ const tools = [
     usedBy: 'York (cannabis gate camera checks), potentially Bede (pattern analysis over time).',
   },
   {
+    icon: '🎨',
+    name: 'image-gen',
+    color: 'green',
+    status: 'Exists',
+    statusClass: 'small',
+    desc: 'Image generation via Gemini Nano Banana Pro. Takes a text prompt, returns a generated image. Currently used for D&D character art and fantasy scenes. The calling agent crafts the prompt — the tool just generates.',
+    details: [
+      { label: 'Type', value: 'Tool (LLM API call)' },
+      { label: 'Model', value: 'Gemini Nano Banana Pro (gemini-2.0-flash-exp)' },
+      { label: 'Input', value: 'Text prompt describing the image' },
+      { label: 'Output', value: 'Generated image file' },
+    ],
+    usedBy: 'Caedmon (D&D art — characters, locations, items, scenes). Potentially other agents for visual content.',
+  },
+  {
     icon: '🌤️',
     name: 'weather-cache',
     color: 'green',
