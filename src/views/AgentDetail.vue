@@ -66,7 +66,7 @@
         <h2>{{ agent.icon }} {{ agent.name }}</h2>
         <div>
           <span :class="['tag', agent.tierClass]">{{ agent.tierLabel }}</span>
-          <span class="tag suggested">Suggested</span>
+          <span :class="['tag', agent.draft ? 'draft' : 'suggested']">{{ agent.draft ? 'Draft' : 'Suggested' }}</span>
         </div>
       </div>
       <p class="agent-purpose">{{ agent.purpose }}</p>
@@ -158,6 +158,37 @@ const analyst = {
 }
 
 const agents = [
+  {
+    id: 'builder',
+    icon: '🦫',
+    name: 'Offa',
+    tier: 'purple',
+    tierClass: 'xl',
+    tierLabel: 'XL',
+    model: 'Opus 4.6',
+    heartbeat: 'None. Spawned on-demand.',
+    purpose: 'Implements fixes and builds features. Spawned when an observation from Bede or a request from James requires code changes, skill creation, or multi-file edits. Offa builds. It does not decide what to build.',
+    workspace: 'Gets a task-specific workspace. Can operate on any agent\'s workspace when building/fixing skills.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Methodical, test-before-ship. Reads existing code before writing. Verification gate.' },
+      { file: 'AGENTS.md', desc: 'Build conventions, skill structure, testing requirements, PR workflow.' },
+      { file: 'TOOLS.md', desc: 'Full exec access, git, gh CLI, mcporter for testing. Broadest tool surface.' },
+      { file: 'IDENTITY.md', desc: 'Offa 🦫 — Named for King Offa of Mercia, builder of the 150-mile Offa\'s Dyke.' },
+      { file: 'MEMORY.md', desc: 'Build patterns, common gotchas, architecture decisions from past builds.' },
+      { file: 'memory/', desc: 'Build logs per task. Read by Bede for quality tracking.' },
+    ],
+    channels: [
+      'No own channel — returns results to whoever spawned it',
+    ],
+    skills: [
+      'Implementation — multi-file feature building, skill creation',
+      'Debugging — log analysis, root cause identification',
+      'Skill editing — targeted fixes to any agent\'s skill files',
+    ],
+    spawns: [],
+    notes: 'Offa builds what it\'s told to build. It receives specific instructions and context, executes, and reports back. Quality matters more than speed — the right model here saves money by getting it right the first time.',
+    draft: true,
+  },
   {
     id: 'york',
     icon: '🦝',
@@ -346,36 +377,7 @@ const agents = [
     spawns: [],
     notes: 'The most variable agent. Model selected per-spawn, not fixed.',
   },
-  {
-    id: 'builder',
-    icon: '🦫',
-    name: 'Croft',
-    tier: 'purple',
-    tierClass: 'xl',
-    tierLabel: 'XL',
-    model: 'Opus 4.6',
-    heartbeat: 'None. Spawned on-demand by York.',
-    purpose: 'Implements fixes and builds features. Spawned by York when an observation from Bede (or a request from James) requires code changes, skill creation, or multi-file edits. Croft builds. It does not decide what to build.',
-    workspace: 'Gets a task-specific workspace. Can operate on any agent\'s workspace when building/fixing skills.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Methodical, test-before-ship. Reads existing code before writing. Verification gate.' },
-      { file: 'AGENTS.md', desc: 'Build conventions, skill structure, testing requirements, PR workflow.' },
-      { file: 'TOOLS.md', desc: 'Full exec access, git, gh CLI, mcporter for testing. Broadest tool surface.' },
-      { file: 'IDENTITY.md', desc: 'Croft 🦫 — Old English for an enclosed workspace. Where things get built.' },
-      { file: 'MEMORY.md', desc: 'Build patterns, common gotchas, architecture decisions from past builds.' },
-      { file: 'memory/', desc: 'Build logs per task. Read by Bede for quality tracking.' },
-    ],
-    channels: [
-      'No own channel — returns results to York',
-    ],
-    skills: [
-      'Implementation — multi-file feature building, skill creation',
-      'Debugging — log analysis, root cause identification',
-      'Skill editing — targeted fixes to any agent\'s skill files based on Bede\'s observations',
-    ],
-    spawns: [],
-    notes: 'The Bede→York→Croft loop: Bede observes a pattern, writes to york-data. York reads it, decides it\'s worth fixing, spawns Croft with specific instructions. Croft builds, York verifies. Bede later checks if the fix reduced recurrence.',
-  },
+
   {
     id: 'weekly',
     icon: '🦅',
