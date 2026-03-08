@@ -52,21 +52,7 @@
       </div>
     </div>
 
-    <!-- Animal Emoji Reference -->
-    <div class="card">
-      <h3>Agent Roster (Current + Ideas)</h3>
-      <p style="color: #8b949e; margin-bottom: 1rem; font-size: 0.85rem;">
-        Every agent gets a one-word name and an animal emoji. Names are descriptive to save tokens.
-      </p>
-      <div class="roster">
-        <div class="roster-item" v-for="r in roster" :key="r.name" :class="r.status">
-          <span class="roster-emoji">{{ r.icon }}</span>
-          <span class="roster-name">{{ r.name }}</span>
-          <span class="roster-role">{{ r.role }}</span>
-          <span :class="['tag', r.tagClass]">{{ r.tagLabel }}</span>
-        </div>
-      </div>
-    </div>
+
 
     <!-- Open Questions -->
     <div class="card">
@@ -117,15 +103,7 @@ const agentIdeas = [
     desc: 'Web scraping, price monitoring, deal alerts. Watch for sales on specific items, track prices over time.',
     why: 'Could save money on recurring purchases. "Those dumbbells you wanted are 30% off." Script-tier for the actual scraping, Small for analysis.',
   },
-  {
-    icon: '🐺',
-    name: 'Coach',
-    priority: 'likely',
-    priorityClass: 'medium',
-    priorityLabel: 'Likely',
-    desc: 'Workout programming, exercise suggestions, form tips. Goes beyond logging into actual guidance. Adapts to equipment availability and schedule.',
-    why: 'Currently York suggests exercises inline. A dedicated agent could maintain a proper program, track progressive overload, and know the exercise library deeply.',
-  },
+
   {
     icon: '🦜',
     name: 'Social',
@@ -156,11 +134,7 @@ const agentIdeas = [
 ]
 
 const skillIdeas = [
-  {
-    agent: '🦝 York',
-    name: 'Mood detection',
-    desc: 'Read tone in James\'s messages and adjust response style. Not sentiment analysis — more like "is this a quick question or does he want to talk."',
-  },
+
   {
     agent: '🦝 York',
     name: 'Proactive calendar awareness',
@@ -239,34 +213,16 @@ const integrations = [
   },
 ]
 
-const roster = [
-  { icon: '🦉', name: 'Analyst', role: 'Self-improvement, pattern recognition, experiment design', tagClass: 'draft-tag', tagLabel: 'Draft', status: 'active' },
-  { icon: '🦝', name: 'York', role: 'Orchestrator, conversation, judgment, cannabis gate', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
-  { icon: '🐝', name: 'Health', role: 'Nutrition logging, weight tracking, calorie analysis', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
-  { icon: '🐜', name: 'Chores', role: 'Home tasks, camera analysis, gate data prep', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
-  { icon: '🐉', name: 'Lore', role: 'D&D wiki, worldbuilding, session prep', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
-  { icon: '🐓', name: 'Brief', role: 'Morning brief compilation and editorial', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
-  { icon: '🦊', name: 'Research', role: 'Web search, comparison, synthesis', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
-  { icon: '🦫', name: 'Builder', role: 'Implementation, debugging, skill creation', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
-  { icon: '🦅', name: 'Review', role: 'Weekly accountability, trend analysis', tagClass: 'suggested-tag', tagLabel: 'Suggested', status: 'active' },
-
-  { icon: '🦎', name: 'Finance', role: 'Budget, YNAB, spending patterns', tagClass: 'idea-tag', tagLabel: 'Idea', status: 'idea' },
-  { icon: '🐺', name: 'Coach', role: 'Workout programming, exercise guidance', tagClass: 'idea-tag', tagLabel: 'Idea', status: 'idea' },
-  { icon: '🐢', name: 'Maintain', role: 'Home maintenance calendar, seasonal tasks', tagClass: 'idea-tag', tagLabel: 'Idea', status: 'idea' },
-  { icon: '🐋', name: 'Archive', role: 'Long-term memory compression and management', tagClass: 'idea-tag', tagLabel: 'Idea', status: 'idea' },
-]
-
 const thinks = [
-  'Should Coach and Health be the same agent? They share data but have different complexity needs (logging is Small, programming is Medium+).',
   'Is Brief really its own agent or just a cron skill that York runs? It doesn\'t have persistent state or interactive sessions.',
-  'Review and Analyst both do pattern analysis. Should Review be a skill of Analyst, or do they have different enough concerns?',
+  'Review and Bede both do pattern analysis. Should Review be a skill of Bede, or do they have different enough concerns?',
   'Finance ties into Health (spending on food), Home (project costs), and Social (gift budgets). How much cross-domain access does it need?',
-
-  'Should agents be able to flag things for the Analyst directly? "Hey, something weird happened in this session." Or is transcript-only observation cleaner?',
-  'How much personality should non-York agents have? Should Lore sound different from Health? Or should York\'s voice be the only personality?',
-  'Maintain (home maintenance) on a 1920s house could get complex. Plumbing, electrical, seasonal. Does it need Large tier for reasoning about old-house quirks?',
-  'Should there be a dedicated Avatar/Identity agent? Daily avatar generation, banner changes, panel voice — currently spread across York + crons.',
+  'Should agents be able to flag things for Bede directly? "Hey, something weird happened in this session." Or is transcript-only observation cleaner?',
+  'Maintain (home maintenance) on a 1920s house could get complex. Plumbing, electrical, seasonal.',
+  'Should there be a dedicated Avatar/Identity agent? Daily avatar generation, banner changes, panel voice.',
   'What happens when two agents disagree? E.g., Health says "you need protein" but Chores says "the kitchen is a mess." York resolves, but how formally?',
+  'How many conversational agents? One per channel, one per domain, or one that handles everything?',
+  'Conversational agent personality: each has its own voice, or they all share a unified voice?',
 ]
 </script>
 
@@ -316,33 +272,6 @@ const thinks = [
   padding-left: 0.75rem;
 }
 
-.roster {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.roster-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  background: #0d1117;
-  border-radius: 4px;
-  font-size: 0.85rem;
-}
-
-.roster-item.idea {
-  opacity: 0.7;
-}
-
-.roster-emoji { font-size: 1.2rem; flex-shrink: 0; }
-.roster-name { color: #f0f6fc; font-weight: 600; min-width: 80px; }
-.roster-role { color: #8b949e; flex: 1; }
-
-.tag.draft-tag { background: #1f6feb; color: white; }
-.tag.suggested-tag { background: #30363d; color: #8b949e; }
-.tag.idea-tag { background: #21262d; color: #484f58; }
 
 .think-list {
   display: flex;

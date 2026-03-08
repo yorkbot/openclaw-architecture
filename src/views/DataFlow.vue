@@ -1,347 +1,251 @@
 <template>
   <div>
     <div class="card">
-      <h2>Data Flow & Scheduling</h2>
+      <h2>Architecture: York as Silent Brain</h2>
       <p style="color: #8b949e; margin-bottom: 1rem;">
-        How data moves between agents, scripts, and storage. Cron jobs produce cached files that other agents consume.
-        This eliminates redundant API calls and keeps agent context small.
+        York is the orchestrator. It does not talk to James directly. Specialized conversational agents
+        handle all interaction. York makes decisions, maintains state, and routes work.
       </p>
-      <p style="color: #c9d1d9; margin-bottom: 0; line-height: 1.6; font-size: 0.9rem; border-left: 3px solid #d29922; padding-left: 1rem;">
-        <strong style="color: #d29922;">Service layer principle:</strong> All structured data (consumption, weight, workouts, chores)
-        flows through typed service functions. Agents call <code style="color: #d29922;">log_food()</code>, not raw DB queries.
-        External services that stay (Google Calendar) keep their existing MCP tools.
-        The DB engine behind the service layer is an open question — any will work.
+    </div>
+
+    <div class="card border-gold">
+      <h3>The Model</h3>
+      <div class="arch-diagram">
+        <div class="arch-layer">
+          <div class="arch-label">James</div>
+          <div class="arch-desc">Discord messages in #general, #dnd, etc.</div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer highlight">
+          <div class="arch-label">Conversational Agents</div>
+          <div class="arch-desc">
+            One or more agents with personality, voice, and tone.
+            Handle all user-facing interaction. Read daily state from york-data on activation.
+            Escalate decisions to York when needed.
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer brain">
+          <div class="arch-label">🦝 York (Silent Brain)</div>
+          <div class="arch-desc">
+            Orchestrator. Runs on heartbeat. Reads york-data, evaluates state, makes routing decisions,
+            spawns specialists. Writes daily state snapshot every heartbeat. Never posts to Discord.
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer">
+          <div class="arch-label">york-data</div>
+          <div class="arch-desc">
+            Central data layer. Daily state, observations, suggestions, consumption, metrics, chores.
+            Every agent reads from here. Structured, typed, reliable.
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer">
+          <div class="arch-label">Specialist Agents</div>
+          <div class="arch-desc">
+            Bede (analysis), Offa (building), Health, Chores, Lore, etc.
+            Spawned on-demand or via cron. Read and write york-data. No direct user interaction.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>How Conversational Agents Get Context</h3>
+      <p style="color: #c9d1d9; line-height: 1.6; margin-bottom: 1rem; font-size: 0.9rem;">
+        Conversational agents don't ask York for context. They pull it themselves from york-data on every activation.
+      </p>
+      <div class="context-items">
+        <div class="ctx-item" v-for="ctx in contextSources" :key="ctx.source">
+          <div class="ctx-source"><code>{{ ctx.source }}</code></div>
+          <div class="ctx-what">{{ ctx.what }}</div>
+          <div class="ctx-who">Written by: {{ ctx.writtenBy }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>When Does a Conversational Agent Escalate to York?</h3>
+      <div class="escalation-list">
+        <div class="esc-item" v-for="e in escalations" :key="e.trigger">
+          <div class="esc-trigger">{{ e.trigger }}</div>
+          <div class="esc-why">{{ e.why }}</div>
+        </div>
+      </div>
+      <p style="color: #8b949e; font-size: 0.85rem; margin-top: 1rem;">
+        Everything else — responding to questions, chatting, delivering information — the conversational agent handles directly using york-data context. No round-trip needed.
       </p>
     </div>
 
     <div class="card">
-      <h3>Daily Timeline</h3>
-      <div class="timeline">
-        <div class="time-block" v-for="block in timeline" :key="block.time">
-          <div class="time-label">{{ block.time }}</div>
-          <div class="time-events">
-            <div
-              class="time-event"
-              v-for="event in block.events"
-              :key="event.name"
-            >
-              <span :class="['tag', event.tagClass]">{{ event.tag }}</span>
-              <span class="event-name">{{ event.name }}</span>
-              <span class="event-flow" v-if="event.flow">{{ event.flow }}</span>
+      <h3>The Self-Improvement Loop</h3>
+      <div class="loop-diagram">
+        <div class="loop-step" v-for="(step, i) in loopSteps" :key="i">
+          <div class="loop-num">{{ i + 1 }}</div>
+          <div class="loop-content">
+            <div class="loop-agent">
+              <span class="loop-icon">{{ step.icon }}</span>
+              <span class="loop-name">{{ step.agent }}</span>
             </div>
+            <div class="loop-skill">{{ step.skill }}</div>
+            <div class="loop-action">{{ step.action }}</div>
           </div>
         </div>
+        <div class="loop-return">↩ Back to Collect — Measure results feed the next cycle</div>
       </div>
     </div>
 
     <div class="card">
-      <h3>File-Based Agent Communication</h3>
-      <p style="color: #8b949e; margin-bottom: 1rem;">
-        Agents communicate through files, not direct calls. This is the key architectural pattern.
-      </p>
-      <div class="flow-diagram">
-        <div class="flow-row" v-for="flow in flows" :key="flow.label">
-          <div class="flow-producer">
-            <span :class="['tag', flow.producerClass]">{{ flow.producer }}</span>
-          </div>
-          <div class="flow-arrow">
-            <span class="flow-file">{{ flow.file }}</span>
-            →
-          </div>
-          <div class="flow-consumer">
-            <span :class="['tag', flow.consumerClass]">{{ flow.consumer }}</span>
-          </div>
-          <div class="flow-desc">{{ flow.desc }}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Cannabis Gate Data Flow</h3>
-      <p style="color: #8b949e; margin-bottom: 1rem;">
-        The gate is the most complex multi-agent interaction. Here's how data flows when James asks to smoke.
-      </p>
-      <div class="gate-flow">
-        <div class="gate-step" v-for="(step, i) in gateSteps" :key="i">
-          <div class="gate-num">{{ i + 1 }}</div>
-          <div class="gate-content">
-            <div class="gate-actor">
-              <span :class="['tag', step.actorClass]">{{ step.actor }}</span>
-            </div>
-            <div class="gate-action">{{ step.action }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Cron vs Heartbeat vs On-Demand</h3>
-      <div class="comparison">
-        <div class="comp-col">
-          <h4>⏰ Cron</h4>
-          <p>Exact timing, isolated session, no memory of prior runs. Best for: scheduled data collection, cache refresh, reports.</p>
-          <ul>
-            <li>Weather/calendar cache scripts</li>
-            <li>Nutrition cache (4:15 AM)</li>
-            <li>Morning brief (8:00 AM)</li>
-            <li>Overnight work (1-6 AM)</li>
-            <li>Weekly review (Sun 8 PM)</li>
-            <li>Daily avatar (7:45 AM)</li>
-            <li>DnD research (3:45 AM)</li>
-          </ul>
-        </div>
-        <div class="comp-col">
-          <h4>💓 Heartbeat</h4>
-          <p>Session continuity, remembers earlier context. Best for: contextual awareness, nudges, judgment calls.</p>
-          <ul>
-            <li>York — every 30m, 8AM-12:30AM</li>
-            <li>Evaluates: should I nudge?</li>
-            <li>Updates panel presence</li>
-            <li>Most beats are silent</li>
-          </ul>
-        </div>
-        <div class="comp-col">
-          <h4>🎯 On-Demand</h4>
-          <p>Spawned by orchestrator when needed. Best for: user requests, reactive tasks.</p>
-          <ul>
-            <li>Food/weight logging</li>
-            <li>Cannabis gate checks</li>
-            <li>Research tasks</li>
-            <li>Builder (implementation)</li>
-            <li>Work prep</li>
-          </ul>
-        </div>
+      <h3>Open Questions</h3>
+      <div class="question-list">
+        <div class="question" v-for="q in questions" :key="q">❓ {{ q }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-const timeline = [
-  {
-    time: '1:00-6:00 AM',
-    events: [
-      { name: 'Overnight Worker', tag: 'Cron', tagClass: 'cron', flow: 'Picks task → executes or spawns Builder' },
-    ],
-  },
-  {
-    time: '3:45 AM',
-    events: [
-      { name: 'DnD Wiki Research', tag: 'Cron', tagClass: 'cron', flow: 'Explores wiki → writes questions to memory' },
-    ],
-  },
-  {
-    time: '4:15 AM',
-    events: [
-      { name: 'Nutrition Cache', tag: 'Cron', tagClass: 'cron', flow: 'Spreadsheet → memory/YYYY-MM-DD.md' },
-    ],
-  },
-  {
-    time: '5:15 AM',
-    events: [
-      { name: 'Consumption Gap Cache', tag: 'Cron', tagClass: 'cron', flow: 'Analyzes gaps → writes questions to memory' },
-    ],
-  },
-  {
-    time: '6:30 AM',
-    events: [
-      { name: 'Calendar Cache', tag: 'Script', tagClass: 'script', flow: 'Google Calendar → memory file' },
-    ],
-  },
-  {
-    time: '7:30 AM',
-    events: [
-      { name: 'Weather Cache', tag: 'Script', tagClass: 'script', flow: 'wttr.in → memory file' },
-      { name: 'Compile Overnight', tag: 'Cron', tagClass: 'cron', flow: 'Sessions → overnight-results.md' },
-    ],
-  },
-  {
-    time: '7:45 AM',
-    events: [
-      { name: 'Daily Avatar', tag: 'Cron', tagClass: 'cron', flow: 'Memory → prompt → image → Discord' },
-    ],
-  },
-  {
-    time: '8:00 AM',
-    events: [
-      { name: 'Morning Brief', tag: 'Cron', tagClass: 'cron', flow: 'Reads ALL cached files → #general' },
-      { name: 'York Heartbeat begins', tag: 'Heartbeat', tagClass: 'heartbeat', flow: 'Every 30m until 12:30 AM' },
-    ],
-  },
-  {
-    time: 'Throughout day',
-    events: [
-      { name: 'James conversations', tag: 'On-demand', tagClass: 'small', flow: '#general → York → sub-agents' },
-      { name: 'Food/weight logging', tag: 'On-demand', tagClass: 'small', flow: 'York → Health agent → york-data service → local DB' },
-      { name: 'Cannabis gate', tag: 'On-demand', tagClass: 'small', flow: 'York → Chores + Health → judgment' },
-    ],
-  },
-  {
-    time: '8:00 PM Sun',
-    events: [
-      { name: 'Weekly Review', tag: 'Cron', tagClass: 'cron', flow: 'Full week data → analysis → #general' },
-    ],
-  },
-  {
-    time: '11:00 PM',
-    events: [
-      { name: 'Daily Memory Summary', tag: 'Cron', tagClass: 'cron', flow: 'Sessions → memory/YYYY-MM-DD.md' },
-    ],
-  },
+const contextSources = [
+  { source: 'york-data.daily_state', what: 'Today\'s weight, meals logged, cannabis gate status, chore state, pending items, calendar events', writtenBy: 'York (every heartbeat)' },
+  { source: 'york-data.observations', what: 'Bede\'s structured findings — patterns, failures, recurring issues', writtenBy: 'Bede (overnight)' },
+  { source: 'york-data.suggestions', what: 'Bede\'s actionable improvement proposals with measurability criteria', writtenBy: 'Bede (overnight)' },
+  { source: 'york-data.consumption', what: 'Today\'s food log, calorie/protein totals', writtenBy: 'Health agent' },
+  { source: 'agent memory files', what: 'Conversation history, daily context, long-term patterns', writtenBy: 'Each agent writes its own' },
 ]
 
-const flows = [
-  {
-    producer: 'Weather Script',
-    producerClass: 'script',
-    file: 'memory/YYYY-MM-DD.md ## Weather',
-    consumer: 'Morning Brief',
-    consumerClass: 'medium',
-    desc: 'Pre-cached weather data, no live fetch at brief time',
-  },
-  {
-    producer: 'Calendar Script',
-    producerClass: 'script',
-    file: 'memory/YYYY-MM-DD.md ## Calendar',
-    consumer: 'Morning Brief',
-    consumerClass: 'medium',
-    desc: 'Pre-cached calendar events in ET',
-  },
-  {
-    producer: 'Nutrition Cache',
-    producerClass: 'small',
-    file: 'york-data.get_consumption(yesterday) → memory file',
-    consumer: 'Morning Brief',
-    consumerClass: 'medium',
-    desc: 'Yesterday\'s totals, trends, gaps — pulled from local DB, cached to memory',
-  },
-  {
-    producer: 'DnD Research',
-    producerClass: 'large',
-    file: 'memory/YYYY-MM-DD.md ## DnD Questions',
-    consumer: 'Morning Brief',
-    consumerClass: 'medium',
-    desc: 'Overnight wiki questions for James',
-  },
-  {
-    producer: 'Health Agent',
-    producerClass: 'small',
-    file: 'york-data.get_trends(7d)',
-    consumer: 'Weekly Review',
-    consumerClass: 'large',
-    desc: 'Full week of consumption/weight data via service layer',
-  },
-  {
-    producer: 'Overnight Worker',
-    producerClass: 'medium',
-    file: 'overnight-results.md',
-    consumer: 'Morning Brief',
-    consumerClass: 'medium',
-    desc: 'What York did overnight',
-  },
+const escalations = [
+  { trigger: 'Cannabis gate request', why: 'Requires cross-domain judgment: chores, calories, movement, time of day, patterns' },
+  { trigger: 'Spawning a specialist', why: 'Conversational agent can\'t spawn other agents — York decides what to spawn and when' },
+  { trigger: 'Decisions outside authority', why: 'Anything that changes system state, modifies agent behavior, or requires orchestration' },
 ]
 
-const gateSteps = [
-  { actor: 'James', actorClass: 'small', action: '"Can I smoke?"' },
-  { actor: 'York (Large)', actorClass: 'large', action: 'Receives request. Checks time of day, location, recent context.' },
-  { actor: 'Chores (Small)', actorClass: 'small', action: 'Spawned: grab camera snapshots, read chore-state.md, assess house state.' },
-  { actor: 'Health (Small)', actorClass: 'small', action: 'Spawned: calls york-data.get_consumption(today) for calorie pace, checks dinner plan status.' },
-  { actor: 'York (Large)', actorClass: 'large', action: 'Receives both reports. Makes judgment call: approve, deny, or negotiate. Considers patterns, time of day, calorie risk.' },
-  { actor: 'York (Large)', actorClass: 'large', action: 'Delivers decision conversationally. If approved: logs session, mentions pending quick tasks (momentum stacking).' },
-  { actor: 'Health (Small)', actorClass: 'small', action: 'Spawned: calls york-data.log_cannabis(time, session_number) to record the session.' },
+const loopSteps = [
+  { icon: '🦉', agent: 'Bede', skill: 'Collect', action: 'Gather data from session transcripts, agent memory, york-data (including past Measure results)' },
+  { icon: '🦉', agent: 'Bede', skill: 'Analyze', action: 'Turn raw data into structured findings. Identify corrections, errors, retries, frustration signals.' },
+  { icon: '🦉', agent: 'Bede', skill: 'Suggest', action: 'Propose specific changes with measurability criteria. Write to york-data.' },
+  { icon: '🦫', agent: 'Offa', skill: 'Build', action: 'Read suggestion from york-data. Implement: new skills, edits, config changes, scripts.' },
+  { icon: '🦫', agent: 'Offa', skill: 'Verify', action: 'Confirm changes are correct. Read back files, test where possible.' },
+  { icon: '🦉', agent: 'Bede', skill: 'Measure', action: 'Check if implemented changes reduced recurrence. Write measurement results to york-data.' },
+]
+
+const questions = [
+  'How many conversational agents? One for #general, one for #dnd? Or one that handles all channels?',
+  'What model for conversational agents? This is the experimentation surface — can swap freely.',
+  'Communication mechanism for escalation: sessions_send (synchronous wait) or york-data request queue (async)?',
+  'Should conversational agents have their own personality, or all share York\'s voice?',
+  'Does the conversational agent need USER.md, or does daily_state from york-data cover enough context?',
 ]
 </script>
 
 <style scoped>
-.timeline {
+.arch-diagram {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0;
 }
 
-.time-block {
-  display: flex;
-  border-bottom: 1px solid #21262d;
-  padding: 0.75rem 0;
+.arch-layer {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  max-width: 600px;
 }
 
-.time-block:last-child {
-  border-bottom: none;
+.arch-layer.highlight {
+  border-color: #58a6ff;
+  background: #0d1520;
 }
 
-.time-label {
-  min-width: 140px;
-  color: #58a6ff;
-  font-weight: 600;
-  font-size: 0.85rem;
-  padding-top: 0.25rem;
+.arch-layer.brain {
+  border-color: #f0c040;
+  border-width: 2px;
+  background: #1a1810;
 }
 
-.time-events {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-.time-event {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.85rem;
-}
-
-.event-name {
+.arch-label {
   color: #f0f6fc;
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
 }
 
-.event-flow {
+.arch-desc {
   color: #8b949e;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
 
-.flow-diagram {
+.arch-arrow {
+  color: #484f58;
+  font-size: 1.5rem;
+  padding: 0.25rem 0;
+}
+
+.context-items {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-}
-
-.flow-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #21262d;
-  flex-wrap: wrap;
-}
-
-.flow-arrow {
-  color: #484f58;
-  font-size: 0.8rem;
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
 }
 
-.flow-file {
-  color: #d29922;
-  font-family: monospace;
+.ctx-item {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+
+.ctx-source code {
+  color: #d2a8ff;
+  font-size: 0.85rem;
+}
+
+.ctx-what {
+  color: #c9d1d9;
+  font-size: 0.85rem;
+  margin: 0.25rem 0;
+}
+
+.ctx-who {
+  color: #8b949e;
   font-size: 0.75rem;
 }
 
-.flow-desc {
-  color: #8b949e;
-  font-size: 0.8rem;
+.escalation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.gate-flow {
+.esc-item {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+
+.esc-trigger {
+  color: #f0f6fc;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.esc-why {
+  color: #8b949e;
+  font-size: 0.85rem;
+}
+
+.loop-diagram {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.gate-step {
+.loop-step {
   display: flex;
   gap: 1rem;
   padding: 0.75rem 0;
@@ -350,11 +254,7 @@ const gateSteps = [
   padding-left: 1rem;
 }
 
-.gate-step:last-child {
-  border-left-color: transparent;
-}
-
-.gate-num {
+.loop-num {
   background: #30363d;
   color: #f0f6fc;
   width: 24px;
@@ -368,62 +268,61 @@ const gateSteps = [
   flex-shrink: 0;
 }
 
-.gate-content {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+.loop-content {
+  flex: 1;
 }
 
-.gate-action {
-  color: #c9d1d9;
+.loop-agent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.loop-icon { font-size: 1.1rem; }
+
+.loop-name {
+  color: #f0f6fc;
+  font-weight: 600;
   font-size: 0.9rem;
 }
 
-.comparison {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+.loop-skill {
+  color: #d29922;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
 }
 
-.comp-col {
-  background: #0d1117;
-  border: 1px solid #30363d;
-  border-radius: 6px;
-  padding: 1rem;
-}
-
-.comp-col h4 {
-  color: #f0f6fc;
-  margin-bottom: 0.5rem;
-}
-
-.comp-col p {
+.loop-action {
   color: #8b949e;
-  font-size: 0.8rem;
-  line-height: 1.5;
-  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
-.comp-col ul {
-  list-style: none;
-  padding: 0;
+.loop-return {
+  color: #58a6ff;
+  font-size: 0.85rem;
+  margin-left: 1rem;
+  padding-left: 1rem;
+  padding-top: 0.75rem;
+  font-style: italic;
 }
 
-.comp-col li {
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.question {
   color: #c9d1d9;
-  font-size: 0.8rem;
-  padding: 0.2rem 0;
+  font-size: 0.85rem;
+  padding: 0.5rem;
+  background: #0d1117;
+  border-radius: 4px;
+  line-height: 1.5;
 }
 
-.comp-col li::before {
-  content: '· ';
-  color: #484f58;
-}
-
-@media (max-width: 768px) {
-  .comparison {
-    grid-template-columns: 1fr;
-  }
-}
+.border-gold { border-color: #f0c040; border-width: 2px; }
 </style>
