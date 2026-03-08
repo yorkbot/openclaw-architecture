@@ -246,7 +246,7 @@ const scripts = [
   { name: 'calendar-cache', desc: 'mcporter → memory file' },
   { name: 'weight-log', desc: 'york-data.log_weight() → local DB' },
   { name: 'workout-log', desc: 'york-data.log_workout() → local DB' },
-  { name: 'queue-audit', desc: 'Cleanup improvement-queue.md' },
+  { name: 'task-check', desc: 'Query pending tasks from york-data' },
   { name: 'camera-snapshot', desc: 'ffmpeg RTSP → /tmp/ images' },
   { name: 'avatar-set', desc: 'Discord API avatar upload' },
   { name: 'panel-update', desc: 'Write status.json for genmon' },

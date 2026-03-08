@@ -211,7 +211,7 @@ const agents = [
     scheduleClass: 'cron',
     schedule: 'Cron every 30m, 1-6AM',
     purpose: 'Self-improvement dispatcher. Picks tasks from queue, executes simple ones, spawns Builder for complex ones.',
-    workspace: 'Reads improvement-queue.md, overnight-results.md, changelog. Can read any workspace for context.',
+    workspace: 'Reads observation records and task queue from york-data, overnight-results.md, changelog. Can read any workspace for context.',
     triggers: [
       'Cron: every 30 minutes, 1:00-6:00 AM',
     ],

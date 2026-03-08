@@ -181,7 +181,7 @@
       <div class="compare-table">
         <div class="compare-row header">
           <div class="compare-col">Aspect</div>
-          <div class="compare-col current">Current (improvement-queue.md)</div>
+          <div class="compare-col current">Current (flat markdown file)</div>
           <div class="compare-col proposed">Proposed (Feedback Loop)</div>
         </div>
         <div class="compare-row" v-for="c in comparisons" :key="c.aspect">

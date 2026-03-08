@@ -18,6 +18,7 @@
     <AgentDetail v-if="currentView === 'agents'" />
     <SelfImprovement v-if="currentView === 'improve'" />
     <DiscordLayout v-if="currentView === 'comms'" />
+    <YorkData v-if="currentView === 'yorkdata'" />
     <DataFlow v-if="currentView === 'dataflow'" />
   </div>
 </template>
@@ -29,6 +30,7 @@ import AgentDetail from './views/AgentDetail.vue'
 import DiscordLayout from './views/DiscordLayout.vue'
 import DataFlow from './views/DataFlow.vue'
 import SelfImprovement from './views/SelfImprovement.vue'
+import YorkData from './views/YorkData.vue'
 
 const currentView = ref('system')
 
@@ -37,6 +39,7 @@ const views = [
   { id: 'agents', label: 'Agent Details' },
   { id: 'improve', label: 'Self-Improvement' },
   { id: 'comms', label: 'Communication Channels' },
+  { id: 'yorkdata', label: 'york-data' },
   { id: 'dataflow', label: 'Data Flow' },
 ]
 </script>

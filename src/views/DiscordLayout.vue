@@ -129,7 +129,7 @@ const rules = [
   {
     channel: 'reviews',
     agent: 'York',
-    desc: 'York posts proposals here. James approves/rejects. York tracks in improvement-queue.md.',
+    desc: 'York posts proposals here. James approves/rejects. Decisions tracked in york-data.',
   },
 ]
 
