@@ -173,6 +173,17 @@ const domains = [
     ],
   },
   {
+    name: 'Observations (Bede)',
+    icon: '🦉',
+    color: 'purple',
+    desc: 'Structured findings from the Analyst. Written by Bede, read by York and other agents. Replaces improvement-queue.md and #reviews.',
+    functions: [
+      { name: 'log_observation', params: 'domain, type, summary, evidence, severity?, suggested_action?', desc: 'Record a finding from transcript analysis' },
+      { name: 'get_observations', params: 'domain?, type?, since?, status?', returns: 'observations[]', desc: 'Query observations with filters' },
+      { name: 'update_observation', params: 'id, status, resolution?', desc: 'Mark as addressed, dismissed, or in-progress' },
+    ],
+  },
+  {
     name: 'Cross-Domain',
     icon: '🔗',
     color: 'purple',
