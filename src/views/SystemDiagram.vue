@@ -158,6 +158,7 @@
 <script setup>
 const channels = [
   { name: 'general', routes: '→ York (orchestrator)' },
+  { name: 'dnd', routes: '→ Caedmon (direct)' },
   { name: 'reviews', routes: '→ York (proposals from Bede/Offa)' },
 ]
 
@@ -225,12 +226,27 @@ const agents = [
 ]
 
 const scripts = [
-  { name: 'weather-cache', desc: 'curl wttr.in → memory file' },
-  { name: 'calendar-cache', desc: 'mcporter → memory file' },
-  { name: 'camera-snapshot', desc: 'ffmpeg RTSP → /tmp/ images' },
-  { name: 'camera-monitor', desc: 'Frame-diff motion detection, state events → york-data' },
-  { name: 'panel-update', desc: 'Write status.json for genmon' },
-  { name: 'avatar-set', desc: 'Discord API avatar upload' },
+  // Caching (Dagr morning brief inputs)
+  { name: 'weather-cache', desc: 'curl wttr.in / Open-Meteo → memory file' },
+  { name: 'calendar-cache', desc: 'mcporter google-calendar → memory file' },
+
+  // Camera pipeline
+  { name: 'camera-snapshot', desc: 'ffmpeg RTSP → /tmp/ image. On-demand, single frame.' },
+  { name: 'camera-monitor', desc: 'Frame-diff motion detection daemon → state events to york-data' },
+
+  // Identity & presence
+  { name: 'panel-update', desc: 'Write status.json for XFCE genmon widget' },
+  { name: 'avatar-set', desc: 'Discord API avatar/banner upload' },
+
+  // Communication
+  { name: 'twilio-send', desc: 'Send SMS via Twilio API. Nudges, alerts, urgent notifications.' },
+
+  // D&D wiki
+  { name: 'wiki-search', desc: 'grep/ripgrep across D&D wiki markdown files. Fast local search.' },
+  { name: 'wiki-pr', desc: 'Branch, commit, push, open PR on bunglers repo. Used by Caedmon for wiki edits.' },
+
+  // Data caching for Bede
+  { name: 'transcript-export', desc: 'Extract session transcripts from JSONL into readable format for Bede analysis.' },
 ]
 
 const dataStores = [
