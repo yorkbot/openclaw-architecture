@@ -398,4 +398,127 @@ Derived from James's feedback and the design session. These aren't open question
 
 ---
 
+## 9. york-data Function Inventory (Audited from Current Usage)
+
+Derived from auditing every `mcporter call google-sheets.*` across all current skills. These are the actual operations York performs today, mapped to typed functions.
+
+### 9.1 Current Spreadsheet Schemas
+
+**Fitness Spreadsheet** (`1_3GtsFhX3xmFjTZau4ZXVZcMlKRqgjZGR9kszQn1ZSw`):
+
+| Sheet | Columns | Used By |
+|-------|---------|---------|
+| Dashboard (summary) | Start Weight, Goal Weight, Target Date, Current Weight, Lost So Far, To Go | nutrition-weight-cache, morning-brief |
+| Dashboard (daily log) | Date, Weight, Calories, Protein (g), Kitchen Closed, Wake Up, Bedtime, Sleep (hrs), Energy (1-5) | york-consumption, nutrition-weight-cache, morning-orchestrator, weekly-checkin |
+| [Month] Consumption | DateTime, Item, Quantity, Calories, Protein, Notes | york-consumption, nutrition-summary, consumption-gap, meal-system, morning-brief |
+| Workouts | Date, Type, Location, Duration, Notes, (col F) | york-workout, weekly-checkin |
+| Exercises | Date, Exercise, Sets, Reps, Weight, Notes | york-workout |
+
+**Chores Spreadsheet** (`1syEgiOncEgoxJf6DHROe0lmU3sT_hbeeGBREeAnuWfQ`):
+
+| Sheet | Columns | Used By |
+|-------|---------|---------|
+| Sheet1 | Task, Frequency, Last Completed, ... | york-chores, morning-orchestrator |
+
+**Home Projects Spreadsheet** (`1kKg_Esyo12tSmSaa5ZUzDU4GtWQYfso1Dug2ShcdXbg`):
+
+| Sheet | Columns | Used By |
+|-------|---------|---------|
+| Sheet1 | Task, Zone(s), Priority, ... | morning-brief |
+
+### 9.2 Proposed Typed Functions
+
+**Consumption (highest frequency, most error-prone)**
+- `log_food(date, time, item, quantity, calories, protein, notes?)` — append to consumption log
+- `get_consumption(date)` → all items for a date
+- `get_consumption_range(start_date, end_date)` → items across date range
+- `delete_consumption(id)` — remove a mis-logged entry
+- `update_consumption(id, fields...)` — fix a specific entry
+
+**Dashboard / Daily Metrics**
+- `log_daily(date, weight?, calories?, protein?, kitchen_closed?, wake_up?, bedtime?, sleep_hrs?, energy?)` — upsert daily row
+- `get_daily(date)` → single day's metrics
+- `get_daily_range(start_date, end_date)` → range of daily metrics
+- `get_weight_trend(days)` → weight entries with moving average
+
+**Workouts**
+- `log_workout(date, type, location, duration, notes?)` — add workout summary
+- `log_exercises(date, exercises[{name, sets, reps, weight, notes?}])` — add exercise details
+- `get_workouts(start_date?, end_date?)` → workout history
+- `get_exercises(start_date?, end_date?)` → exercise details
+- `get_last_workout()` → most recent workout date and details
+
+**Chores**
+- `get_chores()` → all chores with frequency and last-completed
+- `log_chore(task, completed_date)` — mark a chore done
+- `get_chore_status()` → what's due, what's overdue
+
+**Home Projects**
+- `get_projects()` → all projects with priority and status
+- `update_project(task, fields...)` — update status/priority
+
+**Cannabis (currently embedded in consumption, could be its own domain)**
+- `log_cannabis(date, time, session_number)` — record a session
+- `get_cannabis_sessions(date?)` → sessions for a date
+- `get_cannabis_history(days)` → frequency and pattern data
+
+**Cross-Domain Queries (for weekly review, pattern analysis)**
+- `get_trends(days, domains[])` → combined view of weight, calories, protein, workouts, cannabis over N days
+- `get_day_summary(date)` → everything that happened on a specific day
+
+### 9.3 Operations That DON'T Move to york-data
+
+These stay as separate tools/services:
+- **Google Calendar** — `mcporter call google-calendar.list-events` stays as-is. Calendar is external source of truth.
+- **Memory files** — still markdown, still read/written directly by agents.
+- **D&D wiki** — markdown files, managed by DnD agent.
+- **Camera snapshots** — ffmpeg scripts, hardware integration.
+- **Discord** — message tool, stays as-is.
+- **Panel/genmon** — status.json, stays as file write.
+
+### 9.4 Gotchas the Service Layer Eliminates
+
+Problems observed in the current system that typed functions would prevent:
+1. **Wrong column offset** — LLM writes calories to protein column or vice versa
+2. **Month sheet name** — LLM uses "Feb Consumption" instead of "February Consumption"
+3. **Range calculation** — LLM guesses next empty row, sometimes overwrites existing data
+4. **Parameter naming** — `data` vs `values`, `spreadsheet_id` vs `spreadsheetId`
+5. **Duplicate entries** — LLM doesn't check if entry already exists before writing
+6. **Dashboard row drift** — LLM counts rows wrong when dashboard has gaps
+7. **Date format inconsistency** — "Mar 5" vs "March 5" vs "2026-03-05" vs "Mar 5, 2026"
+8. **Calorie/protein in wrong units** — service can enforce reasonable bounds (0-5000 cal, 0-500g protein)
+
+---
+
+## 10. Friction Audit (Known Failure Patterns)
+
+Patterns observed in the current system that the new architecture should eliminate:
+
+### 10.1 Data Operations
+- Consumption logging is the #1 source of corrections from James
+- Dashboard updates frequently write to wrong row
+- Month name construction fails (hardcoded "February" when it's March)
+- Sub-agents clear existing data and rewrite instead of appending
+- Calorie estimates for restaurant meals wrong ~60% of the time (model issue, not architecture)
+
+### 10.2 Context Overload
+- Every session loads SOUL.md, USER.md, AGENTS.md, HEARTBEAT.md, today's memory, yesterday's memory
+- Sub-agents inherit too much context (consumption logger doesn't need D&D wiki awareness)
+- Heartbeat sessions load full workspace but do nothing with it 90%+ of the time
+
+### 10.3 Self-Improvement
+- Improvement queue items get re-suggested after rejection (no rejection memory)
+- "Done" items get re-opened (no verification)
+- Ideas discussed in conversation never make it to the queue
+- Heartbeats fail to pick up explicit TODO items from memory files (today's failure)
+- No feedback loop: fixes are never verified to have worked
+
+### 10.4 Coordination
+- Memory flushes during conversation block the chat (5-min Discord timeout)
+- Sub-agents sometimes work on stale data (cron cache not yet refreshed)
+- Multiple sub-agents can write to the same memory file with conflicts
+- Heartbeat doesn't carry over context about what was said earlier today
+
+---
+
 *This document is the single source of truth for the multi-agent architecture project. Updated as decisions are made and questions are resolved.*
