@@ -108,14 +108,21 @@
 
       <!-- Service Layer -->
       <div class="layer service-layer">
-        <div class="layer-label">SERVICE LAYER (MCP Server)</div>
-        <div class="layer-content">
+        <div class="layer-label">SERVICE LAYER (MCP Servers)</div>
+        <div class="layer-content" style="gap: 1rem;">
           <div class="node service-node">
             <div class="node-title">york-data</div>
             <div class="node-desc">
-              Typed functions: log_food(), log_weight(), log_workout(), get_consumption(), get_trends().
+              Data layer. Typed functions: log_food(), log_daily(), get_consumption(), get_trends().
               Validates inputs, enforces schema, handles all DB operations.
-              LLMs never see raw DB queries, column indices, or JSON blobs.
+            </div>
+          </div>
+          <div class="node service-node" style="border-color: #3fb950;">
+            <div class="node-title">york-tools</div>
+            <div class="node-desc">
+              Utility tools. camera_snapshot(), weather_fetch(), calendar_fetch(),
+              panel_update(), avatar_set(), twilio_send(), wiki_search(),
+              transcript_export(). Replaces standalone scripts with typed MCP calls.
             </div>
           </div>
         </div>
@@ -226,27 +233,8 @@ const agents = [
 ]
 
 const scripts = [
-  // Caching (Dagr morning brief inputs)
-  { name: 'weather-cache', desc: 'curl wttr.in / Open-Meteo → memory file' },
-  { name: 'calendar-cache', desc: 'mcporter google-calendar → memory file' },
-
-  // Camera pipeline
-  { name: 'camera-snapshot', desc: 'ffmpeg RTSP → /tmp/ image. On-demand, single frame.' },
-  { name: 'camera-monitor', desc: 'Frame-diff motion detection daemon → state events to york-data' },
-
-  // Identity & presence
-  { name: 'panel-update', desc: 'Write status.json for XFCE genmon widget' },
-  { name: 'avatar-set', desc: 'Discord API avatar/banner upload' },
-
-  // Communication
-  { name: 'twilio-send', desc: 'Send SMS via Twilio API. Nudges, alerts, urgent notifications.' },
-
-  // D&D wiki
-  { name: 'wiki-search', desc: 'grep/ripgrep across D&D wiki markdown files. Fast local search.' },
-  { name: 'wiki-pr', desc: 'Branch, commit, push, open PR on bunglers repo. Used by Caedmon for wiki edits.' },
-
-  // Data caching for Bede
-  { name: 'transcript-export', desc: 'Extract session transcripts from JSONL into readable format for Bede analysis.' },
+  // The only true daemon
+  { name: 'camera-monitor', desc: 'Frame-diff motion detection daemon → state events to york-data. Long-running process, not an MCP tool.' },
 ]
 
 const dataStores = [

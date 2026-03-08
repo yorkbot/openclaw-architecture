@@ -47,6 +47,20 @@ const tools = [
     usedBy: 'Every agent. This is the backbone.',
   },
   {
+    icon: '🔧',
+    name: 'york-tools',
+    color: 'green',
+    status: 'To Build',
+    statusClass: 'medium',
+    desc: 'MCP server bundling all utility operations. Replaces standalone bash scripts with typed, validated tool calls. Same calling pattern as york-data: mcporter call york-tools.<function>(...)',
+    details: [
+      { label: 'Type', value: 'MCP Server (Node.js)' },
+      { label: 'Functions', value: 'camera_snapshot, weather_fetch, calendar_fetch, panel_update, avatar_set, twilio_send, wiki_search, transcript_export' },
+      { label: 'Why MCP', value: 'Typed params, validation, consistent calling pattern. Agents call tools the same way regardless of what\'s under the hood.' },
+    ],
+    usedBy: 'All agents. Replaces the scripts layer.',
+  },
+  {
     icon: '📷',
     name: 'camera-snapshot',
     color: 'green',

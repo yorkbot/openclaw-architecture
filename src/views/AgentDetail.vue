@@ -1,5 +1,21 @@
 <template>
   <div>
+    <!-- Global Skills -->
+    <div class="card border-global">
+      <h2>🌐 Global Skills</h2>
+      <p style="color: #8b949e; margin-bottom: 1rem;">
+        Shared skills available to any agent. Not every agent needs to know about every skill —
+        only loaded when relevant. These codify common patterns so agents do them consistently.
+      </p>
+      <div class="global-skills-grid">
+        <div class="global-skill" v-for="gs in globalSkills" :key="gs.name">
+          <div class="global-skill-name">{{ gs.name }}</div>
+          <div class="global-skill-desc">{{ gs.desc }}</div>
+          <div class="global-skill-agents">Used by: {{ gs.agents }}</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Draft Agents (Bede, Offa) -->
     <div class="card" v-for="agent in draftAgents" :key="agent.id" :class="'border-' + agent.borderColor">
       <div class="agent-header">
@@ -141,6 +157,49 @@
 </template>
 
 <script setup>
+const globalSkills = [
+  {
+    name: 'Git Workflow',
+    desc: 'Branch, commit, push, open PR. Naming conventions for branches, commit message format, when to PR vs direct push. The standard workflow for any repo changes.',
+    agents: 'Caedmon (wiki), Offa (skills/scripts)',
+  },
+  {
+    name: 'Memory Management',
+    desc: 'How to read/write daily memory files (memory/YYYY-MM-DD.md). WAL discipline: write important context BEFORE responding. What goes in daily files vs MEMORY.md. How Bede\'s rolling reflections work.',
+    agents: 'All agents',
+  },
+  {
+    name: 'Discord Messaging',
+    desc: 'Posting to channels, formatting rules (no markdown tables, use bullet lists), when to use reactions vs replies, embed suppression. Channel-specific conventions.',
+    agents: 'York, Dagr, Caedmon',
+  },
+  {
+    name: 'Web Research',
+    desc: 'Search methodology, source evaluation, structured output format. Browser usage, search term construction, confidence levels. Available to any agent that needs to look something up.',
+    agents: 'Any agent (on-demand)',
+  },
+  {
+    name: 'Image Analysis',
+    desc: 'Calling the image-analysis tool. How to frame prompts for room assessment, document reading, or visual inspection. Structured description output format.',
+    agents: 'York (gate checks), Bede (pattern analysis)',
+  },
+  {
+    name: 'Image Generation',
+    desc: 'Crafting effective prompts for image-gen (Gemini Nano Banana Pro). Style guidelines, detail level, character consistency. How to iterate on results.',
+    agents: 'Caedmon (D&D art)',
+  },
+  {
+    name: 'york-data Conventions',
+    desc: 'How to call york-data MCP functions. Parameter naming, error handling, upsert patterns, date formats. The shared contract for all data access.',
+    agents: 'Wynn, Hild, York, Bede, Dagr',
+  },
+  {
+    name: 'Sub-Agent Spawning',
+    desc: 'When to spawn a sub-agent vs handle inline. How to pass context, set model tier, handle results. Timeout and cleanup conventions.',
+    agents: 'York, Bede, Caedmon, Wynn',
+  },
+]
+
 const draftAgents = [
   {
     id: 'bede',
@@ -530,6 +589,41 @@ const suggestedAgents = [
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.border-global { border-color: #3fb950; border-width: 2px; }
+
+.global-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 0.75rem;
+}
+
+.global-skill {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+
+.global-skill-name {
+  color: #3fb950;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.global-skill-desc {
+  color: #c9d1d9;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  margin-bottom: 0.4rem;
+}
+
+.global-skill-agents {
+  color: #8b949e;
+  font-size: 0.75rem;
+  font-style: italic;
 }
 
 .border-opus { border-color: #f0c040; border-width: 2px; }
