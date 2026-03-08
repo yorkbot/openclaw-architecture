@@ -91,6 +91,21 @@ const tools = [
     usedBy: 'Hild (chore management), Bede (completion pattern analysis via york-data mirror).',
   },
   {
+    icon: '👁️',
+    name: 'image-analysis',
+    color: 'yellow',
+    status: 'To Build',
+    statusClass: 'medium',
+    desc: 'LLM-as-a-tool for image interpretation. Send a photo, get a structured description back. Not an agent skill — a tool call that happens to hit an LLM API. Could use Gemini Flash, Nano, or whatever\'s cheapest for "describe this kitchen."',
+    details: [
+      { label: 'Type', value: 'Tool (LLM API call, not an agent)' },
+      { label: 'Input', value: 'Image path + prompt (e.g. "describe the state of this kitchen")' },
+      { label: 'Output', value: 'Structured text description' },
+      { label: 'Model', value: 'TBD — Gemini Flash/Nano, or cheapest vision model available' },
+    ],
+    usedBy: 'York (cannabis gate camera checks), potentially Bede (pattern analysis over time).',
+  },
+  {
     icon: '🌤️',
     name: 'weather-cache',
     color: 'green',
