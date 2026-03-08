@@ -13,8 +13,8 @@
     <div class="card">
       <h3>The Feedback Loop</h3>
       <p style="color: #8b949e; margin-bottom: 1.5rem;">
-        Self-improvement is a continuous cycle, not a TODO list. Every agent participates in observation.
-        Analysis finds patterns. Experiments test fixes. Verification confirms they worked.
+        Self-improvement is a continuous cycle, not a TODO list. OpenClaw already records all session data.
+        The Improvement Analyst reads that data, finds patterns, runs experiments, and verifies fixes worked.
       </p>
       <div class="loop">
         <div class="loop-step" v-for="(step, i) in loopSteps" :key="step.name">
@@ -35,39 +35,6 @@
         <div class="loop-return">
           <span>↺ Cycle repeats — verification feeds back into observation</span>
         </div>
-      </div>
-    </div>
-
-    <!-- Observation Detail -->
-    <div class="card border-green">
-      <h3>Observation Layer (Embedded in Every Agent)</h3>
-      <p style="color: #8b949e; margin-bottom: 1rem;">
-        This is the foundation. Every agent writes friction events to a shared journal.
-        Not a separate task — a reflex. Like distributed logging.
-      </p>
-
-      <div class="obs-grid">
-        <div class="obs-card" v-for="obs in observations" :key="obs.agent">
-          <div class="obs-agent">{{ obs.agent }}</div>
-          <div class="obs-watches">
-            <div class="obs-item" v-for="w in obs.watches" :key="w">{{ w }}</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="obs-format">
-        <h4>Journal Entry Format</h4>
-        <div class="code-block">
-          <div class="code-line"><span class="code-key">when:</span> 2026-03-07 11:53 AM</div>
-          <div class="code-line"><span class="code-key">agent:</span> york</div>
-          <div class="code-line"><span class="code-key">type:</span> correction</div>
-          <div class="code-line"><span class="code-key">what:</span> James corrected calorie estimate for Chipotle bowl (said 800, was 1100)</div>
-          <div class="code-line"><span class="code-key">category:</span> data-accuracy</div>
-          <div class="code-line"><span class="code-key">domain:</span> health</div>
-        </div>
-        <p style="color: #8b949e; margin-top: 0.75rem; font-size: 0.85rem;">
-          Types: correction, friction, slow-response, bad-routing, missed-opportunity, stale-data, user-frustration
-        </p>
       </div>
     </div>
 
@@ -151,7 +118,7 @@
       <h3>Why Self-Improvement Spans Everything</h3>
       <p style="color: #8b949e; margin-bottom: 1rem;">
         Self-improvement isn't a domain like Health or D&D. It's a cross-cutting concern.
-        The observation layer is embedded in every agent. The analysis touches every domain.
+        The Analyst reads transcripts from every agent's sessions. The analysis touches every domain.
         The only boundary is the OpenClaw instance — MTG (separate install) handles its own improvement.
       </p>
 
@@ -198,16 +165,16 @@
 const loopSteps = [
   {
     name: 'Observe',
-    tier: 'Trivial',
+    tier: 'Built-in',
     tierClass: 'script',
-    when: 'Every session',
+    when: 'Automatic',
     whenClass: 'heartbeat',
-    desc: 'Every agent writes friction events to a shared journal as they happen. Corrections, slow responses, bad data, user frustration, missed opportunities. This is a reflex, not a task.',
+    desc: 'OpenClaw already records everything. Every session produces a JSONL transcript: every message, tool call, tool result, error, token usage, and timestamp. The observation data exists. Nothing new to build.',
     examples: [
-      'James corrected a calorie estimate → journal entry',
-      'Sub-agent failed and had to retry → journal entry',
-      'Morning brief was missing data that should have been cached → journal entry',
-      'James said "I already told you this" → journal entry (high priority)',
+      'sessions_list — query recent sessions with filters (kind, active minutes)',
+      'sessions_history — pull full transcript for any session by key or ID',
+      'JSONL transcripts at ~/.openclaw/agents/<agentId>/sessions/<sessionId>.jsonl',
+      'Session store (sessions.json) maps keys to metadata (timestamps, tokens, model, path)',
     ],
   },
   {
@@ -238,60 +205,6 @@ const loopSteps = [
     when: 'Days after change',
     whenClass: 'cron',
     desc: 'Check if the same pattern recurs in the journal after the fix. If it does, the experiment failed — try a different approach or escalate. If it stopped, log the successful fix in the changelog.',
-  },
-]
-
-const observations = [
-  {
-    agent: '🦝 York',
-    watches: [
-      'James corrections in conversation',
-      'Repeated questions (York forgot something)',
-      'Gate decisions James disagreed with',
-      'Times James said "I already told you"',
-    ],
-  },
-  {
-    agent: '🍎 Health',
-    watches: [
-      'Calorie estimates that get corrected',
-      'Spreadsheet write errors',
-      'Missing or duplicate entries',
-      'Skill file instructions that were ambiguous',
-    ],
-  },
-  {
-    agent: '🎲 D&D',
-    watches: [
-      'Lore contradictions in wiki',
-      'Questions James already answered',
-      'Research that duplicated existing articles',
-      'Session prep gaps',
-    ],
-  },
-  {
-    agent: '🏠 Chores',
-    watches: [
-      'Camera false positives/negatives',
-      'Chore state drift from reality',
-      'Gate data that was stale',
-    ],
-  },
-  {
-    agent: '☀️ Morning Brief',
-    watches: [
-      'Sections with stale or missing data',
-      'Tone misreads (wrong framing for the day)',
-      'Data that should have been cached but wasn\'t',
-    ],
-  },
-  {
-    agent: '🔧 Cron/Scripts',
-    watches: [
-      'Failed runs (non-zero exit)',
-      'Timeout or slow execution',
-      'Output format changes breaking consumers',
-    ],
   },
 ]
 
@@ -379,7 +292,7 @@ const comparisons = [
   {
     aspect: 'Input',
     current: 'Manual TODO items, sometimes from conversation, sometimes not',
-    proposed: 'Automatic friction logging from every agent, every session',
+    proposed: 'OpenClaw already records every session. Analyst reads transcripts directly.',
   },
   {
     aspect: 'Memory',
@@ -494,65 +407,6 @@ const comparisons = [
   border: 1px dashed #1f6feb;
   border-radius: 6px;
   margin-top: 0.5rem;
-}
-
-.obs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.obs-card {
-  background: #0d1117;
-  border: 1px solid #30363d;
-  border-radius: 6px;
-  padding: 1rem;
-}
-
-.obs-agent {
-  font-weight: 600;
-  color: #f0f6fc;
-  margin-bottom: 0.5rem;
-}
-
-.obs-item {
-  color: #8b949e;
-  font-size: 0.8rem;
-  padding: 0.2rem 0;
-}
-
-.obs-item::before {
-  content: '· ';
-}
-
-.obs-format {
-  background: #0d1117;
-  border: 1px solid #30363d;
-  border-radius: 6px;
-  padding: 1rem;
-}
-
-.obs-format h4 {
-  color: #8b949e;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.75rem;
-}
-
-.code-block {
-  font-family: monospace;
-  font-size: 0.8rem;
-  line-height: 1.8;
-}
-
-.code-key {
-  color: #ff7b72;
-}
-
-.code-line {
-  color: #c9d1d9;
 }
 
 .analysis-examples {

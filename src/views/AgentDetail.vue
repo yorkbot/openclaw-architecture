@@ -1,38 +1,105 @@
 <template>
   <div>
-    <div class="card" v-for="agent in agents" :key="agent.id" :class="'border-' + agent.tier">
+    <!-- Self-Improvement Agent -->
+    <div class="card border-gold">
+      <div class="section-label">SELF-IMPROVEMENT SYSTEM</div>
       <div class="agent-header">
-        <h2>{{ agent.icon }} {{ agent.name }}</h2>
-        <div>
-          <span :class="['tag', agent.tierClass]">{{ agent.tierLabel }}</span>
-          <span :class="['tag', agent.scheduleClass]" v-if="agent.schedule">{{ agent.schedule }}</span>
+        <h2>{{ analyst.icon }} {{ analyst.name }}</h2>
+        <span :class="['tag', analyst.tierClass]">{{ analyst.tierLabel }}</span>
+      </div>
+      <p class="agent-purpose">{{ analyst.purpose }}</p>
+
+      <div class="agent-detail-grid">
+        <div class="detail-item">
+          <h3>Default Model</h3>
+          <p>{{ analyst.model }}</p>
+        </div>
+        <div class="detail-item">
+          <h3>Heartbeat</h3>
+          <p>{{ analyst.heartbeat }}</p>
         </div>
       </div>
 
+      <div class="agent-section">
+        <h3>Workspace</h3>
+        <p>{{ analyst.workspace }}</p>
+      </div>
+
+      <div class="agent-section">
+        <h3>Communication Channels</h3>
+        <ul>
+          <li v-for="ch in analyst.channels" :key="ch">{{ ch }}</li>
+        </ul>
+      </div>
+
+      <div class="agent-section">
+        <h3>Skills</h3>
+        <ul>
+          <li v-for="sk in analyst.skills" :key="sk">{{ sk }}</li>
+        </ul>
+      </div>
+
+      <div class="agent-section">
+        <h3>Expected Sub-Agents</h3>
+        <div class="spawn-tags">
+          <span class="tag small" v-for="s in analyst.spawns" :key="s">{{ s }}</span>
+        </div>
+      </div>
+
+      <div class="agent-section">
+        <h3>Design Notes</h3>
+        <p class="notes">{{ analyst.notes }}</p>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <div class="section-divider">
+      <div class="section-label">PURPOSE-BUILT AGENTS</div>
+    </div>
+
+    <!-- Purpose-Built Agents -->
+    <div class="card" v-for="agent in agents" :key="agent.id" :class="'border-' + agent.tier">
+      <div class="agent-header">
+        <h2>{{ agent.icon }} {{ agent.name }}</h2>
+        <span :class="['tag', agent.tierClass]">{{ agent.tierLabel }}</span>
+      </div>
       <p class="agent-purpose">{{ agent.purpose }}</p>
 
-      <div class="agent-section" v-if="agent.workspace">
+      <div class="agent-detail-grid">
+        <div class="detail-item">
+          <h3>Default Model</h3>
+          <p>{{ agent.model }}</p>
+        </div>
+        <div class="detail-item">
+          <h3>Heartbeat</h3>
+          <p>{{ agent.heartbeat }}</p>
+        </div>
+      </div>
+
+      <div class="agent-section">
         <h3>Workspace</h3>
         <p>{{ agent.workspace }}</p>
       </div>
 
-      <div class="agent-section" v-if="agent.triggers?.length">
-        <h3>Triggers</h3>
+      <div class="agent-section">
+        <h3>Communication Channels</h3>
         <ul>
-          <li v-for="t in agent.triggers" :key="t">{{ t }}</li>
+          <li v-for="ch in agent.channels" :key="ch">{{ ch }}</li>
+        </ul>
+      </div>
+
+      <div class="agent-section">
+        <h3>Skills</h3>
+        <ul>
+          <li v-for="sk in agent.skills" :key="sk">{{ sk }}</li>
         </ul>
       </div>
 
       <div class="agent-section" v-if="agent.spawns?.length">
-        <h3>Can Spawn</h3>
+        <h3>Expected Sub-Agents</h3>
         <div class="spawn-tags">
           <span class="tag small" v-for="s in agent.spawns" :key="s">{{ s }}</span>
         </div>
-      </div>
-
-      <div class="agent-section" v-if="agent.whyThisTier">
-        <h3>Why This Tier</h3>
-        <p class="notes">{{ agent.whyThisTier }}</p>
       </div>
 
       <div class="agent-section" v-if="agent.notes">
@@ -44,6 +111,35 @@
 </template>
 
 <script setup>
+const analyst = {
+  icon: '🔬',
+  name: 'Improvement Analyst',
+  tierClass: 'large',
+  tierLabel: 'Large',
+  model: 'TBD — Large tier. Needs to reason across session transcripts, find patterns, form hypotheses.',
+  heartbeat: 'None. Cron-based: overnight runs (1-6 AM) + optional on-demand.',
+  purpose: 'The first-class self-improvement agent. Reads OpenClaw session transcripts via built-in tools, identifies patterns in failures and corrections, runs experiments, verifies fixes worked. If this agent works, everything else improves itself over time.',
+  workspace: 'TBD — needs access to: changelog, task queue (york-data), session history (via sessions_list/sessions_history), all agent workspaces for reading skill files and making fixes.',
+  channels: [
+    'No direct Discord channel — works autonomously overnight',
+    'Writes results to #reviews when proposing changes that need James\'s approval',
+    'Writes to changelog and york-data task queue',
+  ],
+  skills: [
+    'TBD — session transcript analysis (read transcripts, extract corrections/errors/frustrations)',
+    'TBD — pattern recognition (correlate failures across days/domains)',
+    'TBD — experiment design (form hypothesis, define success criteria, implement change)',
+    'TBD — verification (check if past fixes reduced recurrence)',
+    'TBD — skill file editing (make targeted fixes to any agent\'s skills)',
+  ],
+  spawns: [
+    'transcript-indexer (pre-processes transcripts into structured summaries)',
+    'builder (for complex implementations)',
+    'research (for investigating better approaches)',
+  ],
+  notes: 'This is THE core agent. If the base architecture is correct and this agent works, all other skills are secondary — they get built and refined by this system over time. The observation data already exists in OpenClaw\'s JSONL transcripts. This agent reads that data and acts on it.',
+}
+
 const agents = [
   {
     id: 'york',
@@ -52,19 +148,23 @@ const agents = [
     tier: 'red',
     tierClass: 'large',
     tierLabel: 'Large',
-    scheduleClass: 'heartbeat',
-    schedule: 'Heartbeat 30m',
-    purpose: 'The brain. Holds conversation with James, makes judgment calls, routes tasks to specialists. Owns the cannabis gate, accountability nudges, and panel presence. Minimal workspace — delegates data work.',
-    workspace: 'Slim workspace: SOUL.md, USER.md, AGENTS.md (routing rules), HEARTBEAT.md, chore-state.md, panel/. No spreadsheet skills, no wiki, no work notes. Just enough context to make good routing decisions.',
-    triggers: [
+    model: 'TBD — Large tier. Judgment calls, conversational nuance, routing decisions.',
+    heartbeat: 'Every 30m, 8 AM - 12:30 AM ET. Most beats are silent.',
+    purpose: 'The brain. Holds conversation with James, makes judgment calls, routes tasks to specialists. Owns the cannabis gate, accountability nudges, and panel presence.',
+    workspace: 'TBD — Slim: SOUL.md, USER.md, AGENTS.md (routing rules), HEARTBEAT.md, panel/. No spreadsheet skills, no wiki. Just enough context to route well.',
+    channels: [
       '#general — all direct conversation',
       '#reviews — proposal approvals',
-      '#health — private health discussion (forwards to health agent as needed)',
-      'Heartbeat — every 30 min for contextual awareness, nudges, panel updates',
+      '#health — private health discussion',
+    ],
+    skills: [
+      'TBD — orchestrator-dispatch (routing rules)',
+      'TBD — cannabis-gate (cross-domain judgment)',
+      'TBD — panel-presence (desktop widget updates)',
+      'TBD — accountability (nudge timing, tone calibration)',
     ],
     spawns: ['health', 'chores', 'dnd', 'research', 'builder', 'morning-brief'],
-    whyThisTier: 'The orchestrator makes nuanced judgment calls: when to push back on the cannabis gate, when to nudge vs stay quiet, how to read tone in a conversation. This is where model quality directly impacts the user experience. A smaller model would rubber-stamp the gate and miss conversational nuance.',
-    notes: 'Most heartbeats are silent (NO_REPLY). The value is quality of judgment, not volume of calls. This agent runs the fewest tokens per day but they matter the most.',
+    notes: 'The orchestrator touches everything; its mistakes cascade. Quality of judgment matters more than volume of calls.',
   },
   {
     id: 'health',
@@ -73,18 +173,22 @@ const agents = [
     tier: 'blue',
     tierClass: 'small',
     tierLabel: 'Small',
-    scheduleClass: 'cron',
-    schedule: 'Cron (caches)',
+    model: 'TBD — Small tier. Structured data writes following skill instructions.',
+    heartbeat: 'None. Spawned on-demand or via cron.',
     purpose: 'All health data operations: food logging, calorie calculation, dashboard updates, nutrition summaries, consumption gap detection.',
-    workspace: 'Own workspace with: spreadsheet reference, consumption logging skill, dashboard skill, nutrition-cache skill. Sees fitness spreadsheet only. No chores, no D&D, no work context.',
-    triggers: [
-      'Spawned by York when James reports food/drinks/weight',
-      'Cron: nutrition-cache (4:15 AM), consumption-gap (5:15 AM)',
-      'Spawned by York for cannabis gate calorie check',
+    workspace: 'TBD — york-data access (consumption, daily metrics, weight), nutrition skill files. No chores, no D&D, no work context.',
+    channels: [
+      'No own channel — spawned by York',
+      'Writes data via york-data service',
+    ],
+    skills: [
+      'TBD — consumption-logging (log food/drinks via york-data)',
+      'TBD — dashboard-update (daily metrics via york-data)',
+      'TBD — nutrition-cache (pre-cache for morning brief)',
+      'TBD — consumption-gap (identify missing data)',
     ],
     spawns: [],
-    whyThisTier: 'Structured data operations: "log X to row Y with these calories." Follows skill file instructions. The hardest part is calorie estimation for ambiguous foods, which any reasonable model handles fine.',
-    notes: 'Weekly trend analysis is handled by the Weekly Review agent, not this one. This agent does writes and simple reads.',
+    notes: 'Weekly trend analysis handled by Weekly Review, not this agent. This does writes and simple reads.',
   },
   {
     id: 'chores',
@@ -93,16 +197,20 @@ const agents = [
     tier: 'blue',
     tierClass: 'small',
     tierLabel: 'Small',
-    scheduleClass: null,
-    schedule: null,
+    model: 'TBD — Small tier. Vision for cameras, state tracking.',
+    heartbeat: 'None. Spawned on-demand.',
     purpose: 'Manage chore state, analyze camera snapshots, prepare data for the cannabis gate. York makes the gate decision; this agent gathers the data.',
-    workspace: 'Own workspace with: chore-state.md, camera skill, chore definitions. Sees cameras and chore spreadsheet only.',
-    triggers: [
-      'Spawned by York during cannabis gate flow',
-      'Spawned by York for chore status checks',
+    workspace: 'TBD — chore-state, camera access, chore definitions. york-data access (chores domain).',
+    channels: [
+      'No own channel — spawned by York',
+      'Receives camera images as context from York',
+    ],
+    skills: [
+      'TBD — chore-status (read/write chore state via york-data)',
+      'TBD — camera-analysis (interpret kitchen/room snapshots)',
+      'TBD — gate-data-prep (compile chore status for cannabis gate)',
     ],
     spawns: [],
-    whyThisTier: 'Camera analysis (is the kitchen clean?) plus reading/writing chore state. Vision capability needed but the judgment is simple: dishes or no dishes, clutter or clean.',
     notes: 'The nuanced judgment ("is this clean enough given Audrey is visiting?") stays with York. This agent just reports what it sees.',
   },
   {
@@ -112,19 +220,22 @@ const agents = [
     tier: 'red',
     tierClass: 'large',
     tierLabel: 'Large',
-    scheduleClass: 'cron',
-    schedule: 'Cron + Direct Channel',
-    purpose: 'Campaign wiki management, lore questions, worldbuilding research, session prep. Interactive conversations route here directly via #dnd channel.',
-    workspace: 'Own workspace with: D&D wiki (full), campaign notes, session logs, worldbuilding tools. Isolated from all personal/health data.',
-    triggers: [
-      '#dnd channel — direct interactive sessions with James',
-      'Cron: overnight wiki research (3:45 AM)',
-      'Spawned by York for ad-hoc lore questions from #general',
-      'Morning brief pulls pre-cached questions from memory files',
+    model: 'TBD — Large tier. Interconnected wiki, creative reasoning, large context.',
+    heartbeat: 'None. Cron + direct channel + on-demand.',
+    purpose: 'Campaign wiki management, lore questions, worldbuilding research, session prep. Interactive conversations route here directly.',
+    workspace: 'TBD — D&D wiki (full), campaign notes, session logs, worldbuilding tools. Isolated from personal/health data.',
+    channels: [
+      '#dnd — direct interactive sessions with James',
+      'Writes overnight research to memory files for morning brief',
+    ],
+    skills: [
+      'TBD — wiki-management (read/edit/create wiki articles)',
+      'TBD — lore-research (cross-reference wiki for worldbuilding)',
+      'TBD — session-prep (compile NPC/location/plot context for upcoming session)',
+      'TBD — overnight-research (find sparse articles, generate questions)',
     ],
     spawns: [],
-    whyThisTier: 'The wiki is massive and deeply interconnected. A lore question about one character touches factions, timelines, locations, and other characters across dozens of articles. The model needs to hold all that context and reason about connections, contradictions, and implications. Session prep is even harder — cross-referencing player histories, NPC motivations, and plot threads. A smaller model would give shallow, disconnected answers.',
-    notes: 'Having its own channel means interactive sessions don\'t burn York\'s context. Overnight research runs as cron (isolated). The combination of creative worldbuilding + large context + interconnected reasoning makes this genuinely Large.',
+    notes: 'The wiki is massive and deeply interconnected. Creative worldbuilding + large context + interconnected reasoning makes this genuinely Large.',
   },
   {
     id: 'morning',
@@ -133,16 +244,19 @@ const agents = [
     tier: 'yellow',
     tierClass: 'medium',
     tierLabel: 'Medium',
-    scheduleClass: 'cron',
-    schedule: 'Cron 8AM',
+    model: 'TBD — Medium tier. Editorial judgment on pre-cached data.',
+    heartbeat: 'None. Cron: 8 AM daily.',
     purpose: 'Compile morning brief from pre-cached data. Weather, calendar, nutrition summary, chore state, D&D questions, workout nudge. Posts to #general.',
-    workspace: 'Reads from shared memory files written by cache scripts and other agents. No own data sources.',
-    triggers: [
-      'Cron: 8:00 AM daily',
+    workspace: 'TBD — reads from shared memory files and york-data. No own data sources.',
+    channels: [
+      'Posts to #general',
+    ],
+    skills: [
+      'TBD — brief-compilation (read caches, format, editorialize)',
+      'TBD — data-completeness-check (verify all sections have fresh data)',
     ],
     spawns: [],
-    whyThisTier: 'The data is pre-cached, so no heavy lifting. But the brief needs editorial judgment: what to include, what tone to use, how to frame the weight number, when to skip a section. It needs to read well and adapt to context (Audrey visiting, bad calorie day, etc).',
-    notes: 'All data is pre-cached by scripts and other agents\' cron jobs. This agent formats and editorializes.',
+    notes: 'All data is pre-cached. This agent formats and editorializes.',
   },
   {
     id: 'research',
@@ -151,17 +265,19 @@ const agents = [
     tier: 'yellow',
     tierClass: 'medium',
     tierLabel: 'Varies',
-    scheduleClass: null,
-    schedule: null,
-    purpose: 'General research: web search, browsing, comparison, synthesis. Complexity varies per task.',
-    workspace: 'Minimal workspace. Each research task is mostly self-contained.',
-    triggers: [
-      'Spawned by York when James asks to research something',
-      'Spawned by overnight agent for improvement research',
+    model: 'TBD — selected per-spawn by the orchestrator based on task complexity.',
+    heartbeat: 'None. On-demand only.',
+    purpose: 'General research: web search, browsing, comparison, synthesis.',
+    workspace: 'TBD — minimal. Each task is mostly self-contained.',
+    channels: [
+      'No own channel — returns results to spawning agent',
+    ],
+    skills: [
+      'TBD — web-research (search, browse, synthesize)',
+      'TBD — comparison (structured pros/cons analysis)',
     ],
     spawns: [],
-    whyThisTier: 'Range is huge. Quick lookups (game prices, API docs) are Small. Deep comparisons (hardware options, architecture decisions) are Large. York decides the model at spawn time based on the request.',
-    notes: 'The model is selected per-spawn, not fixed. This is the most variable agent in terms of what it needs.',
+    notes: 'The most variable agent. Model selected per-spawn, not fixed.',
   },
   {
     id: 'builder',
@@ -170,18 +286,20 @@ const agents = [
     tier: 'purple',
     tierClass: 'xl',
     tierLabel: 'XL',
-    scheduleClass: null,
-    schedule: null,
-    purpose: 'Implement features, create skills, debug complex issues, write non-trivial code. The heavy lifter.',
-    workspace: 'Gets the relevant workspace for the task. Can operate on any agent\'s workspace when building/fixing.',
-    triggers: [
-      'Spawned by York for implementation tasks',
-      'Spawned by overnight agent for complex improvements',
-      'Spawned for work-prep (processing transcripts, rewriting priorities)',
+    model: 'TBD — XL tier. Multi-file implementation, debugging, architecture.',
+    heartbeat: 'None. On-demand only.',
+    purpose: 'Implement features, create skills, debug complex issues, write non-trivial code.',
+    workspace: 'TBD — gets the relevant workspace for the task. Can operate on any agent\'s workspace when building/fixing.',
+    channels: [
+      'No own channel — returns results to spawning agent',
+    ],
+    skills: [
+      'TBD — implementation (multi-file feature building)',
+      'TBD — debugging (log analysis, root cause)',
+      'TBD — skill-creation (build new agent skills from scratch)',
     ],
     spawns: [],
-    whyThisTier: 'This is Claude Code territory. Multi-file implementation, debugging from logs, architectural decisions, writing code that needs to work on the first try. Called infrequently but for the hardest tasks.',
-    notes: 'A session might be expensive but it\'s doing work that smaller models would fail at or iterate on endlessly. The right model here saves money by getting it right the first time.',
+    notes: 'Called infrequently but for the hardest tasks. The right model here saves money by getting it right the first time.',
   },
   {
     id: 'weekly',
@@ -190,39 +308,39 @@ const agents = [
     tier: 'red',
     tierClass: 'large',
     tierLabel: 'Large',
-    scheduleClass: 'cron',
-    schedule: 'Cron Sun 8PM',
+    model: 'TBD — Large tier. Cross-domain analysis, opinion forming.',
+    heartbeat: 'None. Cron: Sunday 8 PM.',
     purpose: 'Pull full week of data, calculate trends, identify patterns, form opinions, deliver accountability review.',
-    workspace: 'Reads fitness spreadsheet, daily memory files, chore history, overnight results.',
-    triggers: [
-      'Cron: Sunday 8:00 PM',
+    workspace: 'TBD — york-data access (all domains), daily memory files, chore history.',
+    channels: [
+      'Posts to #general',
+    ],
+    skills: [
+      'TBD — trend-analysis (weight, calories, protein over 7 days)',
+      'TBD — pattern-correlation (post-smoke eating, A2 vs Cleveland habits)',
+      'TBD — accountability-review (form and deliver genuine opinions)',
     ],
     spawns: [],
-    whyThisTier: 'Needs to identify patterns across 7 days of data, correlate behaviors (post-smoke eating, A2 vs Cleveland habits), and form genuine opinions that James will actually listen to. Surface-level summary isn\'t useful — the value is in the analysis.',
-    notes: 'Once per week. Worth investing in quality here because this is the primary feedback loop for behavior change.',
-  },
-  {
-    id: 'overnight',
-    icon: '🌙',
-    name: 'Overnight Worker',
-    tier: 'yellow',
-    tierClass: 'medium',
-    tierLabel: 'Medium',
-    scheduleClass: 'cron',
-    schedule: 'Cron every 30m, 1-6AM',
-    purpose: 'Self-improvement dispatcher. Picks tasks from queue, executes simple ones, spawns Builder for complex ones.',
-    workspace: 'Reads observation records and task queue from york-data, overnight-results.md, changelog. Can read any workspace for context.',
-    triggers: [
-      'Cron: every 30 minutes, 1:00-6:00 AM',
-    ],
-    spawns: ['builder'],
-    whyThisTier: 'The dispatcher itself is Medium: read the queue, assess task complexity, decide whether to do it inline or spawn Builder. The actual hard work is delegated to Builder.',
-    notes: 'Runs 12 times per night. Most runs are quick (pick task, do simple fix or spawn Builder, log result). The medium model handles the routing judgment fine.',
+    notes: 'Once per week. Worth investing in quality — this is the primary feedback loop for behavior change.',
   },
 ]
 </script>
 
 <style scoped>
+.section-divider {
+  margin: 2rem 0 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid #30363d;
+}
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #8b949e;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+
 .agent-header {
   display: flex;
   justify-content: space-between;
@@ -236,6 +354,34 @@ const agents = [
   color: #c9d1d9;
   line-height: 1.6;
   margin-bottom: 1rem;
+}
+
+.agent-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.detail-item {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+
+.detail-item h3 {
+  font-size: 0.75rem;
+  color: #8b949e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.detail-item p {
+  color: #c9d1d9;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .agent-section {
@@ -287,4 +433,9 @@ const agents = [
 .border-blue { border-color: #58a6ff; }
 .border-yellow { border-color: #d29922; }
 .border-purple { border-color: #bc8cff; }
+.border-gold { border-color: #f0c040; border-width: 2px; }
+
+@media (max-width: 768px) {
+  .agent-detail-grid { grid-template-columns: 1fr; }
+}
 </style>
