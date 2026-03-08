@@ -260,6 +260,7 @@ const notMvp = [
   'Google Sheets sync/export (future: write-only mirror for James to view)',
   'Task/chore storage (lives in Google Tasks)',
   'Home project tracking (deferred)',
+  'Build queue / pipeline for Offa (needed soon — ad-hoc for now)',
   'Observations domain (add when Bede is built)',
   'Flags from agents ("Flag for Bede" global skill — add when needed)',
   'Backup automation (manual for now: copy the .db file)',
