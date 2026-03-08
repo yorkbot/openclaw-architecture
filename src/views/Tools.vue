@@ -76,6 +76,21 @@ const tools = [
     usedBy: 'Bede (pattern analysis over time), Hild (chore state awareness), York (gate context).',
   },
   {
+    icon: '✅',
+    name: 'google-tasks',
+    color: 'yellow',
+    status: 'To Build',
+    statusClass: 'medium',
+    desc: 'MCP server or york-data integration for Google Tasks API. Chore tracking with built-in recurrence for standard frequencies (daily/weekly/monthly). Hild manages the intelligence layer on top: seasonal adjustments, weather-dependent task creation. Completion data mirrors to york-data for Bede.',
+    details: [
+      { label: 'Type', value: 'MCP Server or york-data extension' },
+      { label: 'API', value: 'Google Tasks API (requires permission extension in Google Console)' },
+      { label: 'Recurrence', value: 'Daily, weekly, monthly handled by Google. Seasonal/weather by Hild.' },
+      { label: 'Visibility', value: 'James sees chores in Google Calendar UI for free' },
+    ],
+    usedBy: 'Hild (chore management), Bede (completion pattern analysis via york-data mirror).',
+  },
+  {
     icon: '🌤️',
     name: 'weather-cache',
     color: 'green',

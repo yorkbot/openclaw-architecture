@@ -233,20 +233,45 @@ const draftAgents = [
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: 'None. Spawned on-demand.',
-    purpose: 'Home management. Chores, home maintenance, home projects. Scope and skills under active discussion.',
-    workspace: 'Dedicated workspace. york-data access for chores and home projects domains.',
+    purpose: 'Home management. Chore tracking via Google Tasks, home project scheduling via Google Calendar, camera snapshot interpretation for gate checks. Reports facts — doesn\'t make judgment calls. York owns the gate decision.',
+    workspace: 'Dedicated workspace. york-data access for chores and home projects domains. Google Tasks and Calendar write access.',
     workspaceFiles: [
-      { file: 'SOUL.md', desc: 'TBD' },
-      { file: 'AGENTS.md', desc: 'TBD' },
-      { file: 'TOOLS.md', desc: 'york-data (chores & home projects domains). Other tools TBD.' },
+      { file: 'SOUL.md', desc: 'Observational, factual. Reports what it sees, doesn\'t editorialize. Camera analysis is descriptive, not judgmental.' },
+      { file: 'AGENTS.md', desc: 'Chore definitions, frequency rules, seasonal/weather task logic, camera analysis guidelines, home project tracking conventions.' },
+      { file: 'TOOLS.md', desc: 'york-data (chores & home projects domains), Google Tasks API, Google Calendar (write), camera-snapshot script, image analysis.' },
       { file: 'IDENTITY.md', desc: 'Hild 🦡 — Named for Abbess Hild of Whitby, who ran the most organized monastery in Anglo-Saxon England.' },
-      { file: 'MEMORY.md', desc: 'TBD' },
-      { file: 'memory/', desc: 'TBD' },
+      { file: 'MEMORY.md', desc: 'Seasonal chore patterns, camera baseline references, home project history.' },
+      { file: 'memory/', desc: 'Daily chore state, camera analysis logs, project status updates.' },
     ],
     channels: [
-      'TBD',
+      'Google Tasks — chore tracking (recurrence, completion, due dates)',
+      'Google Calendar — home project scheduling',
+      'york-data — completion data mirror for Bede, home project status',
     ],
-    skillSections: [],
+    skillSections: [
+      {
+        name: 'Track',
+        skills: [
+          { name: 'Chore Status', desc: 'Read current chore state from Google Tasks. What\'s due, what\'s overdue, what was completed today.' },
+          { name: 'Log Completion', desc: 'Mark chores as completed in Google Tasks. Mirror completion data to york-data.' },
+          { name: 'Smart Scheduling', desc: 'The intelligence layer on top of Google Tasks recurrence. Create/adjust tasks based on season, weather, and context. Google handles daily/weekly/monthly; Hild handles "it snowed" and "it\'s gutter season."' },
+        ],
+      },
+      {
+        name: 'Observe',
+        skills: [
+          { name: 'Camera Assessment', desc: 'Interpret room snapshots from camera-snapshot tool. Factual description: dishes in sink, clutter on counters, laundry piles. Writes assessment to york-data.' },
+          { name: 'Gate Report', desc: 'Compile structured chore + room status for York\'s cannabis gate. Pull chore state from Google Tasks + latest camera assessment. York makes the call.' },
+        ],
+      },
+      {
+        name: 'Projects',
+        skills: [
+          { name: 'Project Tracking', desc: 'Read/write home project status via york-data and Google Calendar. Priority, timeline, cost tracking for the 1920s house.' },
+        ],
+        tbd: true,
+      },
+    ],
     spawns: [],
   },
   {
@@ -268,7 +293,6 @@ const draftAgents = [
     ],
     channels: [
       'Writes all health/fitness data via york-data',
-      'Writes nutrition and workout caches to shared memory for morning brief',
     ],
     skillSections: [
       {
