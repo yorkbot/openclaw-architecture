@@ -1,11 +1,13 @@
 <template>
   <div>
-    <!-- Self-Improvement Agent -->
+    <!-- Improvement Analyst -->
     <div class="card border-gold">
-      <div class="section-label">SELF-IMPROVEMENT SYSTEM</div>
       <div class="agent-header">
         <h2>{{ analyst.icon }} {{ analyst.name }}</h2>
-        <span :class="['tag', analyst.tierClass]">{{ analyst.tierLabel }}</span>
+        <div>
+          <span :class="['tag', analyst.tierClass]">{{ analyst.tierLabel }}</span>
+          <span class="tag draft">Draft</span>
+        </div>
       </div>
       <p class="agent-purpose">{{ analyst.purpose }}</p>
 
@@ -52,16 +54,14 @@
       </div>
     </div>
 
-    <!-- Separator -->
-    <div class="section-divider">
-      <div class="section-label">PURPOSE-BUILT AGENTS</div>
-    </div>
-
-    <!-- Purpose-Built Agents -->
+    <!-- All Other Agents -->
     <div class="card" v-for="agent in agents" :key="agent.id" :class="'border-' + agent.tier">
       <div class="agent-header">
         <h2>{{ agent.icon }} {{ agent.name }}</h2>
-        <span :class="['tag', agent.tierClass]">{{ agent.tierLabel }}</span>
+        <div>
+          <span :class="['tag', agent.tierClass]">{{ agent.tierLabel }}</span>
+          <span class="tag suggested">Suggested</span>
+        </div>
       </div>
       <p class="agent-purpose">{{ agent.purpose }}</p>
 
@@ -112,11 +112,11 @@
 
 <script setup>
 const analyst = {
-  icon: '🔬',
-  name: 'Improvement Analyst',
+  icon: '🦉',
+  name: 'Analyst',
   tierClass: 'large',
   tierLabel: 'Large',
-  model: 'TBD — Large tier. Needs to reason across session transcripts, find patterns, form hypotheses.',
+  model: 'Opus 4.6 — needs to reason across session transcripts, find patterns, form hypotheses.',
   heartbeat: 'None. Cron-based: overnight runs (1-6 AM) + optional on-demand.',
   purpose: 'The first-class self-improvement agent. Reads OpenClaw session transcripts via built-in tools, identifies patterns in failures and corrections, runs experiments, verifies fixes worked. If this agent works, everything else improves itself over time.',
   workspace: 'TBD — needs access to: changelog, task queue (york-data), session history (via sessions_list/sessions_history), all agent workspaces for reading skill files and making fixes.',
@@ -144,7 +144,7 @@ const agents = [
   {
     id: 'york',
     icon: '🦝',
-    name: 'York (Orchestrator)',
+    name: 'York',
     tier: 'red',
     tierClass: 'large',
     tierLabel: 'Large',
@@ -168,8 +168,8 @@ const agents = [
   },
   {
     id: 'health',
-    icon: '🍎',
-    name: 'Health & Nutrition',
+    icon: '🐝',
+    name: 'Health',
     tier: 'blue',
     tierClass: 'small',
     tierLabel: 'Small',
@@ -192,8 +192,8 @@ const agents = [
   },
   {
     id: 'chores',
-    icon: '🏠',
-    name: 'Chores & Home',
+    icon: '🐜',
+    name: 'Chores',
     tier: 'blue',
     tierClass: 'small',
     tierLabel: 'Small',
@@ -215,8 +215,8 @@ const agents = [
   },
   {
     id: 'dnd',
-    icon: '🎲',
-    name: 'D&D Campaign',
+    icon: '🐉',
+    name: 'Lore',
     tier: 'red',
     tierClass: 'large',
     tierLabel: 'Large',
@@ -239,8 +239,8 @@ const agents = [
   },
   {
     id: 'morning',
-    icon: '☀️',
-    name: 'Morning Brief',
+    icon: '🐓',
+    name: 'Brief',
     tier: 'yellow',
     tierClass: 'medium',
     tierLabel: 'Medium',
@@ -260,7 +260,7 @@ const agents = [
   },
   {
     id: 'research',
-    icon: '🔍',
+    icon: '🦊',
     name: 'Research',
     tier: 'yellow',
     tierClass: 'medium',
@@ -281,7 +281,7 @@ const agents = [
   },
   {
     id: 'builder',
-    icon: '🔨',
+    icon: '🦫',
     name: 'Builder',
     tier: 'purple',
     tierClass: 'xl',
@@ -303,8 +303,8 @@ const agents = [
   },
   {
     id: 'weekly',
-    icon: '📊',
-    name: 'Weekly Review',
+    icon: '🦅',
+    name: 'Review',
     tier: 'red',
     tierClass: 'large',
     tierLabel: 'Large',
@@ -327,20 +327,6 @@ const agents = [
 </script>
 
 <style scoped>
-.section-divider {
-  margin: 2rem 0 1rem;
-  padding: 0.5rem 0;
-  border-bottom: 2px solid #30363d;
-}
-
-.section-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #8b949e;
-  letter-spacing: 0.15em;
-  margin-bottom: 1rem;
-}
-
 .agent-header {
   display: flex;
   justify-content: space-between;
@@ -434,6 +420,24 @@ const agents = [
 .border-yellow { border-color: #d29922; }
 .border-purple { border-color: #bc8cff; }
 .border-gold { border-color: #f0c040; border-width: 2px; }
+
+.tag.draft {
+  background: #1f6feb;
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.tag.suggested {
+  background: #30363d;
+  color: #8b949e;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
 
 @media (max-width: 768px) {
   .agent-detail-grid { grid-template-columns: 1fr; }
