@@ -39,7 +39,21 @@
         </ul>
       </div>
 
-      <div class="agent-section">
+      <div class="agent-section" v-if="agent.skillSections">
+        <h3>Skills</h3>
+        <div class="skill-category" v-for="cat in agent.skillSections" :key="cat.name">
+          <h4 class="skill-cat-header">{{ cat.name }}</h4>
+          <div class="skill-items">
+            <div class="skill-item" v-for="sk in cat.skills" :key="sk.name">
+              <div class="skill-name">{{ sk.name }}</div>
+              <div class="skill-desc">{{ sk.desc }}</div>
+            </div>
+            <div class="skill-tbd" v-if="cat.tbd">+ more TBD as agents are defined</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="agent-section" v-else-if="agent.skills">
         <h3>Skills</h3>
         <ul>
           <li v-for="sk in agent.skills" :key="sk.name">
@@ -134,13 +148,29 @@ const draftAgents = [
     channels: [
       'Writes observations and suggestions to york-data',
     ],
-    skills: [
-      { name: 'Collect: Health Pulse', desc: 'Frequent, lightweight. Runs every few hours. Keeps a rolling tab of last ~2 days of health data (consumption, weight, workouts, cannabis). Writes structured summary to york-data for other agents to pull.' },
-      { name: 'Collect: Health Deep', desc: 'Weekly, comprehensive. Bigger model. Pulls full week of health data, calculates trends, identifies patterns across domains. Writes detailed analysis to york-data.' },
-      { name: 'Collect: Self-Review', desc: 'TBD — collects past observations, build logs, measurement results. Feeds back into the improvement loop.' },
-      { name: 'Analyze', desc: 'Read transcripts and collected data. Extract corrections, errors, frustration signals, retries. Correlate failures across days and domains. Includes weekly digest compilation.' },
-      { name: 'Suggest', desc: 'Propose specific, actionable improvements based on findings. Each suggestion must include: what to change, why, and how to measure whether it worked. If it\'s not measurable, it\'s not a suggestion.' },
-      { name: 'Measure', desc: 'Check whether past suggestions that were implemented actually improved things. Compare recurrence rates before and after. Write measurement results to york-data.' },
+    skillSections: [
+      {
+        name: 'Collect',
+        skills: [
+          { name: 'Collect Transcripts', desc: 'Read session transcripts from all agents. Extract corrections, errors, retries, frustration signals. The universal collection skill — every agent produces transcripts.' },
+          { name: 'Collect Health Pulse', desc: 'Frequent, lightweight. Runs every few hours. Keeps a rolling tab of last ~2 days of health data from york-data (Wynn\'s domain). Can\'t be more than a handful of hours behind.' },
+          { name: 'Collect Health Deep', desc: 'Weekly, comprehensive. Bigger model. Pulls full week of health data, calculates trends, identifies patterns across domains. Writes detailed analysis to york-data.' },
+          { name: 'Collect Self-Review', desc: 'Collects build results and verification status from Offa. Did what got built actually work? Feeds into the improvement loop.' },
+        ],
+        tbd: true,
+      },
+      {
+        name: 'Analyze',
+        skills: [
+          { name: 'Measure Outcomes', desc: 'Check whether implemented suggestions actually reduced recurrence. Compare before and after. Write measurement results to york-data.' },
+        ],
+        tbd: true,
+      },
+      {
+        name: 'Suggest',
+        skills: [],
+        tbd: true,
+      },
     ],
     spawns: [
       'transcript-preprocessor (Small tier — summarize high-volume transcript batches before deep analysis)',
@@ -491,6 +521,57 @@ const suggestedAgents = [
   font-size: 0.8rem;
   color: #8b949e;
   line-height: 1.4;
+}
+
+.skill-category {
+  margin-bottom: 1.25rem;
+}
+
+.skill-category:last-child {
+  margin-bottom: 0;
+}
+
+.skill-cat-header {
+  font-size: 0.8rem;
+  color: #d29922;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #21262d;
+}
+
+.skill-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skill-item {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 4px;
+  padding: 0.65rem 0.75rem;
+}
+
+.skill-name {
+  color: #d2a8ff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+}
+
+.skill-desc {
+  color: #8b949e;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.skill-tbd {
+  color: #484f58;
+  font-size: 0.8rem;
+  font-style: italic;
+  padding: 0.4rem 0.75rem;
 }
 
 @media (max-width: 768px) {
