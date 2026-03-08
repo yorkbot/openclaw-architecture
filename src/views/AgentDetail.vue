@@ -171,6 +171,42 @@ const draftAgents = [
     ],
     spawns: [],
   },
+  {
+    id: 'wynn',
+    icon: '🦌',
+    name: 'Wynn',
+    borderColor: 'sonnet',
+    model: 'Sonnet (can spawn Opus sub-agent for complex tasks)',
+    cron: 'Overnight caches (nutrition, consumption gaps). On-demand for logging and coaching.',
+    purpose: 'All health and fitness operations. Nutrition logging, calorie estimation, weight tracking, workout programming, exercise guidance, consumption gap detection, and trend analysis. Combines data operations (logging) with coaching intelligence (programming, suggestions).',
+    workspace: 'Dedicated workspace. york-data access for all health domains (consumption, daily metrics, workouts, cannabis).',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Precise on data, encouraging on fitness. Logs exactly what\'s told, estimates clearly labeled. Exercise suggestions are practical and adaptive.' },
+      { file: 'AGENTS.md', desc: 'Consumption logging rules, calorie estimation guidelines, Dashboard field mappings, workout programming methodology, progressive overload tracking.' },
+      { file: 'TOOLS.md', desc: 'york-data functions for all health domains. Exercise library reference. No direct spreadsheet access.' },
+      { file: 'IDENTITY.md', desc: 'Wynn 🦌 — Old English for "joy/wellness."' },
+      { file: 'MEMORY.md', desc: 'Calorie estimation reference, common meal shortcuts, James\'s exercise history, equipment availability, workout preferences.' },
+      { file: 'memory/', desc: 'Daily logs, workout history context, nutrition caches.' },
+    ],
+    channels: [
+      'Writes all health/fitness data via york-data',
+      'Writes nutrition and workout caches to shared memory for morning brief',
+    ],
+    skills: [
+      { name: 'Log Consumption', desc: 'Parse food/drink descriptions, estimate calories and protein, write to york-data via log_food(). Handle corrections via update_consumption() and delete_consumption().' },
+      { name: 'Log Daily Metrics', desc: 'Write weight, wake time, bedtime, sleep, energy, kitchen closed to york-data via log_daily(). Upsert pattern — partial updates are fine.' },
+      { name: 'Log Workout', desc: 'Record workout sessions and individual exercises with sets, reps, weight via log_workout() and log_exercises().' },
+      { name: 'Log Cannabis', desc: 'Record cannabis sessions with time via log_cannabis().' },
+      { name: 'Nutrition Summary', desc: 'Compile daily/weekly totals and trends. Pull via get_consumption(), get_daily_range(), get_weight_trend(). Used by morning brief and weekly review.' },
+      { name: 'Consumption Gap Detection', desc: 'Analyze recent days for missing data — no food logged, missing Dashboard fields, cannabis sessions unrecorded. Write gap questions for follow-up.' },
+      { name: 'Workout Programming', desc: 'Suggest exercises based on equipment availability, recent workout history (get_workouts(), get_last_workout()), and progressive overload goals. Adapt to schedule and energy. May spawn Opus sub-agent for complex program design.' },
+      { name: 'Calorie Estimation', desc: 'Reference data for estimating calories and protein from natural language food descriptions. Restaurant lookup when possible.' },
+      { name: 'Nutrition Cache', desc: 'Overnight cron: pre-cache yesterday\'s nutrition data, weight trend, and consumption gaps to shared memory for the morning brief.' },
+    ],
+    spawns: [
+      'Opus sub-agent (for complex workout programming or deep nutrition analysis)',
+    ],
+  },
 ]
 
 const suggestedAgents = [
@@ -206,34 +242,7 @@ const suggestedAgents = [
     ],
     spawns: ['health', 'chores', 'dnd', 'research', 'morning-brief'],
   },
-  {
-    id: 'health',
-    icon: '🐝',
-    name: 'Health',
-    borderColor: 'none',
-    model: 'TBD',
-    cron: 'TBD — caches run overnight',
-    purpose: 'All health data operations: food logging, calorie calculation, dashboard updates, nutrition summaries, consumption gap detection.',
-    workspace: 'Focused: york-data access (consumption, daily metrics, weight), nutrition skill files only.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Precise, data-focused. Logs exactly what\'s told, estimates clearly labeled.' },
-      { file: 'AGENTS.md', desc: 'Consumption logging rules, calorie estimation guidelines, Dashboard field mappings.' },
-      { file: 'TOOLS.md', desc: 'york-data service functions: log_food(), update_dashboard(), get_consumption(). No direct sheet access.' },
-      { file: 'IDENTITY.md', desc: 'Name, emoji.' },
-      { file: 'MEMORY.md', desc: 'Calorie estimation reference data, common meal shortcuts James uses.' },
-      { file: 'memory/', desc: 'Minimal — mostly stateless. Cron caches write to shared locations.' },
-    ],
-    channels: [
-      'Writes data via york-data service',
-    ],
-    skills: [
-      'TBD — consumption-logging (log food/drinks via york-data)',
-      'TBD — dashboard-update (daily metrics via york-data)',
-      'TBD — nutrition-cache (pre-cache for morning brief)',
-      'TBD — consumption-gap (identify missing data)',
-    ],
-    spawns: [],
-  },
+
   {
     id: 'chores',
     icon: '🐜',
@@ -457,6 +466,7 @@ const suggestedAgents = [
 }
 
 .border-opus { border-color: #f0c040; border-width: 2px; }
+.border-sonnet { border-color: #58a6ff; border-width: 2px; }
 .border-none { border-color: #30363d; }
 
 .tag.draft {

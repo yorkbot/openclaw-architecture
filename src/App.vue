@@ -34,7 +34,7 @@ import SelfImprovement from './views/SelfImprovement.vue'
 import Brainstorm from './views/Brainstorm.vue'
 import YorkData from './views/YorkData.vue'
 
-const currentView = ref('system')
+const currentView = ref('agents')
 
 const views = [
   { id: 'system', label: 'System Overview' },
