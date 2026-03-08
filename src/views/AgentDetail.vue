@@ -1,72 +1,11 @@
 <template>
   <div>
-    <!-- Improvement Analyst -->
-    <div class="card border-gold">
-      <div class="agent-header">
-        <h2>{{ analyst.icon }} {{ analyst.name }}</h2>
-        <div>
-          <span :class="['tag', analyst.tierClass]">{{ analyst.tierLabel }}</span>
-          <span class="tag draft">Draft</span>
-        </div>
-      </div>
-      <p class="agent-purpose">{{ analyst.purpose }}</p>
-
-      <div class="agent-detail-grid">
-        <div class="detail-item">
-          <h3>Default Model</h3>
-          <p>{{ analyst.model }}</p>
-        </div>
-        <div class="detail-item">
-          <h3>Heartbeat</h3>
-          <p>{{ analyst.heartbeat }}</p>
-        </div>
-      </div>
-
-      <div class="agent-section">
-        <h3>Workspace</h3>
-        <p>{{ analyst.workspace }}</p>
-        <div v-if="analyst.workspaceFiles?.length" class="workspace-files">
-          <div class="ws-file" v-for="f in analyst.workspaceFiles" :key="f.file">
-            <code>{{ f.file }}</code>
-            <span class="ws-desc">{{ f.desc }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="agent-section">
-        <h3>Communication Channels</h3>
-        <ul>
-          <li v-for="ch in analyst.channels" :key="ch">{{ ch }}</li>
-        </ul>
-      </div>
-
-      <div class="agent-section">
-        <h3>Skills</h3>
-        <ul>
-          <li v-for="sk in analyst.skills" :key="sk">{{ sk }}</li>
-        </ul>
-      </div>
-
-      <div class="agent-section">
-        <h3>Expected Sub-Agents</h3>
-        <div class="spawn-tags">
-          <span class="tag small" v-for="s in analyst.spawns" :key="s">{{ s }}</span>
-        </div>
-      </div>
-
-      <div class="agent-section">
-        <h3>Design Notes</h3>
-        <p class="notes">{{ analyst.notes }}</p>
-      </div>
-    </div>
-
-    <!-- All Other Agents -->
-    <div class="card" v-for="agent in agents" :key="agent.id" :class="'border-' + agent.tier">
+    <!-- Draft Agents (Bede, Offa) -->
+    <div class="card" v-for="agent in draftAgents" :key="agent.id" :class="'border-' + agent.borderColor">
       <div class="agent-header">
         <h2>{{ agent.icon }} {{ agent.name }}</h2>
         <div>
-          <span :class="['tag', agent.tierClass]">{{ agent.tierLabel }}</span>
-          <span :class="['tag', agent.draft ? 'draft' : 'suggested']">{{ agent.draft ? 'Draft' : 'Suggested' }}</span>
+          <span class="tag draft">Draft</span>
         </div>
       </div>
       <p class="agent-purpose">{{ agent.purpose }}</p>
@@ -77,8 +16,64 @@
           <p>{{ agent.model }}</p>
         </div>
         <div class="detail-item">
-          <h3>Heartbeat</h3>
-          <p>{{ agent.heartbeat }}</p>
+          <h3>Cron Schedule</h3>
+          <p>{{ agent.cron }}</p>
+        </div>
+      </div>
+
+      <div class="agent-section">
+        <h3>Workspace</h3>
+        <p>{{ agent.workspace }}</p>
+        <div v-if="agent.workspaceFiles?.length" class="workspace-files">
+          <div class="ws-file" v-for="f in agent.workspaceFiles" :key="f.file">
+            <code>{{ f.file }}</code>
+            <span class="ws-desc">{{ f.desc }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="agent-section">
+        <h3>Communication Channels</h3>
+        <ul>
+          <li v-for="ch in agent.channels" :key="ch">{{ ch }}</li>
+        </ul>
+      </div>
+
+      <div class="agent-section">
+        <h3>Skills</h3>
+        <ul>
+          <li v-for="sk in agent.skills" :key="sk.name">
+            <strong>{{ sk.name }}</strong> — {{ sk.desc }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="agent-section" v-if="agent.spawns?.length">
+        <h3>Expected Sub-Agents</h3>
+        <div class="spawn-tags">
+          <span class="tag small" v-for="s in agent.spawns" :key="s">{{ s }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggested Agents (everything else) -->
+    <div class="card" v-for="agent in suggestedAgents" :key="agent.id" :class="'border-' + agent.borderColor">
+      <div class="agent-header">
+        <h2>{{ agent.icon }} {{ agent.name }}</h2>
+        <div>
+          <span class="tag suggested">Suggested</span>
+        </div>
+      </div>
+      <p class="agent-purpose">{{ agent.purpose }}</p>
+
+      <div class="agent-detail-grid">
+        <div class="detail-item">
+          <h3>Default Model</h3>
+          <p>{{ agent.model }}</p>
+        </div>
+        <div class="detail-item">
+          <h3>Cron Schedule</h3>
+          <p>{{ agent.cron }}</p>
         </div>
       </div>
 
@@ -113,92 +108,80 @@
           <span class="tag small" v-for="s in agent.spawns" :key="s">{{ s }}</span>
         </div>
       </div>
-
-      <div class="agent-section" v-if="agent.notes">
-        <h3>Design Notes</h3>
-        <p class="notes">{{ agent.notes }}</p>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-const analyst = {
-  icon: '🦉',
-  name: 'Bede',
-  tierClass: 'large',
-  tierLabel: 'Large',
-  model: 'Opus 4.6',
-  heartbeat: 'None. Cron-based: overnight runs.',
-  purpose: 'The self-improvement analyst. Reads OpenClaw session transcripts, identifies patterns in failures and corrections, and writes structured observations to york-data. Bede observes and analyzes. It does not fix, build, or decide what to act on. Other agents read its findings and decide what to do.',
-  workspace: 'Dedicated workspace. Read access to session transcripts via sessions_list/sessions_history.',
-  workspaceFiles: [
-    { file: 'SOUL.md', desc: 'Analytical, pattern-obsessed, evidence-driven. Speaks in observations not opinions. Never prescriptive.' },
-    { file: 'AGENTS.md', desc: 'Analysis methodology: what to look for in transcripts, how to categorize findings, observation schema.' },
-    { file: 'TOOLS.md', desc: 'sessions_list, sessions_history for transcript access. york-data for writing observations (log_observation, get_observations).' },
-    { file: 'IDENTITY.md', desc: 'Bede 🦉 — Named for the Venerable Bede, greatest scholar of Anglo-Saxon England.' },
-    { file: 'MEMORY.md', desc: 'Durable patterns: recurring failure categories, known-good baselines, what\'s already been observed.' },
-    { file: 'memory/', desc: 'Daily analysis logs: what transcripts were read, what patterns were found.' },
-  ],
-  channels: [
-    'No direct Discord channel',
-    'Writes observations to york-data (Observations domain)',
-    'York reads observations during heartbeats and surfaces to James conversationally',
-  ],
-  skills: [
-    'Transcript analysis — read session transcripts, extract corrections, errors, frustration signals, retries',
-    'Pattern recognition — correlate failures across days and domains, identify recurring issues',
-    'Verification checks — review whether past observations led to improvements (recurrence dropped?)',
-    'Transcript preprocessing — spawns sub-agent to index/summarize high-volume transcript batches',
-  ],
-  spawns: [
-    'transcript-preprocessor (Small tier — summarize transcripts before deep analysis)',
-  ],
-  notes: 'Bede is pure analysis. It writes observations to york-data. York decides what\'s worth acting on. Croft (Builder) gets spawned by York, not Bede. This separation means Bede can\'t accidentally break things — it only writes observations, never code.',
-}
-
-const agents = [
+const draftAgents = [
   {
-    id: 'builder',
+    id: 'bede',
+    icon: '🦉',
+    name: 'Bede',
+    borderColor: 'opus',
+    model: 'Opus 4.6',
+    cron: 'Overnight runs (TBD schedule)',
+    purpose: 'The self-improvement analyst. Reads session transcripts and agent memory, identifies patterns in failures and corrections, suggests measurable improvements, and tracks whether past changes were effective. Writes all findings and suggestions to york-data.',
+    workspace: 'Dedicated workspace. Read access to session transcripts via sessions_list/sessions_history and other agent memory files.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Analytical, pattern-obsessed, evidence-driven. Speaks in observations not opinions.' },
+      { file: 'AGENTS.md', desc: 'Analysis methodology: what to look for, how to categorize findings, observation and suggestion schemas.' },
+      { file: 'TOOLS.md', desc: 'sessions_list, sessions_history for transcript access. york-data for reading and writing observations/suggestions. memory_search for agent memory files.' },
+      { file: 'IDENTITY.md', desc: 'Bede 🦉 — Named for the Venerable Bede, greatest scholar of Anglo-Saxon England.' },
+      { file: 'MEMORY.md', desc: 'Durable patterns: recurring failure categories, known-good baselines, what\'s already been observed.' },
+      { file: 'memory/', desc: 'Daily analysis logs: what transcripts were read, what patterns were found.' },
+    ],
+    channels: [
+      'Writes observations and suggestions to york-data',
+    ],
+    skills: [
+      { name: 'Collect', desc: 'Gather data from session transcripts (sessions_list/sessions_history), agent memory files (memory_search), and york-data (past observations, measurement results). Assembles raw material for analysis.' },
+      { name: 'Analyze', desc: 'Turn collected data into structured findings. Extract corrections, errors, frustration signals, retries. Correlate failures across days and domains. Report findings objectively.' },
+      { name: 'Suggest', desc: 'Propose specific, actionable improvements based on findings. Each suggestion must include: what to change, why, and how to measure whether it worked. If it\'s not measurable, it\'s not a suggestion.' },
+      { name: 'Measure', desc: 'Check whether past suggestions that were implemented actually improved things. Compare recurrence rates before and after. Results feed back into york-data and inform future Collect/Analyze cycles.' },
+    ],
+    spawns: [
+      'transcript-preprocessor (Small tier — summarize high-volume transcript batches before deep analysis)',
+    ],
+  },
+  {
+    id: 'offa',
     icon: '🦫',
     name: 'Offa',
-    tier: 'purple',
-    tierClass: 'xl',
-    tierLabel: 'XL',
+    borderColor: 'opus',
     model: 'Opus 4.6',
-    heartbeat: 'None. Spawned on-demand.',
-    purpose: 'Implements fixes and builds features. Spawned when an observation from Bede or a request from James requires code changes, skill creation, or multi-file edits. Offa builds. It does not decide what to build.',
-    workspace: 'Gets a task-specific workspace. Can operate on any agent\'s workspace when building/fixing skills.',
+    cron: 'None. Spawned on-demand.',
+    purpose: 'Implements changes. Reads suggestions from york-data, builds what\'s described: new skills, skill adjustments, config changes, scripts. Verifies its own work before reporting completion.',
+    workspace: 'Task-specific. Can operate on any agent\'s workspace when building or fixing skills.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Methodical, test-before-ship. Reads existing code before writing. Verification gate.' },
       { file: 'AGENTS.md', desc: 'Build conventions, skill structure, testing requirements, PR workflow.' },
-      { file: 'TOOLS.md', desc: 'Full exec access, git, gh CLI, mcporter for testing. Broadest tool surface.' },
+      { file: 'TOOLS.md', desc: 'Full exec access, git, gh CLI, mcporter for testing. york-data for reading suggestions and marking them as implemented.' },
       { file: 'IDENTITY.md', desc: 'Offa 🦫 — Named for King Offa of Mercia, builder of the 150-mile Offa\'s Dyke.' },
       { file: 'MEMORY.md', desc: 'Build patterns, common gotchas, architecture decisions from past builds.' },
       { file: 'memory/', desc: 'Build logs per task. Read by Bede for quality tracking.' },
     ],
     channels: [
-      'No own channel — returns results to whoever spawned it',
+      'Reads suggestions from york-data',
+      'Writes build results and verification status back to york-data',
     ],
     skills: [
-      'Implementation — multi-file feature building, skill creation',
-      'Debugging — log analysis, root cause identification',
-      'Skill editing — targeted fixes to any agent\'s skill files',
+      { name: 'Build', desc: 'Implement the changes described in a suggestion. New skills, skill edits, config changes, scripts. Receives specific context about what and why.' },
+      { name: 'Verify', desc: 'Confirm the changes were made correctly. Read files back, test where possible, validate that the implementation matches the suggestion\'s intent.' },
     ],
     spawns: [],
-    notes: 'Offa builds what it\'s told to build. It receives specific instructions and context, executes, and reports back. Quality matters more than speed — the right model here saves money by getting it right the first time.',
-    draft: true,
   },
+]
+
+const suggestedAgents = [
   {
     id: 'york',
     icon: '🦝',
     name: 'York',
-    tier: 'red',
-    tierClass: 'large',
-    tierLabel: 'Large',
-    model: 'TBD — Large tier. Judgment calls, conversational nuance, routing decisions.',
-    heartbeat: 'Every 30m, 8 AM - 12:30 AM ET. Most beats are silent.',
-    purpose: 'The brain. Holds conversation with James, makes judgment calls, routes tasks to specialists. Owns the cannabis gate, accountability nudges, and panel presence.',
+    borderColor: 'none',
+    model: 'TBD',
+    cron: 'Heartbeat: every 30m, 8 AM - 12:30 AM ET',
+    purpose: 'Holds conversation with James, makes judgment calls, routes tasks to specialists. Owns the cannabis gate, accountability nudges, and panel presence.',
     workspace: 'Slim workspace. No spreadsheet skills, no wiki. Just enough context to route well.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Direct, concise, has opinions. The "roommate" voice. Core personality.' },
@@ -221,18 +204,15 @@ const agents = [
       'TBD — panel-presence (desktop widget updates)',
       'TBD — accountability (nudge timing, tone calibration)',
     ],
-    spawns: ['health', 'chores', 'dnd', 'research', 'builder', 'morning-brief'],
-    notes: 'The orchestrator touches everything; its mistakes cascade. Quality of judgment matters more than volume of calls.',
+    spawns: ['health', 'chores', 'dnd', 'research', 'morning-brief'],
   },
   {
     id: 'health',
     icon: '🐝',
     name: 'Health',
-    tier: 'blue',
-    tierClass: 'small',
-    tierLabel: 'Small',
-    model: 'TBD — Small tier. Structured data writes following skill instructions.',
-    heartbeat: 'None. Spawned on-demand or via cron.',
+    borderColor: 'none',
+    model: 'TBD',
+    cron: 'TBD — caches run overnight',
     purpose: 'All health data operations: food logging, calorie calculation, dashboard updates, nutrition summaries, consumption gap detection.',
     workspace: 'Focused: york-data access (consumption, daily metrics, weight), nutrition skill files only.',
     workspaceFiles: [
@@ -244,7 +224,6 @@ const agents = [
       { file: 'memory/', desc: 'Minimal — mostly stateless. Cron caches write to shared locations.' },
     ],
     channels: [
-      'No own channel — spawned by York',
       'Writes data via york-data service',
     ],
     skills: [
@@ -254,18 +233,15 @@ const agents = [
       'TBD — consumption-gap (identify missing data)',
     ],
     spawns: [],
-    notes: 'Weekly trend analysis handled by Weekly Review, not this agent. This does writes and simple reads.',
   },
   {
     id: 'chores',
     icon: '🐜',
     name: 'Chores',
-    tier: 'blue',
-    tierClass: 'small',
-    tierLabel: 'Small',
-    model: 'TBD — Small tier. Vision for cameras, state tracking.',
-    heartbeat: 'None. Spawned on-demand.',
-    purpose: 'Manage chore state, analyze camera snapshots, prepare data for the cannabis gate. York makes the gate decision; this agent gathers the data.',
+    borderColor: 'none',
+    model: 'TBD',
+    cron: 'None. Spawned on-demand.',
+    purpose: 'Manage chore state, analyze camera snapshots, prepare data for the cannabis gate.',
     workspace: 'Chore-state, camera access, chore definitions. york-data access (chores domain).',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Observational, factual. Reports what it sees, doesn\'t make judgment calls.' },
@@ -276,8 +252,7 @@ const agents = [
       { file: 'memory/', desc: 'Daily chore state. Resets each day.' },
     ],
     channels: [
-      'No own channel — spawned by York',
-      'Receives camera images as context from York',
+      'Receives camera images as context',
     ],
     skills: [
       'TBD — chore-status (read/write chore state via york-data)',
@@ -285,17 +260,14 @@ const agents = [
       'TBD — gate-data-prep (compile chore status for cannabis gate)',
     ],
     spawns: [],
-    notes: 'The nuanced judgment ("is this clean enough given Audrey is visiting?") stays with York. This agent just reports what it sees.',
   },
   {
     id: 'dnd',
     icon: '🐉',
     name: 'Lore',
-    tier: 'red',
-    tierClass: 'large',
-    tierLabel: 'Large',
-    model: 'TBD — Large tier. Interconnected wiki, creative reasoning, large context.',
-    heartbeat: 'None. Cron + direct channel + on-demand.',
+    borderColor: 'none',
+    model: 'TBD',
+    cron: 'Overnight wiki research (TBD schedule)',
     purpose: 'Campaign wiki management, lore questions, worldbuilding research, session prep. Interactive conversations route here directly.',
     workspace: 'D&D wiki (full repo access), campaign notes, session logs. Isolated from personal/health data.',
     workspaceFiles: [
@@ -317,17 +289,14 @@ const agents = [
       'TBD — overnight-research (find sparse articles, generate questions)',
     ],
     spawns: [],
-    notes: 'The wiki is massive and deeply interconnected. Creative worldbuilding + large context + interconnected reasoning makes this genuinely Large.',
   },
   {
     id: 'morning',
     icon: '🐓',
     name: 'Brief',
-    tier: 'yellow',
-    tierClass: 'medium',
-    tierLabel: 'Medium',
-    model: 'TBD — Medium tier. Editorial judgment on pre-cached data.',
-    heartbeat: 'None. Cron: 8 AM daily.',
+    borderColor: 'none',
+    model: 'TBD',
+    cron: '8 AM daily',
     purpose: 'Compile morning brief from pre-cached data. Weather, calendar, nutrition summary, chore state, D&D questions, workout nudge. Posts to #general.',
     workspace: 'Reads from shared memory files and york-data. No own data sources.',
     workspaceFiles: [
@@ -346,17 +315,14 @@ const agents = [
       'TBD — data-completeness-check (verify all sections have fresh data)',
     ],
     spawns: [],
-    notes: 'All data is pre-cached. This agent formats and editorializes.',
   },
   {
     id: 'research',
     icon: '🦊',
     name: 'Research',
-    tier: 'yellow',
-    tierClass: 'medium',
-    tierLabel: 'Varies',
-    model: 'TBD — selected per-spawn by the orchestrator based on task complexity.',
-    heartbeat: 'None. On-demand only.',
+    borderColor: 'none',
+    model: 'TBD',
+    cron: 'None. Spawned on-demand.',
     purpose: 'General research: web search, browsing, comparison, synthesis.',
     workspace: 'Minimal. Each task is mostly self-contained.',
     workspaceFiles: [
@@ -368,25 +334,21 @@ const agents = [
       { file: 'memory/', desc: 'Research results written per task, cleaned up after delivery.' },
     ],
     channels: [
-      'No own channel — returns results to spawning agent',
+      'Returns results to spawning agent',
     ],
     skills: [
       'TBD — web-research (search, browse, synthesize)',
       'TBD — comparison (structured pros/cons analysis)',
     ],
     spawns: [],
-    notes: 'The most variable agent. Model selected per-spawn, not fixed.',
   },
-
   {
     id: 'weekly',
     icon: '🦅',
     name: 'Review',
-    tier: 'red',
-    tierClass: 'large',
-    tierLabel: 'Large',
-    model: 'TBD — Large tier. Cross-domain analysis, opinion forming.',
-    heartbeat: 'None. Cron: Sunday 8 PM.',
+    borderColor: 'none',
+    model: 'TBD',
+    cron: 'Sunday 8 PM',
     purpose: 'Pull full week of data, calculate trends, identify patterns, form opinions, deliver accountability review.',
     workspace: 'york-data access (all domains), daily memory files, chore history.',
     workspaceFiles: [
@@ -406,7 +368,6 @@ const agents = [
       'TBD — accountability-review (form and deliver genuine opinions)',
     ],
     spawns: [],
-    notes: 'Once per week. Worth investing in quality — this is the primary feedback loop for behavior change.',
   },
 ]
 </script>
@@ -489,22 +450,14 @@ const agents = [
   line-height: 1.5;
 }
 
-.notes {
-  color: #8b949e !important;
-  font-style: italic;
-}
-
 .spawn-tags {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
 
-.border-red { border-color: #f85149; }
-.border-blue { border-color: #58a6ff; }
-.border-yellow { border-color: #d29922; }
-.border-purple { border-color: #bc8cff; }
-.border-gold { border-color: #f0c040; border-width: 2px; }
+.border-opus { border-color: #f0c040; border-width: 2px; }
+.border-none { border-color: #30363d; }
 
 .tag.draft {
   background: #1f6feb;
