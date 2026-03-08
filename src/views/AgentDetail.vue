@@ -135,10 +135,12 @@ const draftAgents = [
       'Writes observations and suggestions to york-data',
     ],
     skills: [
-      { name: 'Collect', desc: 'Gather data from session transcripts (sessions_list/sessions_history), agent memory files (memory_search), and york-data (past observations, measurement results). Assembles raw material for analysis.' },
-      { name: 'Analyze', desc: 'Turn collected data into structured findings. Extract corrections, errors, frustration signals, retries. Correlate failures across days and domains. Report findings objectively.' },
+      { name: 'Collect: Health Pulse', desc: 'Frequent, lightweight. Runs every few hours. Keeps a rolling tab of last ~2 days of health data (consumption, weight, workouts, cannabis). Writes structured summary to york-data for other agents to pull.' },
+      { name: 'Collect: Health Deep', desc: 'Weekly, comprehensive. Bigger model. Pulls full week of health data, calculates trends, identifies patterns across domains. Writes detailed analysis to york-data.' },
+      { name: 'Collect: Self-Review', desc: 'TBD — collects past observations, build logs, measurement results. Feeds back into the improvement loop.' },
+      { name: 'Analyze', desc: 'Read transcripts and collected data. Extract corrections, errors, frustration signals, retries. Correlate failures across days and domains. Includes weekly digest compilation.' },
       { name: 'Suggest', desc: 'Propose specific, actionable improvements based on findings. Each suggestion must include: what to change, why, and how to measure whether it worked. If it\'s not measurable, it\'s not a suggestion.' },
-      { name: 'Measure', desc: 'Check whether past suggestions that were implemented actually improved things. Compare recurrence rates before and after. Results feed back into york-data and inform future Collect/Analyze cycles.' },
+      { name: 'Measure', desc: 'Check whether past suggestions that were implemented actually improved things. Compare recurrence rates before and after. Write measurement results to york-data.' },
     ],
     spawns: [
       'transcript-preprocessor (Small tier — summarize high-volume transcript batches before deep analysis)',
@@ -351,33 +353,7 @@ const suggestedAgents = [
     ],
     spawns: [],
   },
-  {
-    id: 'weekly',
-    icon: '🦅',
-    name: 'Review',
-    borderColor: 'none',
-    model: 'TBD',
-    cron: 'Sunday 8 PM',
-    purpose: 'Pull full week of data, calculate trends, identify patterns, form opinions, deliver accountability review.',
-    workspace: 'york-data access (all domains), daily memory files, chore history.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Honest, data-driven, has opinions. Calls out patterns even uncomfortable ones.' },
-      { file: 'AGENTS.md', desc: 'Review format, data pull procedures, trend calculation methods, accountability tone.' },
-      { file: 'TOOLS.md', desc: 'york-data (all domains read), shared memory files, Discord posting.' },
-      { file: 'IDENTITY.md', desc: 'Name, emoji.' },
-      { file: 'MEMORY.md', desc: 'Historical trends, past review takeaways, what James responded to vs ignored.' },
-      { file: 'memory/', desc: 'Weekly review drafts and data snapshots.' },
-    ],
-    channels: [
-      'Posts to #general',
-    ],
-    skills: [
-      'TBD — trend-analysis (weight, calories, protein over 7 days)',
-      'TBD — pattern-correlation (post-smoke eating, A2 vs Cleveland habits)',
-      'TBD — accountability-review (form and deliver genuine opinions)',
-    ],
-    spawns: [],
-  },
+
 ]
 </script>
 
