@@ -114,15 +114,6 @@ const agentIdeas = [
     why: 'Low-key useful. "Audrey\'s birthday is in 2 weeks and you haven\'t gotten anything yet." Could be york-data + calendar, doesn\'t need its own agent.',
   },
   {
-    icon: '🐢',
-    name: 'Maintain',
-    priority: 'likely',
-    priorityClass: 'medium',
-    priorityLabel: 'Likely',
-    desc: 'Home maintenance calendar for a 1920s house. Seasonal tasks, project tracking, contractor contacts, cost history.',
-    why: 'That house always has something. A dedicated agent could build a maintenance timeline and catch seasonal items before they become emergencies.',
-  },
-  {
     icon: '🐋',
     name: 'Archive',
     priority: 'someday',

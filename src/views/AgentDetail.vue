@@ -171,7 +171,6 @@ const draftAgents = [
           { name: 'Collect Health Daily', desc: 'Daily compilation. Pulls yesterday\'s consumption, calculates calorie/protein totals, weight entry, workout activity. Structured summary to york-data. Used by morning brief and other agents.' },
           { name: 'Collect Health Deep', desc: 'Weekly, comprehensive. Bigger model. Pulls full week of health data, calculates trends, identifies patterns across domains. Writes detailed analysis to york-data.' },
           { name: 'Collect Consumption Gaps', desc: 'Analyze recent days for missing data — no food logged, missing daily metrics, cannabis sessions unrecorded. Write specific gap questions to york-data for follow-up.' },
-          { name: 'Collect Chore Patterns', desc: 'Pull chore completion history and camera assessments from Hild\'s york-data domain. Which chores get neglected? Correlate with cannabis gate approvals, day of week, location.' },
           { name: 'Collect Build Results', desc: 'Collects build results and verification status from Offa. Did what got built actually work? Feeds into the improvement loop.' },
         ],
         tbd: true,
@@ -234,36 +233,20 @@ const draftAgents = [
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: 'None. Spawned on-demand.',
-    purpose: 'Home state management. Tracks chore completion, analyzes room photos from cameras, and compiles chore status for the cannabis gate. Reports what it sees — doesn\'t make judgment calls about whether James should smoke.',
+    purpose: 'Home management. Chores, home maintenance, home projects. Scope and skills under active discussion.',
     workspace: 'Dedicated workspace. york-data access for chores and home projects domains.',
     workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Observational, factual. Reports what it sees, doesn\'t editorialize. Camera analysis is descriptive, not judgmental.' },
-      { file: 'AGENTS.md', desc: 'Chore definitions, frequency rules, camera analysis guidelines, room assessment criteria.' },
-      { file: 'TOOLS.md', desc: 'york-data (chores & home projects domains), camera snapshot access, image analysis.' },
+      { file: 'SOUL.md', desc: 'TBD' },
+      { file: 'AGENTS.md', desc: 'TBD' },
+      { file: 'TOOLS.md', desc: 'york-data (chores & home projects domains). Other tools TBD.' },
       { file: 'IDENTITY.md', desc: 'Hild 🦡 — Named for Abbess Hild of Whitby, who ran the most organized monastery in Anglo-Saxon England.' },
-      { file: 'MEMORY.md', desc: 'Chore patterns, seasonal additions, camera baseline references, false positive history.' },
-      { file: 'memory/', desc: 'Daily chore state snapshots. Camera analysis logs.' },
+      { file: 'MEMORY.md', desc: 'TBD' },
+      { file: 'memory/', desc: 'TBD' },
     ],
     channels: [
-      'Writes chore state and camera assessments to york-data',
-      'Receives camera images as context when spawned',
+      'TBD',
     ],
-    skillSections: [
-      {
-        name: 'Track',
-        skills: [
-          { name: 'Chore Status', desc: 'Read current chore state from york-data. What\'s due, what\'s overdue, what was completed today. The source of truth for chore completion.' },
-          { name: 'Log Completion', desc: 'Mark chores as completed via york-data. Receives chore name and date, writes it.' },
-        ],
-      },
-      {
-        name: 'Observe',
-        skills: [
-          { name: 'Camera Assessment', desc: 'Analyze room photos from cameras. Describe what it sees: dishes in sink, clutter on counters, laundry piles. Factual observations, no judgment. Writes assessment to york-data.' },
-          { name: 'Gate Report', desc: 'Compile a structured chore + room status report for York\'s cannabis gate. Pulls chore state + latest camera assessment. York makes the call, Hild provides the data.' },
-        ],
-      },
-    ],
+    skillSections: [],
     spawns: [],
   },
   {
