@@ -164,9 +164,10 @@
 
 <script setup>
 const channels = [
-  { name: 'general', routes: '→ York (orchestrator)' },
-  { name: 'dnd', routes: '→ Caedmon (direct)' },
-  { name: 'reviews', routes: '→ York (proposals from Bede/Offa)' },
+  { name: 'general', routes: '→ York 🦝' },
+  { name: 'caedmon', routes: '→ Caedmon 🐉 (direct)' },
+  { name: 'offa', routes: '→ Offa 🦫 (direct)' },
+  { name: 'reviews', routes: '→ York 🦝 (proposals)' },
 ]
 
 const agents = [

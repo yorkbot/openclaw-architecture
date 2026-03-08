@@ -113,15 +113,7 @@ const agentIdeas = [
     desc: 'Gift tracking, birthday reminders, Audrey visit prep automation, social calendar awareness.',
     why: 'Low-key useful. "Audrey\'s birthday is in 2 weeks and you haven\'t gotten anything yet." Could be york-data + calendar, doesn\'t need its own agent.',
   },
-  {
-    icon: '🐋',
-    name: 'Archive',
-    priority: 'someday',
-    priorityClass: 'script',
-    priorityLabel: 'Someday',
-    desc: 'Long-term memory management. Compress old daily memory files into searchable summaries. Manage the lifecycle of context as it ages.',
-    why: 'After 6 months of daily memory files, search gets noisy. An archiver could create monthly/quarterly summaries and manage retention.',
-  },
+
 ]
 
 const skillIdeas = [
@@ -133,27 +125,22 @@ const skillIdeas = [
   },
 
   {
-    agent: '🐝 Health',
+    agent: '🦌 Wynn',
     name: 'Meal pattern learning',
     desc: 'After 6 months of consumption data, suggest meals based on what James actually cooks vs what he orders. "You haven\'t made steak in 2 weeks and it\'s your best protein day."',
   },
   {
-    agent: '🐝 Health',
+    agent: '🦌 Wynn',
     name: 'Restaurant nutrition lookup',
     desc: 'When James logs a restaurant meal, look up the actual menu nutrition instead of estimating. The #1 source of calorie corrections.',
   },
   {
-    agent: '🐉 Lore',
-    name: 'Session replay',
-    desc: 'After a D&D session, generate a narrative recap from session notes. Could auto-update wiki with new developments.',
-  },
-  {
-    agent: '🐓 Brief',
+    agent: '🐓 Dagr',
     name: 'Adaptive sections',
     desc: 'Learn which brief sections James reads vs skips. De-emphasize sections he consistently ignores. Promote sections he engages with.',
   },
   {
-    agent: '🦫 Builder',
+    agent: '🦫 Offa',
     name: 'Self-test',
     desc: 'After building a new skill or feature, generate test cases and verify them before declaring done.',
   },
@@ -197,23 +184,19 @@ const integrations = [
   },
   {
     icon: '📱',
-    name: 'Phone presence',
-    status: 'Deprioritized',
-    statusClass: 'script',
-    desc: 'SMS/push notifications for truly urgent things. James says Discord reach is fine for now.',
+    name: 'SMS (Twilio)',
+    status: 'Planned',
+    statusClass: 'medium',
+    desc: 'SMS nudges and alerts via Twilio. york-tools.twilio_send(). Late in build plan but architecturally accounted for.',
   },
 ]
 
 const thinks = [
-  'Is Brief really its own agent or just a cron skill that York runs? It doesn\'t have persistent state or interactive sessions.',
-  'Review and Bede both do pattern analysis. Should Review be a skill of Bede, or do they have different enough concerns?',
-  'Finance ties into Health (spending on food), Home (project costs), and Social (gift budgets). How much cross-domain access does it need?',
-  'Should agents be able to flag things for Bede directly? "Hey, something weird happened in this session." Or is transcript-only observation cleaner?',
-  'Maintain (home maintenance) on a 1920s house could get complex. Plumbing, electrical, seasonal.',
-  'Should there be a dedicated Avatar/Identity agent? Daily avatar generation, banner changes, panel voice.',
-  'What happens when two agents disagree? E.g., Health says "you need protein" but Chores says "the kitchen is a mess." York resolves, but how formally?',
-  'How many conversational agents? One per channel, one per domain, or one that handles everything?',
-  'Conversational agent personality: each has its own voice, or they all share a unified voice?',
+  'Dagr (Brief) will grow — alarm integration, schedule-aware wake times. Future plans confirmed.',
+  'Finance ties into Health (spending on food), Home (project costs), and Social (gift budgets). How much cross-domain access does it need? Future scope.',
+  'Should there be a dedicated Avatar/Identity agent? Daily avatar generation, banner changes, panel voice. Bookmarked for later.',
+  'Agent conflict resolution (Health says "you need protein" but Chores says "kitchen is a mess") — will be a York skill.',
+  'Conversational agents: James will build multiple over time. York is two-purpose (orchestrator + conversational) at first. Each agent gets its own voice.',
 ]
 </script>
 

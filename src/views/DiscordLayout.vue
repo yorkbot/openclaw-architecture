@@ -2,9 +2,14 @@
   <div>
     <div class="card">
       <h2>Communication Channels</h2>
-      <p style="color: #8b949e; margin-bottom: 1.5rem;">
-        Currently Discord only. Channel routing determines which agent handles the conversation. 
+      <p style="color: #8b949e; margin-bottom: 1rem;">
+        Discord is the primary interface. Channel routing determines which agent handles the conversation.
         Most channels route to York who dispatches. Some route directly to domain agents for interactive sessions.
+      </p>
+      <p style="color: #c9d1d9; margin-bottom: 0; line-height: 1.6; font-size: 0.9rem; border-left: 3px solid #f22f46; padding-left: 1rem;">
+        <strong style="color: #f22f46;">Twilio SMS</strong> — planned for nudges and urgent alerts.
+        York will send SMS via york-tools.twilio_send() when Discord isn't enough.
+        Late in the build plan but accounted for in the architecture.
       </p>
     </div>
 
@@ -20,12 +25,10 @@
           class="channel"
           v-for="ch in cat.channels"
           :key="ch.name"
-          :class="{ 'channel-private': ch.private }"
         >
           <div class="channel-left">
             <span class="channel-hash">#</span>
             <span class="channel-name">{{ ch.name }}</span>
-            <span class="channel-lock" v-if="ch.private">🔒</span>
           </div>
           <div class="channel-right">
             <span :class="['tag', ch.agentClass]">{{ ch.agent }}</span>
@@ -52,12 +55,14 @@
     <div class="card" style="margin-top: 1rem;">
       <h3>Design Decisions</h3>
       <ul class="decisions">
-        <li><strong>#health is private.</strong> Weight, calories, body data never visible in #general. James can discuss health privately; the morning brief in #general only shows what's appropriate.</li>
-        <li><strong>#dnd routes directly to the DnD agent.</strong> Interactive lore sessions don't burn York's expensive context. James talks to a specialist who knows the wiki cold.</li>
+        <li><strong>#caedmon routes directly to Caedmon.</strong> Interactive lore sessions don't burn York's context. James talks to the D&D specialist who knows the wiki cold.</li>
+        <li><strong>#offa for direct builds.</strong> James can give Offa build instructions directly without going through the Bede suggestion pipeline.</li>
         <li><strong>#general stays as the main channel.</strong> York lives here. Quick questions, accountability, daily chat, morning briefs.</li>
-        <li><strong>#reviews is York-only.</strong> Improvement proposals, self-initiated changes. James reviews async.</li>
-        <li><strong>No #work channel.</strong> Work prep is ad-hoc, spawned by York when asked. Doesn't need a persistent channel.</li>
+        <li><strong>#reviews is for the improvement pipeline.</strong> Bede's suggestions surface here. James approves/rejects. Offa reads approved items.</li>
+        <li><strong>No #health channel.</strong> Health conversations happen in #general. York routes to Wynn as needed. Morning brief shows appropriate health data.</li>
+        <li><strong>No #work channel.</strong> Work prep is ad-hoc, spawned by York when asked.</li>
         <li><strong>No #mtg channel.</strong> MTG is a separate OpenClaw instance entirely.</li>
+        <li><strong>Each conversational agent gets its own voice.</strong> Caedmon sounds different from York. Future agents will have distinct personalities.</li>
       </ul>
     </div>
   </div>
@@ -70,29 +75,26 @@ const categories = [
     channels: [
       {
         name: 'general',
-        agent: 'York',
+        agent: 'York 🦝',
         agentClass: 'large',
         desc: 'Main conversation, morning briefs, accountability',
-        private: false,
-      },
-      {
-        name: 'health',
-        agent: 'York → Health',
-        agentClass: 'small',
-        desc: 'Private health data, food logging, weight discussion',
-        private: true,
       },
     ],
   },
   {
-    name: 'HOBBIES',
+    name: 'AGENTS',
     channels: [
       {
-        name: 'dnd',
-        agent: 'DnD Agent',
+        name: 'caedmon',
+        agent: 'Caedmon 🐉',
         agentClass: 'large',
-        desc: 'Campaign wiki, lore, worldbuilding, session prep',
-        private: false,
+        desc: 'D&D campaign, wiki, lore, worldbuilding, session prep',
+      },
+      {
+        name: 'offa',
+        agent: 'Offa 🦫',
+        agentClass: 'large',
+        desc: 'Direct build instructions, skill creation, debugging',
       },
     ],
   },
@@ -101,10 +103,9 @@ const categories = [
     channels: [
       {
         name: 'reviews',
-        agent: 'York',
+        agent: 'York 🦝',
         agentClass: 'large',
-        desc: 'York-initiated proposals, improvement ideas',
-        private: false,
+        desc: 'Improvement proposals from Bede/Offa pipeline',
       },
     ],
   },
@@ -113,27 +114,25 @@ const categories = [
 const rules = [
   {
     channel: 'general',
-    agent: 'York (Orchestrator)',
-    desc: 'All messages route to York. York delegates to sub-agents as needed. Morning brief, weekly review, nudges post here.',
+    agent: 'York 🦝',
+    desc: 'All messages route to York. York delegates to Wynn, Hild, etc. as needed. Morning brief, nudges, daily chat.',
   },
   {
-    channel: 'health',
-    agent: 'York → Health Agent',
-    desc: 'York receives, spawns Health agent for data operations. Private channel — no health data leaks to #general.',
+    channel: 'caedmon',
+    agent: 'Caedmon 🐉 (Direct)',
+    desc: 'Messages route directly to Caedmon. No York proxy. Interactive wiki/lore sessions. York can still handle D&D questions in #general if needed.',
   },
   {
-    channel: 'dnd',
-    agent: 'DnD Agent (Direct)',
-    desc: 'Messages route directly to the DnD agent. No York proxy. Interactive wiki/lore sessions at Sonnet cost. York can still spawn DnD agent for #general lore questions.',
+    channel: 'offa',
+    agent: 'Offa 🦫 (Direct)',
+    desc: 'James gives Offa build instructions directly. Bypasses the Bede suggestion pipeline for hands-on building.',
   },
   {
     channel: 'reviews',
-    agent: 'York',
-    desc: 'York posts proposals here. James approves/rejects. Decisions tracked in york-data.',
+    agent: 'York 🦝',
+    desc: 'Bede posts suggestions here via York. James approves/rejects. Approved items feed to Offa.',
   },
 ]
-
-const rules2 = []
 </script>
 
 <style scoped>
@@ -208,11 +207,6 @@ const rules2 = []
   color: #dbdee1;
 }
 
-.channel-lock {
-  font-size: 0.7rem;
-  margin-left: 0.25rem;
-}
-
 .channel-right {
   display: flex;
   align-items: center;
@@ -224,10 +218,6 @@ const rules2 = []
   font-size: 0.75rem;
   max-width: 300px;
   text-align: right;
-}
-
-.channel-private {
-  opacity: 0.8;
 }
 
 .rules {

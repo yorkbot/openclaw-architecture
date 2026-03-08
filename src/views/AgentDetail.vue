@@ -194,6 +194,11 @@ const globalSkills = [
     agents: 'Wynn, Hild, York, Bede, Dagr',
   },
   {
+    name: 'Flag for Bede',
+    desc: 'Any agent can flag something unusual for Bede\'s attention. "Something weird happened in this session." Writes a structured flag to york-data that Bede picks up on its next collection run.',
+    agents: 'Any agent',
+  },
+  {
     name: 'Sub-Agent Spawning',
     desc: 'When to spawn a sub-agent vs handle inline. How to pass context, set model tier, handle results. Timeout and cleanup conventions.',
     agents: 'York, Bede, Caedmon, Wynn',
@@ -240,6 +245,7 @@ const draftAgents = [
         skills: [
           { name: 'Measure Outcomes', desc: 'Check whether implemented suggestions actually reduced recurrence. Compare before and after. Write measurement results to york-data.' },
           { name: 'Verify Build', desc: 'Confirm Offa\'s changes were made correctly. Read files back, test where possible, validate that the implementation matches the suggestion\'s intent. Uses Collect Build Results as input.' },
+          { name: 'Archive', desc: 'Long-term memory management. Compress old daily memory files into searchable summaries. Monthly/quarterly rollups. Manage the lifecycle of context as it ages so search stays clean.' },
         ],
         tbd: true,
       },
@@ -271,7 +277,8 @@ const draftAgents = [
       { file: 'memory/', desc: 'Build logs per task. Read by Bede for quality tracking.' },
     ],
     channels: [
-      'Reads suggestions from york-data',
+      '#offa — direct build instructions from James',
+      'Reads suggestions from york-data (Bede pipeline)',
       'Writes build results and verification status back to york-data',
     ],
     skillSections: [
@@ -386,7 +393,7 @@ const draftAgents = [
       { file: 'memory/', desc: 'Daily D&D interactions, questions from James, overnight research results.' },
     ],
     channels: [
-      '#general — D&D conversations routed here by York',
+      '#caedmon — direct interactive sessions with James',
       'Writes overnight research to memory files for morning brief',
     ],
     skillSections: [
