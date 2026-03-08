@@ -7,14 +7,45 @@
         The service validates, enforces schema, and handles all DB operations. LLMs never see raw queries or column indices.
       </p>
       <p style="color: #c9d1d9; margin-bottom: 0; line-height: 1.6; font-size: 0.9rem; border-left: 3px solid #d29922; padding-left: 1rem;">
-        <strong style="color: #d29922;">Why MCP?</strong> mcporter is OpenClaw's CLI for calling MCP servers.
-        Agents already call <code style="color: #d29922;">mcporter call google-sheets.update_cells ...</code> today.
-        york-data replaces that with <code style="color: #d29922;">mcporter call york-data.log_food ...</code>.
-        Same tooling, same call pattern, completely different reliability.
+        <strong style="color: #d29922;">Stack:</strong> Node.js MCP server + <code style="color: #d29922;">better-sqlite3</code> (synchronous, WAL mode, single file DB).
+        No ORM, no query builder. Raw SQL with parameterized queries.
+        Called via <code style="color: #d29922;">mcporter call york-data.&lt;function&gt;(...)</code>.
       </p>
     </div>
 
-    <!-- Function Inventory -->
+    <!-- Architecture -->
+    <div class="card">
+      <h3>Project Structure</h3>
+      <div class="structure">
+        <div class="struct-item" v-for="f in structure" :key="f.path">
+          <code class="struct-path">{{ f.path }}</code>
+          <span class="struct-desc">{{ f.desc }}</span>
+        </div>
+      </div>
+      <p style="color: #3fb950; font-size: 0.85rem; margin-top: 1rem; font-style: italic;">
+        Adding a new domain = add a file in domains/, import it in index.js. That's it.
+      </p>
+    </div>
+
+    <!-- Database Schema -->
+    <div class="card border-yellow">
+      <h3>Database Schema (MVP)</h3>
+      <div class="table-list">
+        <div class="table-card" v-for="t in tables" :key="t.name">
+          <div class="table-name">{{ t.name }}</div>
+          <div class="table-desc">{{ t.desc }}</div>
+          <div class="col-list">
+            <div class="col-item" v-for="c in t.columns" :key="c.name">
+              <code class="col-name">{{ c.name }}</code>
+              <span class="col-type">{{ c.type }}</span>
+              <span class="col-note" v-if="c.note">{{ c.note }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Function Inventory by Domain -->
     <div class="card" v-for="domain in domains" :key="domain.name" :class="'border-' + domain.color">
       <h3>{{ domain.icon }} {{ domain.name }}</h3>
       <p style="color: #8b949e; margin-bottom: 1rem; font-size: 0.85rem;">{{ domain.desc }}</p>
@@ -31,25 +62,23 @@
       </div>
     </div>
 
-    <!-- Current Schema -->
-    <div class="card">
-      <h3>Current Data Schemas (from Google Sheets audit)</h3>
+    <!-- Validation Rules -->
+    <div class="card border-green">
+      <h3>Validation Rules (server-side)</h3>
       <p style="color: #8b949e; margin-bottom: 1rem; font-size: 0.85rem;">
-        Audited from every mcporter call across all current skills. These are the actual columns York reads/writes today.
+        Enforced by york-data, not the LLM. Bad data gets rejected with a clear error message.
       </p>
-
-      <div class="schema-list">
-        <div class="schema-item" v-for="s in schemas" :key="s.name">
-          <div class="schema-name">{{ s.name }}</div>
-          <div class="schema-cols">{{ s.columns }}</div>
-          <div class="schema-users">Used by: {{ s.usedBy }}</div>
+      <div class="validation-list">
+        <div class="validation-item" v-for="v in validations" :key="v.field">
+          <span class="validation-field">{{ v.field }}</span>
+          <span class="validation-rule">{{ v.rule }}</span>
         </div>
       </div>
     </div>
 
     <!-- Gotchas Eliminated -->
     <div class="card border-green">
-      <h3>Problems the Service Layer Eliminates</h3>
+      <h3>Problems This Eliminates</h3>
       <div class="gotcha-list">
         <div class="gotcha" v-for="g in gotchas" :key="g">
           <span class="gotcha-icon">✕</span> {{ g }}
@@ -57,151 +86,211 @@
       </div>
     </div>
 
-    <!-- What Stays Outside -->
+    <!-- What's NOT in MVP -->
     <div class="card">
-      <h3>What Stays Outside york-data</h3>
-      <p style="color: #8b949e; margin-bottom: 1rem; font-size: 0.85rem;">
-        Not everything moves. External services and file-based data stay as-is.
-      </p>
-      <div class="external-list">
-        <div class="external-item" v-for="e in external" :key="e.name">
-          <span class="external-name">{{ e.icon }} {{ e.name }}</span>
-          <span class="external-reason">{{ e.reason }}</span>
-        </div>
+      <h3>What's NOT in MVP</h3>
+      <div class="not-mvp-list">
+        <div class="not-mvp" v-for="n in notMvp" :key="n">→ {{ n }}</div>
       </div>
     </div>
 
-    <!-- Task Tracking (Draft Notes) -->
+    <!-- Migration Strategy -->
     <div class="card border-yellow">
-      <h3>📋 Draft: Task & Observation Storage</h3>
-      <p style="color: #d29922; font-size: 0.85rem; margin-bottom: 1rem; font-style: italic;">
-        Early thinking — not committed to this design yet. Capturing for discussion.
-      </p>
-
-      <div class="draft-section">
-        <h4>Two separate concerns currently conflated:</h4>
-        <div class="draft-comparison">
-          <div class="draft-col">
-            <div class="draft-col-header">Tasks (explicit)</div>
-            <p>Things James asks York to do, or York commits to doing. Currently lost in conversation or forgotten.</p>
-            <p><strong>Possible:</strong> DB table via york-data. <code>add_task()</code>, <code>get_tasks(status?)</code>, <code>update_task(id, status)</code>. Checked during heartbeats. Source tracked (james / york / observer).</p>
-          </div>
-          <div class="draft-col">
-            <div class="draft-col-header">Observations (implicit)</div>
-            <p>Things the observation system notices: corrections, failures, friction patterns. Currently not captured at all.</p>
-            <p><strong>Possible:</strong> DB records written by the observer script. Queried by Improvement Analyst. Recurring patterns surface as tasks if fixable.</p>
-          </div>
+      <h3>Migration from Google Sheets</h3>
+      <div class="migration-steps">
+        <div class="migration-step" v-for="(s, i) in migration" :key="i">
+          <span class="step-num">{{ i + 1 }}</span>
+          <span class="step-text">{{ s }}</span>
         </div>
-        <p style="color: #8b949e; font-size: 0.85rem; margin-top: 1rem;">
-          Key principle: nothing depends on the LLM remembering to write to a file.
-          The observer script writes automatically. Tasks are stored in the DB. Agents read what's there.
-        </p>
-      </div>
-    </div>
-
-    <!-- Open Questions -->
-    <div class="card">
-      <h3>Open Questions</h3>
-      <div class="question-list">
-        <div class="question" v-for="q in questions" :key="q">❓ {{ q }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+const structure = [
+  { path: 'york-data/', desc: '' },
+  { path: '  package.json', desc: '' },
+  { path: '  src/index.js', desc: 'MCP server entry, registers all domains' },
+  { path: '  src/db.js', desc: 'Database init, migration runner' },
+  { path: '  src/domains/consumption.js', desc: 'Food/drink logging' },
+  { path: '  src/domains/daily.js', desc: 'Daily metrics (weight, sleep, etc.)' },
+  { path: '  src/domains/workouts.js', desc: 'Workout sessions + exercises' },
+  { path: '  src/domains/cannabis.js', desc: 'Cannabis session tracking' },
+  { path: '  src/domains/observations.js', desc: 'Bede\'s findings' },
+  { path: '  src/domains/cross-domain.js', desc: 'Aggregation queries' },
+  { path: '  migrations/001-initial.sql', desc: 'All MVP tables' },
+]
+
+const tables = [
+  {
+    name: 'consumption',
+    desc: 'Food/drink items. Highest frequency, most error-prone domain.',
+    columns: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD' },
+      { name: 'time', type: 'TEXT', note: 'HH:MM or null' },
+      { name: 'item', type: 'TEXT NOT NULL', note: 'what was consumed' },
+      { name: 'quantity', type: 'TEXT', note: '"2 slices", "1 bowl"' },
+      { name: 'calories', type: 'INTEGER', note: 'estimated or known' },
+      { name: 'protein', type: 'INTEGER', note: 'grams' },
+      { name: 'notes', type: 'TEXT', note: '' },
+      { name: 'created_at', type: 'TEXT', note: 'ISO timestamp, auto' },
+    ],
+  },
+  {
+    name: 'daily_metrics',
+    desc: 'One row per day. Upsert pattern — partial updates merge.',
+    columns: [
+      { name: 'date', type: 'TEXT PK', note: 'YYYY-MM-DD, one row per day' },
+      { name: 'weight', type: 'REAL', note: 'lbs' },
+      { name: 'calories_total', type: 'INTEGER', note: 'daily total' },
+      { name: 'protein_total', type: 'INTEGER', note: 'daily total grams' },
+      { name: 'kitchen_closed', type: 'TEXT', note: 'time or null' },
+      { name: 'wake_up', type: 'TEXT', note: 'time or null' },
+      { name: 'bedtime', type: 'TEXT', note: 'time or null' },
+      { name: 'sleep_hrs', type: 'REAL', note: '' },
+      { name: 'energy', type: 'INTEGER', note: '1-5' },
+      { name: 'updated_at', type: 'TEXT', note: 'auto-updated' },
+    ],
+  },
+  {
+    name: 'workouts',
+    desc: 'Workout session summaries.',
+    columns: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD' },
+      { name: 'type', type: 'TEXT', note: 'gym, bodyweight, swimming' },
+      { name: 'location', type: 'TEXT', note: 'home, gym name' },
+      { name: 'duration_min', type: 'INTEGER', note: '' },
+      { name: 'notes', type: 'TEXT', note: '' },
+      { name: 'created_at', type: 'TEXT', note: '' },
+    ],
+  },
+  {
+    name: 'exercises',
+    desc: 'Individual exercises within a workout.',
+    columns: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'workout_id', type: 'INTEGER FK', note: '→ workouts.id' },
+      { name: 'exercise', type: 'TEXT NOT NULL', note: 'exercise name' },
+      { name: 'sets', type: 'INTEGER', note: '' },
+      { name: 'reps', type: 'INTEGER', note: '' },
+      { name: 'weight', type: 'REAL', note: 'lbs, null for bodyweight' },
+      { name: 'notes', type: 'TEXT', note: '' },
+    ],
+  },
+  {
+    name: 'cannabis_sessions',
+    desc: 'Cannabis usage tracking.',
+    columns: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD' },
+      { name: 'time', type: 'TEXT', note: 'HH:MM' },
+      { name: 'session_number', type: 'INTEGER', note: 'nth of the day' },
+      { name: 'created_at', type: 'TEXT', note: '' },
+    ],
+  },
+  {
+    name: 'observations',
+    desc: 'Bede\'s structured findings from analysis.',
+    columns: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'domain', type: 'TEXT NOT NULL', note: 'consumption, routing, etc.' },
+      { name: 'type', type: 'TEXT NOT NULL', note: 'correction, error, frustration, pattern' },
+      { name: 'summary', type: 'TEXT NOT NULL', note: 'one-line finding' },
+      { name: 'evidence', type: 'TEXT', note: 'supporting detail' },
+      { name: 'severity', type: 'TEXT', note: 'low, medium, high' },
+      { name: 'suggested_action', type: 'TEXT', note: '' },
+      { name: 'status', type: 'TEXT DEFAULT \'open\'', note: 'open, addressed, dismissed, in-progress' },
+      { name: 'resolution', type: 'TEXT', note: 'what actually happened' },
+      { name: 'created_at', type: 'TEXT', note: '' },
+      { name: 'updated_at', type: 'TEXT', note: '' },
+    ],
+  },
+]
+
 const domains = [
   {
     name: 'Consumption',
     icon: '🍎',
     color: 'green',
-    desc: 'Highest frequency, most error-prone domain. Currently the #1 source of corrections from James.',
+    desc: 'Primary consumer: Wynn. Highest frequency, most error-prone domain.',
     functions: [
-      { name: 'log_food', params: 'date, time, item, quantity, calories, protein, notes?', desc: 'Append to consumption log' },
+      { name: 'log_food', params: 'date, item, quantity?, calories?, protein?, time?, notes?', desc: 'Append a food/drink item' },
       { name: 'get_consumption', params: 'date', returns: 'items[]', desc: 'All items for a date' },
       { name: 'get_consumption_range', params: 'start_date, end_date', returns: 'items[]', desc: 'Items across date range' },
-      { name: 'delete_consumption', params: 'id', desc: 'Remove a mis-logged entry' },
       { name: 'update_consumption', params: 'id, fields...', desc: 'Fix a specific entry' },
+      { name: 'delete_consumption', params: 'id', desc: 'Remove a mis-logged entry' },
     ],
   },
   {
     name: 'Daily Metrics',
     icon: '📊',
     color: 'blue',
-    desc: 'Dashboard daily log: weight, calories, sleep, energy. One row per day, upsert pattern.',
+    desc: 'Primary consumer: Wynn. One row per day, upsert pattern — partial updates merge with existing.',
     functions: [
-      { name: 'log_daily', params: 'date, weight?, calories?, protein?, kitchen_closed?, wake_up?, bedtime?, sleep_hrs?, energy?', desc: 'Upsert daily metrics row' },
+      { name: 'log_daily', params: 'date, weight?, calories_total?, protein_total?, kitchen_closed?, wake_up?, bedtime?, sleep_hrs?, energy?', desc: 'Upsert daily metrics. Partial updates merge.' },
       { name: 'get_daily', params: 'date', returns: 'metrics', desc: 'Single day\'s metrics' },
       { name: 'get_daily_range', params: 'start_date, end_date', returns: 'metrics[]', desc: 'Range of daily metrics' },
-      { name: 'get_weight_trend', params: 'days', returns: 'weights[] + moving_avg', desc: 'Weight entries with moving average' },
+      { name: 'get_weight_trend', params: 'days', returns: 'weights[] + moving_avg_7d', desc: 'Weight entries with 7-day moving average' },
     ],
   },
   {
     name: 'Workouts',
     icon: '💪',
     color: 'blue',
-    desc: 'Workout summaries and individual exercise details.',
+    desc: 'Primary consumer: Wynn. Workout summaries and individual exercise details.',
     functions: [
-      { name: 'log_workout', params: 'date, type, location, duration, notes?', desc: 'Add workout summary' },
-      { name: 'log_exercises', params: 'date, exercises[{name, sets, reps, weight, notes?}]', desc: 'Add exercise details' },
-      { name: 'get_workouts', params: 'start_date?, end_date?', returns: 'workouts[]', desc: 'Workout history' },
-      { name: 'get_last_workout', params: '', returns: 'workout', desc: 'Most recent workout date and details' },
+      { name: 'log_workout', params: 'date, type?, location?, duration_min?, notes?', returns: 'id', desc: 'Add workout summary, returns ID for exercise logging' },
+      { name: 'log_exercises', params: 'workout_id, exercises[{exercise, sets, reps, weight?, notes?}]', returns: 'count', desc: 'Add exercises to a workout' },
+      { name: 'get_workouts', params: 'start_date?, end_date?', returns: 'workouts[]', desc: 'Workout history with exercises included' },
+      { name: 'get_last_workout', params: '', returns: 'workout', desc: 'Most recent workout with exercises' },
     ],
   },
   {
     name: 'Cannabis',
     icon: '🌿',
     color: 'yellow',
-    desc: 'Currently embedded in consumption, could be its own domain for pattern analysis.',
+    desc: 'Primary consumers: Wynn (logging), York (gate checks).',
     functions: [
-      { name: 'log_cannabis', params: 'date, time, session_number', desc: 'Record a session' },
-      { name: 'get_cannabis_sessions', params: 'date?', returns: 'sessions[]', desc: 'Sessions for a date' },
-      { name: 'get_cannabis_history', params: 'days', returns: 'frequency + patterns', desc: 'Frequency and pattern data' },
+      { name: 'log_cannabis', params: 'date, time?, session_number?', returns: 'id', desc: 'Record a session' },
+      { name: 'get_cannabis_sessions', params: 'date?', returns: 'sessions[]', desc: 'Sessions for a date (default today)' },
+      { name: 'get_cannabis_history', params: 'days', returns: 'days[] + avg_per_day + total', desc: 'Frequency and pattern data' },
     ],
   },
   {
-    name: 'Chores & Home',
-    icon: '🏠',
-    color: 'yellow',
-    desc: 'Chore tracking and home projects.',
-    functions: [
-      { name: 'get_chores', params: '', returns: 'chores[]', desc: 'All chores with frequency and last-completed' },
-      { name: 'log_chore', params: 'task, completed_date', desc: 'Mark a chore done' },
-      { name: 'get_chore_status', params: '', returns: 'due + overdue', desc: 'What\'s due, what\'s overdue' },
-      { name: 'get_projects', params: '', returns: 'projects[]', desc: 'All projects with priority and status' },
-      { name: 'update_project', params: 'task, fields...', desc: 'Update project status/priority' },
-    ],
-  },
-  {
-    name: 'Observations (Bede)',
+    name: 'Observations',
     icon: '🦉',
     color: 'purple',
-    desc: 'Structured findings from the Analyst. Written by Bede, read by York and other agents. Replaces improvement-queue.md and #reviews.',
+    desc: 'Primary consumer: Bede. Structured findings from transcript analysis.',
     functions: [
-      { name: 'log_observation', params: 'domain, type, summary, evidence, severity?, suggested_action?', desc: 'Record a finding from transcript analysis' },
-      { name: 'get_observations', params: 'domain?, type?, since?, status?', returns: 'observations[]', desc: 'Query observations with filters' },
-      { name: 'update_observation', params: 'id, status, resolution?', desc: 'Mark as addressed, dismissed, or in-progress' },
+      { name: 'log_observation', params: 'domain, type, summary, evidence?, severity?, suggested_action?', returns: 'id', desc: 'Record a finding' },
+      { name: 'get_observations', params: 'domain?, type?, status?, since?', returns: 'observations[]', desc: 'Query with filters' },
+      { name: 'update_observation', params: 'id, status?, resolution?', desc: 'Mark as addressed, dismissed, or in-progress' },
     ],
   },
   {
     name: 'Cross-Domain',
     icon: '🔗',
     color: 'purple',
-    desc: 'Aggregation queries for weekly review, pattern analysis, and morning brief.',
+    desc: 'Aggregation queries across all tables. Used by Dagr (morning brief) and Bede (pattern analysis).',
     functions: [
-      { name: 'get_trends', params: 'days, domains[]', returns: 'combined view', desc: 'Weight, calories, protein, workouts, cannabis over N days' },
-      { name: 'get_day_summary', params: 'date', returns: 'everything', desc: 'All data for a specific day across domains' },
+      { name: 'get_day_summary', params: 'date', returns: 'everything', desc: 'All data for a date across all domains' },
+      { name: 'get_trends', params: 'days', returns: 'combined view', desc: 'Weight, calories, protein, cannabis, workouts over N days' },
     ],
   },
 ]
 
-const schemas = [
-  { name: 'Dashboard (daily log)', columns: 'Date, Weight, Calories, Protein (g), Kitchen Closed, Wake Up, Bedtime, Sleep (hrs), Energy (1-5)', usedBy: 'york-consumption, nutrition-weight-cache, morning-orchestrator, weekly-checkin' },
-  { name: '[Month] Consumption', columns: 'DateTime, Item, Quantity, Calories, Protein, Notes', usedBy: 'york-consumption, nutrition-summary, consumption-gap, meal-system, morning-brief' },
-  { name: 'Workouts', columns: 'Date, Type, Location, Duration, Notes', usedBy: 'york-workout, weekly-checkin' },
-  { name: 'Exercises', columns: 'Date, Exercise, Sets, Reps, Weight, Notes', usedBy: 'york-workout' },
-  { name: 'Chores', columns: 'Task, Frequency, Last Completed, ...', usedBy: 'york-chores, morning-orchestrator' },
-  { name: 'Home Projects', columns: 'Task, Zone(s), Priority, ...', usedBy: 'morning-brief' },
+const validations = [
+  { field: 'Dates', rule: 'Must be YYYY-MM-DD. Reject anything else.' },
+  { field: 'Calories', rule: '0–8000 range.' },
+  { field: 'Protein', rule: '0–500g range.' },
+  { field: 'Weight', rule: '100–400 lbs range.' },
+  { field: 'Energy', rule: '1–5 integer.' },
+  { field: 'Sleep', rule: '0–24 hours.' },
+  { field: 'Session number', rule: '1–20 range.' },
+  { field: 'Future dates', rule: 'No future dates for consumption/workouts.' },
 ]
 
 const gotchas = [
@@ -212,30 +301,110 @@ const gotchas = [
   'Duplicate entries — LLM doesn\'t check if entry already exists before writing',
   'Dashboard row drift — LLM counts rows wrong when dashboard has gaps',
   'Date format chaos — "Mar 5" vs "March 5" vs "2026-03-05" vs "Mar 5, 2026"',
-  'Unreasonable values — service can enforce bounds (0-5000 cal, 0-500g protein)',
+  'Unreasonable values — service enforces bounds (0-8000 cal, 0-500g protein)',
 ]
 
-const external = [
-  { icon: '📅', name: 'Google Calendar', reason: 'External source of truth. Read-only via existing MCP.' },
-  { icon: '📁', name: 'Memory Files', reason: 'Daily context, agent communication. Markdown stays.' },
-  { icon: '📖', name: 'D&D Wiki', reason: 'Markdown files managed by DnD agent.' },
-  { icon: '📷', name: 'Cameras', reason: 'Hardware integration via ffmpeg scripts.' },
-  { icon: '💬', name: 'Discord', reason: 'Message tool, stays as-is.' },
-  { icon: '🖥️', name: 'Panel', reason: 'status.json file write for genmon.' },
+const notMvp = [
+  'Google Sheets sync/export (future: write-only mirror for James to view)',
+  'Task/chore storage (lives in Google Tasks)',
+  'Home project tracking (deferred)',
+  'Flags from agents ("Flag for Bede" global skill — add when needed)',
+  'Backup automation (manual for now: copy the .db file)',
+  'Auth/permissions (all agents get all functions)',
+  'Schema versioning UI (migrations handle it)',
 ]
 
-const questions = [
-  'DB engine: any lightweight embeddable DB works. Node built-in SQLite (node:sqlite) is interesting. Leave open until implementation.',
-  'Should york-data handle auth/permissions? Or do all agents get all functions?',
-  'How does schema evolution work? Adding a column to daily metrics, for example.',
-  'Should there be a read-only mode for agents that only need to query, not write?',
-  'Backup strategy: how often, where, automated?',
-  'Data migration: one-time script from Sheets, or gradual dual-write period?',
-  'Should Google Sheets stay as a sync target (write-only export for James to view)?',
+const migration = [
+  'Build york-data with empty tables',
+  'Write a one-time migration script that reads Sheets via mcporter and inserts into york-data',
+  'Run it once',
+  'Switch agents to york-data',
+  'Google Sheets becomes read-only archive',
 ]
 </script>
 
 <style scoped>
+.structure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.struct-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.struct-path {
+  color: #79c0ff;
+  min-width: 280px;
+}
+
+.struct-desc {
+  color: #8b949e;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.table-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.table-card {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.table-name {
+  color: #d2a8ff;
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.table-desc {
+  color: #8b949e;
+  font-size: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.col-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.col-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.15rem 0;
+  font-size: 0.8rem;
+}
+
+.col-name {
+  color: #79c0ff;
+  min-width: 120px;
+}
+
+.col-type {
+  color: #d29922;
+  min-width: 140px;
+  font-size: 0.75rem;
+}
+
+.col-note {
+  color: #8b949e;
+  font-size: 0.75rem;
+}
+
 .func-list {
   display: flex;
   flex-direction: column;
@@ -264,36 +433,29 @@ const questions = [
   font-size: 0.8rem;
 }
 
-.schema-list {
+.validation-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
-.schema-item {
+.validation-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.4rem 0.65rem;
   background: #0d1117;
-  border: 1px solid #21262d;
   border-radius: 4px;
-  padding: 0.75rem;
+  font-size: 0.85rem;
 }
 
-.schema-name {
+.validation-field {
   color: #f0f6fc;
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
+  font-weight: 500;
+  min-width: 120px;
 }
 
-.schema-cols {
-  color: #c9d1d9;
-  font-family: monospace;
-  font-size: 0.8rem;
-  margin-bottom: 0.25rem;
-}
-
-.schema-users {
+.validation-rule {
   color: #8b949e;
-  font-size: 0.75rem;
 }
 
 .gotcha-list {
@@ -316,84 +478,54 @@ const questions = [
   margin-right: 0.5rem;
 }
 
-.external-list {
+.not-mvp-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
-.external-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
-  background: #0d1117;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.external-name { color: #f0f6fc; font-weight: 500; }
-.external-reason { color: #8b949e; }
-
-.draft-section h4 {
+.not-mvp {
   color: #8b949e;
   font-size: 0.85rem;
-  margin-bottom: 1rem;
+  padding: 0.35rem 0;
 }
 
-.draft-comparison {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.draft-col {
-  background: #0d1117;
-  border: 1px solid #30363d;
-  border-radius: 6px;
-  padding: 1rem;
-}
-
-.draft-col-header {
-  color: #d29922;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.draft-col p {
-  color: #c9d1d9;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  margin-bottom: 0.5rem;
-}
-
-.draft-col code {
-  color: #d29922;
-  font-size: 0.8rem;
-}
-
-.question-list {
+.migration-steps {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.question {
-  color: #c9d1d9;
-  font-size: 0.85rem;
+.migration-step {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
   padding: 0.5rem;
   background: #0d1117;
   border-radius: 4px;
-  line-height: 1.5;
+}
+
+.step-num {
+  background: #d29922;
+  color: #0d1117;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.step-text {
+  color: #c9d1d9;
+  font-size: 0.85rem;
 }
 
 .border-green { border-color: #3fb950; }
 .border-blue { border-color: #58a6ff; }
 .border-yellow { border-color: #d29922; }
 .border-purple { border-color: #bc8cff; }
-
-@media (max-width: 768px) {
-  .draft-comparison { grid-template-columns: 1fr; }
-}
 </style>
