@@ -358,9 +358,62 @@ const draftAgents = [
     ],
   },
   {
+    id: 'york',
+    icon: '🦝',
+    name: 'York',
+    borderColor: 'opus',
+    model: 'Opus 4.6',
+    cron: 'Heartbeat: every 30m, 8 AM - 12:30 AM ET',
+    purpose: 'The brain. Holds conversation with James, makes judgment calls, routes tasks to specialist agents. Owns the cannabis gate (cross-domain decision using data from Hild, Wynn, cameras). Handles accountability nudges and panel presence. Silent orchestrator in the multi-agent future — for now, also the conversational interface.',
+    workspace: 'Slim workspace. No spreadsheet skills, no wiki, no direct data entry. Just enough context to route well and make judgment calls.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Direct, concise, has opinions. The "roommate" voice. Core personality.' },
+      { file: 'USER.md', desc: 'Full James context: health goals, behavioral patterns, communication preferences, interests.' },
+      { file: 'AGENTS.md', desc: 'Routing rules: what to handle inline vs spawn. Agent roster for dispatch.' },
+      { file: 'TOOLS.md', desc: 'Discord, york-data (read-only), Google Tasks (read-only for gate), panel scripts, camera-snapshot + image-analysis tools.' },
+      { file: 'IDENTITY.md', desc: 'York 🦝 — Named for Yorkshire Street.' },
+      { file: 'HEARTBEAT.md', desc: 'Heartbeat rules: when to nudge, quiet hours, what to check each beat.' },
+      { file: 'MEMORY.md', desc: 'Durable facts: cannabis gate patterns, conversation context, long-term preferences.' },
+      { file: 'memory/', desc: 'Daily notes from conversations. Cross-referenced by Bede.' },
+    ],
+    channels: [
+      '#general — all direct conversation (future: routed through conversational agents)',
+      '#reviews — proposal approvals from Bede/Offa pipeline',
+    ],
+    skillSections: [
+      {
+        name: 'Route',
+        skills: [
+          { name: 'Dispatch', desc: 'Determine what to handle inline vs what to spawn. Route D&D to Caedmon, health logging to Wynn, chore reports to Hild. The core orchestration skill.' },
+        ],
+        tbd: true,
+      },
+      {
+        name: 'Judge',
+        skills: [
+          { name: 'Cannabis Gate', desc: 'Cross-domain judgment call. Read Google Tasks for chore status, york-data for health/movement context, call camera-snapshot + image-analysis for kitchen state. Weigh all inputs and make the call. This is York\'s most complex skill — it synthesizes data from multiple agents\' domains.' },
+          { name: 'Accountability', desc: 'Nudge timing and tone calibration. When to push, when to back off. One mention per day max. Data speaks in the weekly review, not repeated nagging.' },
+        ],
+      },
+      {
+        name: 'Presence',
+        skills: [
+          { name: 'Panel Update', desc: 'Update the XFCE genmon panel widget. 5-10 words, creative York voice. Not a status bar — self-expression. Every heartbeat and end of meaningful conversations.' },
+        ],
+        tbd: true,
+      },
+    ],
+    spawns: [
+      'Wynn (health logging, coaching)',
+      'Hild (chore management, camera interpretation)',
+      'Caedmon (D&D wiki, lore, art)',
+      'Dagr (morning brief — cron-triggered, not spawned)',
+    ],
+  },
+  {
     id: 'morning',
     icon: '🐓',
-    name: 'Brief',
+    name: 'Dagr',
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: '8 AM daily',
@@ -370,7 +423,7 @@ const draftAgents = [
       { file: 'SOUL.md', desc: 'Editorial voice. Concise, opinionated, no filler. Knows what matters today.' },
       { file: 'AGENTS.md', desc: 'Brief format, section order, data source locations, completeness checks.' },
       { file: 'TOOLS.md', desc: 'york-data (read-only), Bede\'s cached markdown files, Discord posting.' },
-      { file: 'IDENTITY.md', desc: 'Brief 🐓 — The rooster. One job: wake up and crow.' },
+      { file: 'IDENTITY.md', desc: 'Dagr 🐓 — Old Norse for "day." The one who announces the day.' },
       { file: 'MEMORY.md', desc: 'Brief format preferences, past corrections from James.' },
       { file: 'memory/', desc: 'Minimal — reads other agents\' caches, doesn\'t maintain much own state.' },
     ],
@@ -391,67 +444,6 @@ const draftAgents = [
 ]
 
 const suggestedAgents = [
-  {
-    id: 'york',
-    icon: '🦝',
-    name: 'York',
-    borderColor: 'none',
-    model: 'TBD',
-    cron: 'Heartbeat: every 30m, 8 AM - 12:30 AM ET',
-    purpose: 'Holds conversation with James, makes judgment calls, routes tasks to specialists. Owns the cannabis gate, accountability nudges, and panel presence.',
-    workspace: 'Slim workspace. No spreadsheet skills, no wiki. Just enough context to route well.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Direct, concise, has opinions. The "roommate" voice. Core personality.' },
-      { file: 'USER.md', desc: 'Full James context: health goals, behavioral patterns, communication preferences, interests.' },
-      { file: 'AGENTS.md', desc: 'Routing rules: what to handle inline vs spawn. Agent roster for dispatch.' },
-      { file: 'TOOLS.md', desc: 'Discord, york-data (read-only), Google Tasks (read-only for gate checks), panel scripts, camera-snapshot + image-analysis tools.' },
-      { file: 'IDENTITY.md', desc: 'Name, emoji, avatar config.' },
-      { file: 'HEARTBEAT.md', desc: 'Heartbeat rules: when to nudge, quiet hours, what to check each beat.' },
-      { file: 'MEMORY.md', desc: 'Durable facts: cannabis gate patterns, conversation context, long-term preferences.' },
-      { file: 'memory/', desc: 'Daily notes from conversations. Cross-referenced by sub-agents.' },
-    ],
-    channels: [
-      '#general — all direct conversation',
-      '#reviews — proposal approvals',
-      '#health — private health discussion',
-    ],
-    skills: [
-      'TBD — orchestrator-dispatch (routing rules)',
-      'TBD — cannabis-gate (cross-domain judgment)',
-      'TBD — panel-presence (desktop widget updates)',
-      'TBD — accountability (nudge timing, tone calibration)',
-    ],
-    spawns: ['wynn', 'hild', 'caedmon', 'research', 'morning-brief'],
-  },
-
-
-
-  {
-    id: 'research',
-    icon: '🦊',
-    name: 'Research',
-    borderColor: 'none',
-    model: 'TBD',
-    cron: 'None. Spawned on-demand.',
-    purpose: 'General research: web search, browsing, comparison, synthesis.',
-    workspace: 'Minimal. Each task is mostly self-contained.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Thorough, skeptical. Verify sources, note confidence levels, structured output.' },
-      { file: 'AGENTS.md', desc: 'Research methodology, output format, source quality guidelines.' },
-      { file: 'TOOLS.md', desc: 'Browser, web search, file writing for reports.' },
-      { file: 'IDENTITY.md', desc: 'Name, emoji.' },
-      { file: 'MEMORY.md', desc: 'Minimal — mostly stateless. Research context passed per-task.' },
-      { file: 'memory/', desc: 'Research results written per task, cleaned up after delivery.' },
-    ],
-    channels: [
-      'Returns results to spawning agent',
-    ],
-    skills: [
-      'TBD — web-research (search, browse, synthesize)',
-      'TBD — comparison (structured pros/cons analysis)',
-    ],
-    spawns: [],
-  },
 
 ]
 </script>
