@@ -357,6 +357,37 @@ const draftAgents = [
       'Sonnet sub-agent (bulk wiki compilation, session prep, batch art generation)',
     ],
   },
+  {
+    id: 'morning',
+    icon: '🐓',
+    name: 'Brief',
+    borderColor: 'sonnet',
+    model: 'Sonnet',
+    cron: '8 AM daily',
+    purpose: 'Compile and post the morning brief from pre-cached data. One cron, one job, one post. Reads Bede\'s caches, weather, calendar, and overnight research results. Editorial voice — not just a data dump. Future: may deliver to a conversational agent instead of posting directly to #general.',
+    workspace: 'Minimal. Reads other agents\' cached output. No own data sources.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Editorial voice. Concise, opinionated, no filler. Knows what matters today.' },
+      { file: 'AGENTS.md', desc: 'Brief format, section order, data source locations, completeness checks.' },
+      { file: 'TOOLS.md', desc: 'york-data (read-only), Bede\'s cached markdown files, Discord posting.' },
+      { file: 'IDENTITY.md', desc: 'Brief 🐓 — The rooster. One job: wake up and crow.' },
+      { file: 'MEMORY.md', desc: 'Brief format preferences, past corrections from James.' },
+      { file: 'memory/', desc: 'Minimal — reads other agents\' caches, doesn\'t maintain much own state.' },
+    ],
+    channels: [
+      '#general — posts morning brief (future: may route through conversational agent instead)',
+    ],
+    skillSections: [
+      {
+        name: 'Compile',
+        skills: [
+          { name: 'Morning Brief', desc: 'Read all cached data (Bede health caches, weather, calendar, Caedmon overnight research, chore summary). Format into the brief. Editorialize — have opinions about what matters today. Post to #general.' },
+          { name: 'Data Freshness Check', desc: 'Before compiling, verify all expected caches exist and are from today. Flag missing sections rather than silently omitting them.' },
+        ],
+      },
+    ],
+    spawns: [],
+  },
 ]
 
 const suggestedAgents = [
@@ -394,32 +425,7 @@ const suggestedAgents = [
   },
 
 
-  {
-    id: 'morning',
-    icon: '🐓',
-    name: 'Brief',
-    borderColor: 'none',
-    model: 'TBD',
-    cron: '8 AM daily',
-    purpose: 'Compile morning brief from pre-cached data. Weather, calendar, nutrition summary, chore state, D&D questions, workout nudge. Posts to #general.',
-    workspace: 'Reads from shared memory files and york-data. No own data sources.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Editorial voice. Concise, opinionated, no filler. Knows what matters today.' },
-      { file: 'AGENTS.md', desc: 'Brief format, section order, data source locations, completeness checks.' },
-      { file: 'TOOLS.md', desc: 'york-data (read-only), shared memory paths for caches, Discord posting.' },
-      { file: 'IDENTITY.md', desc: 'Name, emoji.' },
-      { file: 'MEMORY.md', desc: 'Brief format preferences, past corrections from James.' },
-      { file: 'memory/', desc: 'Minimal — reads other agents\' caches, doesn\'t maintain much own state.' },
-    ],
-    channels: [
-      'Posts to #general',
-    ],
-    skills: [
-      'TBD — brief-compilation (read caches, format, editorialize)',
-      'TBD — data-completeness-check (verify all sections have fresh data)',
-    ],
-    spawns: [],
-  },
+
   {
     id: 'research',
     icon: '🦊',
