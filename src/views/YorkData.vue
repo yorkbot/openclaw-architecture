@@ -113,11 +113,9 @@ const structure = [
   { path: '  package.json', desc: '' },
   { path: '  src/index.js', desc: 'MCP server entry, registers all domains' },
   { path: '  src/db.js', desc: 'Database init, migration runner' },
-  { path: '  src/domains/consumption.js', desc: 'Food/drink logging' },
+  { path: '  src/domains/consumption.js', desc: 'Food, drink, supplements, cannabis' },
   { path: '  src/domains/daily.js', desc: 'Daily metrics (weight, sleep, etc.)' },
   { path: '  src/domains/workouts.js', desc: 'Workout sessions + exercises' },
-  { path: '  src/domains/cannabis.js', desc: 'Cannabis session tracking' },
-  { path: '  src/domains/observations.js', desc: 'Bede\'s findings' },
   { path: '  src/domains/cross-domain.js', desc: 'Aggregation queries' },
   { path: '  migrations/001-initial.sql', desc: 'All MVP tables' },
 ]
@@ -125,15 +123,16 @@ const structure = [
 const tables = [
   {
     name: 'consumption',
-    desc: 'Food/drink items. Highest frequency, most error-prone domain.',
+    desc: 'Food, drinks, supplements, and cannabis. Cannabis is just a consumption type.',
     columns: [
       { name: 'id', type: 'INTEGER PK', note: 'auto' },
       { name: 'date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD' },
       { name: 'time', type: 'TEXT', note: 'HH:MM or null' },
       { name: 'item', type: 'TEXT NOT NULL', note: 'what was consumed' },
       { name: 'quantity', type: 'TEXT', note: '"2 slices", "1 bowl"' },
-      { name: 'calories', type: 'INTEGER', note: 'estimated or known' },
-      { name: 'protein', type: 'INTEGER', note: 'grams' },
+      { name: 'calories', type: 'INTEGER', note: 'estimated or known (0 for cannabis)' },
+      { name: 'protein', type: 'INTEGER', note: 'grams (0 for cannabis)' },
+      { name: 'type', type: 'TEXT DEFAULT \'food\'', note: 'food, drink, supplement, cannabis' },
       { name: 'notes', type: 'TEXT', note: '' },
       { name: 'created_at', type: 'TEXT', note: 'ISO timestamp, auto' },
     ],
@@ -180,34 +179,7 @@ const tables = [
       { name: 'notes', type: 'TEXT', note: '' },
     ],
   },
-  {
-    name: 'cannabis_sessions',
-    desc: 'Cannabis usage tracking.',
-    columns: [
-      { name: 'id', type: 'INTEGER PK', note: 'auto' },
-      { name: 'date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD' },
-      { name: 'time', type: 'TEXT', note: 'HH:MM' },
-      { name: 'session_number', type: 'INTEGER', note: 'nth of the day' },
-      { name: 'created_at', type: 'TEXT', note: '' },
-    ],
-  },
-  {
-    name: 'observations',
-    desc: 'Bede\'s structured findings from analysis.',
-    columns: [
-      { name: 'id', type: 'INTEGER PK', note: 'auto' },
-      { name: 'domain', type: 'TEXT NOT NULL', note: 'consumption, routing, etc.' },
-      { name: 'type', type: 'TEXT NOT NULL', note: 'correction, error, frustration, pattern' },
-      { name: 'summary', type: 'TEXT NOT NULL', note: 'one-line finding' },
-      { name: 'evidence', type: 'TEXT', note: 'supporting detail' },
-      { name: 'severity', type: 'TEXT', note: 'low, medium, high' },
-      { name: 'suggested_action', type: 'TEXT', note: '' },
-      { name: 'status', type: 'TEXT DEFAULT \'open\'', note: 'open, addressed, dismissed, in-progress' },
-      { name: 'resolution', type: 'TEXT', note: 'what actually happened' },
-      { name: 'created_at', type: 'TEXT', note: '' },
-      { name: 'updated_at', type: 'TEXT', note: '' },
-    ],
-  },
+
 ]
 
 const domains = [
@@ -215,13 +187,14 @@ const domains = [
     name: 'Consumption',
     icon: '🍎',
     color: 'green',
-    desc: 'Primary consumer: Wynn. Highest frequency, most error-prone domain.',
+    desc: 'Primary consumer: Wynn. Food, drinks, supplements, and cannabis. Cannabis is just a consumption type.',
     functions: [
-      { name: 'log_food', params: 'date, item, quantity?, calories?, protein?, time?, notes?', desc: 'Append a food/drink item' },
-      { name: 'get_consumption', params: 'date', returns: 'items[]', desc: 'All items for a date' },
-      { name: 'get_consumption_range', params: 'start_date, end_date', returns: 'items[]', desc: 'Items across date range' },
+      { name: 'log_food', params: 'date, item, quantity?, calories?, protein?, time?, type?, notes?', desc: 'Append a consumption item (food, drink, supplement, or cannabis)' },
+      { name: 'get_consumption', params: 'date, type?', returns: 'items[]', desc: 'All items for a date, optionally filtered by type' },
+      { name: 'get_consumption_range', params: 'start_date, end_date, type?', returns: 'items[]', desc: 'Items across date range' },
       { name: 'update_consumption', params: 'id, fields...', desc: 'Fix a specific entry' },
       { name: 'delete_consumption', params: 'id', desc: 'Remove a mis-logged entry' },
+      { name: 'get_cannabis_history', params: 'days', returns: 'days[] + avg_per_day + total', desc: 'Convenience query: cannabis frequency and patterns' },
     ],
   },
   {
@@ -248,28 +221,7 @@ const domains = [
       { name: 'get_last_workout', params: '', returns: 'workout', desc: 'Most recent workout with exercises' },
     ],
   },
-  {
-    name: 'Cannabis',
-    icon: '🌿',
-    color: 'yellow',
-    desc: 'Primary consumers: Wynn (logging), York (gate checks).',
-    functions: [
-      { name: 'log_cannabis', params: 'date, time?, session_number?', returns: 'id', desc: 'Record a session' },
-      { name: 'get_cannabis_sessions', params: 'date?', returns: 'sessions[]', desc: 'Sessions for a date (default today)' },
-      { name: 'get_cannabis_history', params: 'days', returns: 'days[] + avg_per_day + total', desc: 'Frequency and pattern data' },
-    ],
-  },
-  {
-    name: 'Observations',
-    icon: '🦉',
-    color: 'purple',
-    desc: 'Primary consumer: Bede. Structured findings from transcript analysis.',
-    functions: [
-      { name: 'log_observation', params: 'domain, type, summary, evidence?, severity?, suggested_action?', returns: 'id', desc: 'Record a finding' },
-      { name: 'get_observations', params: 'domain?, type?, status?, since?', returns: 'observations[]', desc: 'Query with filters' },
-      { name: 'update_observation', params: 'id, status?, resolution?', desc: 'Mark as addressed, dismissed, or in-progress' },
-    ],
-  },
+
   {
     name: 'Cross-Domain',
     icon: '🔗',
@@ -289,7 +241,7 @@ const validations = [
   { field: 'Weight', rule: '100–400 lbs range.' },
   { field: 'Energy', rule: '1–5 integer.' },
   { field: 'Sleep', rule: '0–24 hours.' },
-  { field: 'Session number', rule: '1–20 range.' },
+  { field: 'Type', rule: 'Must be: food, drink, supplement, or cannabis.' },
   { field: 'Future dates', rule: 'No future dates for consumption/workouts.' },
 ]
 
@@ -308,6 +260,7 @@ const notMvp = [
   'Google Sheets sync/export (future: write-only mirror for James to view)',
   'Task/chore storage (lives in Google Tasks)',
   'Home project tracking (deferred)',
+  'Observations domain (add when Bede is built)',
   'Flags from agents ("Flag for Bede" global skill — add when needed)',
   'Backup automation (manual for now: copy the .db file)',
   'Auth/permissions (all agents get all functions)',
