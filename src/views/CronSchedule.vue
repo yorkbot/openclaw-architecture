@@ -3,14 +3,8 @@
     <div class="card">
       <h2>⏰ Cron Schedule</h2>
       <p style="color: #8b949e; margin-bottom: 1rem;">
-        All times ET. Session resets at <strong>1:00 AM</strong>. Day starts at <strong>8:00 AM</strong>.
-        Night window: 1:00 AM – 7:55 AM. Nothing runs during the day except heartbeat and weekly check-in.
-      </p>
-      <p style="color: #8b949e; margin-bottom: 1rem;">
-        <span class="status-tag status-on">On</span> = currently running.
-        <span class="status-tag status-built">Built</span> = agent/script ready, not yet switched.
-        <span class="status-tag status-notbuilt">Not built</span> = planned.
-        <span class="status-tag status-script">Script</span> = no LLM, runs as bash.
+        All scheduled jobs across agents. Times in ET. Status reflects current state.
+        Memory audit skills are built (shared-skills), crons just need activation.
       </p>
     </div>
 
@@ -23,13 +17,13 @@
             <th>Time</th>
             <th>Job</th>
             <th>Agent</th>
-            <th>LLM?</th>
+            <th>LLM</th>
             <th>Status</th>
             <th>Notes</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="job in group.jobs" :key="job.name" :class="{ 'row-disabled': job.status === 'Not built' }">
+          <tr v-for="job in group.jobs" :key="job.name">
             <td class="cron-time">{{ job.time }}</td>
             <td>{{ job.name }}</td>
             <td>{{ job.agent }}</td>
@@ -44,9 +38,8 @@
     <div class="card">
       <h3>Migration Plan</h3>
       <p style="color: #8b949e; line-height: 1.6;">
-        All crons currently run on <code>main</code>. "Built" items have the target agent's workspace
-        and skills ready — just need the cron pointed at the new agent. "Script" items need no LLM
-        and will run as bash via exec cron. When verified, <code>main</code> duplicates are deleted.
+        Remaining <code>main</code> agent crons will be migrated or deleted as specialized agents come online.
+        When all responsibilities are distributed, <code>main</code> is deleted entirely.
       </p>
     </div>
   </div>
@@ -56,124 +49,108 @@
 const cronGroups = [
   {
     icon: '🌙',
-    label: 'Part 1: Memory (1:00 AM – 3:00 AM)',
-    desc: 'Per-agent memory management. Each agent gets a slot to summarize its sessions and clean memory. Staggered to avoid overlap.',
+    label: 'Part 1: Memory Audit (1:00 AM – 3:00 AM)',
+    desc: 'Per-agent memory quality audit. Each agent gets a Sonnet sub-agent to review its memory files. Skills built at shared-skills/memory-audit/. Staggered to avoid overlap.',
     jobs: [
       {
         time: '1:00 AM',
-        name: 'York Memory Summary',
+        name: 'Memory Audit — York',
         agent: 'York 🦝',
-        llm: 'Yes',
-        status: 'Not built',
-        notes: 'Summarize York\'s sessions, write to memory file',
-      },
-      {
-        time: '1:15 AM',
-        name: 'Queue Audit',
-        agent: 'York 🦝',
-        llm: 'Yes',
-        status: 'On',
-        notes: 'Clean improvement-queue.md: done/rejected items, dedupes. Currently at 12:30 AM.',
+        llm: 'Sonnet sub-agent',
+        status: 'Skill built',
+        notes: 'Audit York workspace memory quality',
       },
       {
         time: '1:30 AM',
-        name: 'Offa Memory Summary',
+        name: 'Memory Audit — Offa',
         agent: 'Offa 🦫',
-        llm: 'Yes',
-        status: 'Not built',
-        notes: 'Summarize Offa\'s build sessions, update memory',
+        llm: 'Sonnet sub-agent',
+        status: 'Skill built',
+        notes: 'Audit Offa workspace memory quality',
       },
       {
         time: '2:00 AM',
-        name: 'Wynn Memory Summary',
+        name: 'Memory Audit — Wynn',
         agent: 'Wynn 🦌',
-        llm: 'Yes',
-        status: 'Not built',
-        notes: 'Summarize health logging sessions, update memory',
+        llm: 'Sonnet sub-agent',
+        status: 'Skill built',
+        notes: 'Audit Wynn workspace memory quality',
       },
       {
         time: '2:30 AM',
-        name: 'Caedmon Memory Summary',
+        name: 'Memory Audit — Caedmon',
         agent: 'Caedmon 🐉',
-        llm: 'Yes',
-        status: 'Not built',
-        notes: 'Summarize D&D sessions, update wiki-related memory',
+        llm: 'Sonnet sub-agent',
+        status: 'Skill built',
+        notes: 'Audit Caedmon workspace memory quality',
       },
       {
         time: '3:00 AM',
-        name: 'Dagr Memory Summary',
+        name: 'Memory Audit — Dagr',
         agent: 'Dagr 🐓',
-        llm: 'Yes',
-        status: 'Not built',
-        notes: 'Summarize brief corrections, format preferences',
+        llm: 'Sonnet sub-agent',
+        status: 'Skill built',
+        notes: 'Audit Dagr workspace memory quality',
       },
     ],
   },
   {
     icon: '🔧',
-    label: 'Part 2: Overnight Work (1:00 AM – 6:00 AM)',
-    desc: 'Long-running overnight tasks that need LLM reasoning.',
+    label: 'Part 2: Overnight Research (3:00 AM – 4:00 AM)',
+    desc: 'Long-running overnight tasks that need creative reasoning.',
     jobs: [
-      {
-        time: 'Every 30m, 1–6 AM',
-        name: 'Overnight Work',
-        agent: 'York 🦝',
-        llm: 'Yes',
-        status: 'On',
-        notes: 'Picks one task from overnight queue, executes or spawns sub-agent',
-      },
       {
         time: '3:45 AM',
         name: 'D&D Questions Cache',
         agent: 'Caedmon 🐉',
-        llm: 'Yes',
-        status: 'Built',
-        notes: 'Wiki research, worldbuilding questions. Needs creative reasoning.',
+        llm: 'Opus 4.6',
+        status: 'On (main)',
+        notes: 'Wiki research, worldbuilding questions. Currently runs on main/default agent. Migrate to Caedmon.',
       },
     ],
   },
   {
     icon: '🌅',
-    label: 'Part 3: Morning Cache + Prep (4:00 AM – 7:55 AM)',
-    desc: 'Data fetching and brief preparation. Scripts where possible — no LLM for data pulls.',
+    label: 'Part 3: Morning Cache + Prep (4:00 AM – 8:00 AM)',
+    desc: 'Data fetching and brief preparation.',
     jobs: [
       {
         time: '4:15 AM',
         name: 'Nutrition + Weight Cache',
-        agent: 'Wynn 🦌',
-        llm: 'No — script',
-        status: 'Built',
-        notes: 'Fetch Google Sheets rows, extract fields, write to memory. Bash + python.',
+        agent: 'Bede 🦉',
+        llm: 'Sonnet sub-agent',
+        status: 'On (main)',
+        notes: 'Fetch from york-data, write to memory. Currently on default agent.',
       },
       {
         time: '5:15 AM',
         name: 'Consumption Gap Cache',
-        agent: 'Wynn 🦌',
-        llm: 'No — script',
-        status: 'Built',
-        notes: 'Read nutrition cache, check empty fields, write gap questions. Bash + python.',
+        agent: 'Bede 🦉',
+        llm: 'Sonnet sub-agent',
+        status: 'On (main)',
+        notes: 'Check for missing consumption data, write gap questions. Currently on default agent.',
       },
       {
         time: '6:30 AM',
         name: 'Calendar Context',
-        agent: 'Script',
-        llm: 'No — script',
-        status: 'Built',
-        notes: 'mcporter call google-calendar → parse JSON → write to memory. Also runs at 6:30 PM.',
+        agent: 'Dagr 🐓',
+        llm: 'Yes',
+        status: 'On (main)',
+        notes: 'mcporter google-calendar → write to memory. Also runs at 6:30 PM.',
       },
       {
         time: '7:30 AM',
         name: 'Weather Cache',
-        agent: 'Script',
-        llm: 'No — script',
-        status: 'Built',
-        notes: 'curl wttr.in → write to memory. Location-aware (Cleveland/Ann Arbor).',
+        agent: 'Dagr 🐓',
+        llm: 'Yes',
+        status: 'On (main)',
+        notes: 'curl wttr.in → write to memory. Location-aware. Also runs at 7:30 PM.',
       },
       {
         time: '7:40 AM Mon',
         name: 'Weekly Banner',
         agent: 'York 🦝',
-        llm: 'Yes',
+        llm: 'Opus 4.6',
         status: 'On',
         notes: 'Generate Discord server banner via Gemini image gen.',
       },
@@ -181,7 +158,7 @@ const cronGroups = [
         time: '7:45 AM',
         name: 'Daily Avatar',
         agent: 'York 🦝',
-        llm: 'Yes',
+        llm: 'Opus 4.6',
         status: 'On',
         notes: 'Generate daily Discord avatar via Gemini image gen.',
       },
@@ -189,9 +166,9 @@ const cronGroups = [
         time: '8:00 AM',
         name: 'Morning Brief',
         agent: 'Dagr 🐓',
-        llm: 'Yes',
-        status: 'Built',
-        notes: 'Read all cached data, verify, editorialize, post to #dagr.',
+        llm: 'Sonnet',
+        status: 'On (main)',
+        notes: 'Read cached data, editorialize, post. Currently runs on main. Migrate to Dagr.',
       },
     ],
   },
@@ -204,7 +181,7 @@ const cronGroups = [
         time: 'Every 30m (8AM–12:30AM)',
         name: 'Heartbeat',
         agent: 'York 🦝',
-        llm: 'Yes',
+        llm: 'Opus 4.6',
         status: 'On',
         notes: 'Session continuity. Silent most beats.',
       },
@@ -212,7 +189,7 @@ const cronGroups = [
         time: '8:00 PM Sun',
         name: 'Weekly Check-in',
         agent: 'York 🦝',
-        llm: 'Yes',
+        llm: 'Opus 4.6',
         status: 'On',
         notes: 'Sunday evening health/fitness recap to #general.',
       },
@@ -222,9 +199,9 @@ const cronGroups = [
 
 function statusClass(status) {
   if (status === 'On') return 'status-on'
-  if (status === 'Built') return 'status-built'
+  if (status === 'On (main)') return 'status-on-main'
+  if (status === 'Skill built') return 'status-built'
   if (status === 'Not built') return 'status-notbuilt'
-  if (status === 'Script') return 'status-script'
   return ''
 }
 </script>
@@ -261,10 +238,6 @@ function statusClass(status) {
   font-size: 0.8rem;
 }
 
-.row-disabled {
-  opacity: 0.7;
-}
-
 .status-tag {
   font-size: 0.75rem;
   padding: 0.15rem 0.5rem;
@@ -277,6 +250,11 @@ function statusClass(status) {
   color: #3fb950;
 }
 
+.status-on-main {
+  background: rgba(210, 153, 34, 0.15);
+  color: #d29922;
+}
+
 .status-built {
   background: rgba(31, 111, 235, 0.15);
   color: #58a6ff;
@@ -285,11 +263,6 @@ function statusClass(status) {
 .status-notbuilt {
   background: rgba(139, 148, 158, 0.15);
   color: #8b949e;
-}
-
-.status-script {
-  background: rgba(210, 153, 34, 0.15);
-  color: #d29922;
 }
 
 code {
