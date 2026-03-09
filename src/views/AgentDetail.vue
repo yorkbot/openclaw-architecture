@@ -9,9 +9,77 @@
       </p>
       <div class="global-skills-grid">
         <div class="global-skill" v-for="gs in globalSkills" :key="gs.name">
-          <div class="global-skill-name">{{ gs.name }}</div>
+          <div class="global-skill-name">{{ gs.name }} <span v-if="gs.live" class="skill-live-tag">Live</span></div>
           <div class="global-skill-desc">{{ gs.desc }}</div>
           <div class="global-skill-agents">Used by: {{ gs.agents }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Agents -->
+    <div class="card" v-for="agent in liveAgents" :key="agent.id" :class="'border-' + agent.borderColor">
+      <div class="agent-header">
+        <h2>{{ agent.icon }} {{ agent.name }}</h2>
+        <div>
+          <span class="tag live">Live</span>
+        </div>
+      </div>
+      <p class="agent-purpose">{{ agent.purpose }}</p>
+
+      <div class="agent-detail-grid">
+        <div class="detail-item">
+          <h3>Default Model</h3>
+          <p>{{ agent.model }}</p>
+        </div>
+        <div class="detail-item">
+          <h3>Cron Schedule</h3>
+          <p>{{ agent.cron }}</p>
+        </div>
+      </div>
+
+      <div class="agent-section">
+        <h3>Workspace</h3>
+        <p>{{ agent.workspace }}</p>
+        <div v-if="agent.workspaceFiles?.length" class="workspace-files">
+          <div class="ws-file" v-for="f in agent.workspaceFiles" :key="f.file">
+            <code>{{ f.file }}</code>
+            <span class="ws-desc">{{ f.desc }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="agent-section">
+        <h3>Communication Channels</h3>
+        <ul>
+          <li v-for="ch in agent.channels" :key="ch">{{ ch }}</li>
+        </ul>
+      </div>
+
+      <div class="agent-section" v-if="agent.skillSections">
+        <h3>Skills</h3>
+        <div class="skill-category" v-for="cat in agent.skillSections" :key="cat.name">
+          <h4 class="skill-cat-header">{{ cat.name }}</h4>
+          <div class="skill-items">
+            <div class="skill-item" v-for="sk in cat.skills" :key="sk.name" :class="{ 'skill-live': sk.live }">
+              <div class="skill-name">{{ sk.name }} <span v-if="sk.live" class="skill-live-tag">Live</span><span v-if="sk.todo" class="skill-todo-tag">TODO</span></div>
+              <div class="skill-desc">{{ sk.desc }}</div>
+            </div>
+            <div class="skill-tbd" v-if="cat.tbd">+ more TBD as agents are defined</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="agent-section" v-if="agent.todos?.length">
+        <h3>TODOs</h3>
+        <ul>
+          <li v-for="todo in agent.todos" :key="todo">{{ todo }}</li>
+        </ul>
+      </div>
+
+      <div class="agent-section" v-if="agent.spawns?.length">
+        <h3>Expected Sub-Agents</h3>
+        <div class="spawn-tags">
+          <span class="tag small" v-for="s in agent.spawns" :key="s">{{ s }}</span>
         </div>
       </div>
     </div>
@@ -162,6 +230,7 @@ const globalSkills = [
     name: 'Git Workflow',
     desc: 'Branch, commit, push, open PR. Naming conventions for branches, commit message format, when to PR vs direct push. The standard workflow for any repo changes.',
     agents: 'Caedmon (wiki), Offa (skills/scripts)',
+    live: true,
   },
   {
     name: 'Memory Management',
@@ -202,6 +271,58 @@ const globalSkills = [
     name: 'Sub-Agent Spawning',
     desc: 'When to spawn a sub-agent vs handle inline. How to pass context, set model tier, handle results. Timeout and cleanup conventions.',
     agents: 'York, Bede, Caedmon, Wynn',
+  },
+]
+
+const liveAgents = [
+  {
+    id: 'offa',
+    icon: '🦫',
+    name: 'Offa',
+    borderColor: 'opus',
+    model: 'Opus 4.6',
+    cron: 'None. Spawned on-demand.',
+    purpose: 'Master software engineer. Breaks down tasks, builds skills before building features, always finds ways to test its work. If a skill doesn\'t exist for a task, Offa builds the skill first. Delays delivery to get the foundation right. James talks to Offa directly in #offa — Offa is a co-worker, York is the boss, Bede is the supervisor.',
+    workspace: '~/.openclaw/workspace-offa/ — own workspace with local skills. Can operate on any agent\'s workspace when building or fixing skills.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Master engineer voice. Methodical, skills-first, test-before-ship. Will delay tasks to build skills. Redirects non-build requests to York/Wynn.' },
+      { file: 'AGENTS.md', desc: 'Build conventions, skill structure, testing requirements. Multi-agent system map.' },
+      { file: 'TOOLS.md', desc: 'Full exec access, git, gh CLI (yorkbot), mcporter for testing MCP servers.' },
+      { file: 'IDENTITY.md', desc: 'Offa 🦫 — Named for King Offa of Mercia, builder of the 150-mile Offa\'s Dyke.' },
+      { file: 'MEMORY.md', desc: 'Build history, york-data plan status, skills inventory, key file paths.' },
+    ],
+    channels: [
+      '#offa — direct build instructions from James',
+    ],
+    skillSections: [
+      {
+        name: 'Build',
+        skills: [
+          { name: 'Build Planning', desc: 'Decompose → skill check → milestone checkpoint → build. Catches missing skills and scope gaps between phases.', live: true },
+          { name: 'Skill Building', desc: 'Create or update SKILL.md files. Global vs local placement, workspace paths, writing guidelines, common mistakes.', live: true },
+          { name: 'Git Workflow', desc: 'yorkbot repos: push to main. dohertyj08 repos: branch + PR. Branching, commit messages, multi-agent awareness.', live: true },
+        ],
+      },
+      {
+        name: 'Infrastructure',
+        skills: [
+          { name: 'MCP Server', desc: 'Build Node.js MCP servers: @modelcontextprotocol/sdk + zod + node:sqlite + stdio transport. Domain file pattern, migration runner, mcporter registration, testing.', live: true },
+          { name: 'Extend york-data', desc: 'Add new domains/tables/tools to york-data. Step-by-step: migration file → domain JS → register in index.js → update ping → update API.md → test → commit.', live: true },
+        ],
+      },
+      {
+        name: 'TODO',
+        skills: [
+          { name: 'Bede Pipeline Integration', desc: 'Read suggestions from york-data, implement them, write build results back. Requires Bede\'s observation/suggestion schema.', todo: true },
+          { name: 'Agent Workspace Builder', desc: 'Scaffold a new agent\'s workspace: SOUL.md, AGENTS.md, TOOLS.md, IDENTITY.md, MEMORY.md, skills/. Templated from conventions.', todo: true },
+        ],
+      },
+    ],
+    todos: [
+      'Bede pipeline: no channel yet — needs york-data observations/suggestions domain (build when Bede is built)',
+      'Build result reporting: no structured format yet for Bede to verify Offa\'s work',
+    ],
+    spawns: [],
   },
 ]
 
@@ -259,40 +380,7 @@ const draftAgents = [
       'transcript-preprocessor (Small tier — summarize high-volume transcript batches before deep analysis)',
     ],
   },
-  {
-    id: 'offa',
-    icon: '🦫',
-    name: 'Offa',
-    borderColor: 'opus',
-    model: 'Opus 4.6',
-    cron: 'None. Spawned on-demand.',
-    purpose: 'Master software engineer. Breaks down tasks, builds skills before building features, always finds ways to test its work. If a skill doesn\'t exist for a task, Offa builds the skill first. Delays delivery to get the foundation right. James talks to Offa directly in #offa — Offa is a co-worker, York is the boss, Bede is the supervisor.',
-    workspace: 'Own workspace. Can operate on any agent\'s workspace when building or fixing skills.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Master engineer voice. Methodical, skills-first, test-before-ship. Knows when to break down vs just build. Will delay tasks to build skills. Redirects non-build requests to York/Wynn.' },
-      { file: 'AGENTS.md', desc: 'Build conventions, skill structure, testing requirements, PR workflow. Brief description of the multi-agent system so Offa knows its place: York is the boss, Bede is the supervisor, other agents are co-workers.' },
-      { file: 'TOOLS.md', desc: 'Full exec access, git, gh CLI, mcporter for testing. york-data for reading suggestions and marking them as implemented.' },
-      { file: 'IDENTITY.md', desc: 'Offa 🦫 — Named for King Offa of Mercia, builder of the 150-mile Offa\'s Dyke.' },
-      { file: 'MEMORY.md', desc: 'Build patterns, common gotchas, architecture decisions from past builds.' },
-      { file: 'memory/', desc: 'Build logs per task. Read by Bede for quality tracking.' },
-    ],
-    channels: [
-      '#offa — direct build instructions from James',
-      'Reads suggestions from york-data (Bede pipeline)',
-      'Writes build results and verification status back to york-data',
-    ],
-    skillSections: [
-      {
-        name: 'Build',
-        skills: [
-          { name: 'New Skills', desc: 'Create a new skill from scratch. SKILL.md, supporting scripts, reference data. Follows skill structure conventions.' },
-          { name: 'Skill Edits', desc: 'Modify an existing skill. Read current state, apply changes, preserve what works. Handles prompt tuning, logic changes, data format updates.' },
-        ],
-        tbd: true,
-      },
-    ],
-    spawns: [],
-  },
+
   {
     id: 'hild',
     icon: '🦡',
@@ -637,6 +725,15 @@ const suggestedAgents = [
 .border-sonnet { border-color: #58a6ff; border-width: 2px; }
 .border-none { border-color: #30363d; }
 
+.tag.live {
+  background: #238636;
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
 .tag.draft {
   background: #1f6feb;
   color: white;
@@ -734,6 +831,32 @@ const suggestedAgents = [
   font-size: 0.8rem;
   font-style: italic;
   padding: 0.4rem 0.75rem;
+}
+
+.skill-live-tag {
+  background: #238636;
+  color: white;
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.skill-todo-tag {
+  background: #d29922;
+  color: #0d1117;
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.skill-item.skill-live {
+  border-color: #238636;
 }
 
 @media (max-width: 768px) {

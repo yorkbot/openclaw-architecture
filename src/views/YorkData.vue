@@ -7,7 +7,8 @@
         The service validates, enforces schema, and handles all DB operations. LLMs never see raw queries or column indices.
       </p>
       <p style="color: #c9d1d9; margin-bottom: 0; line-height: 1.6; font-size: 0.9rem; border-left: 3px solid #d29922; padding-left: 1rem;">
-        <strong style="color: #d29922;">Stack:</strong> Node.js MCP server + <code style="color: #d29922;">better-sqlite3</code> (synchronous, WAL mode, single file DB).
+        <strong style="color: #d29922;">Stack:</strong> Node.js MCP server + <code style="color: #d29922;">node:sqlite</code> (built-in, zero external deps for DB, WAL mode, single file).
+        <code style="color: #d29922;">@modelcontextprotocol/sdk</code> + <code style="color: #d29922;">zod</code> for tool registration and validation.
         No ORM, no query builder. Raw SQL with parameterized queries.
         Called via <code style="color: #d29922;">mcporter call york-data.&lt;function&gt;(...)</code>.
       </p>
@@ -110,14 +111,17 @@
 <script setup>
 const structure = [
   { path: 'york-data/', desc: '' },
-  { path: '  package.json', desc: '' },
-  { path: '  src/index.js', desc: 'MCP server entry, registers all domains' },
-  { path: '  src/db.js', desc: 'Database init, migration runner' },
-  { path: '  src/domains/consumption.js', desc: 'Food, drink, supplements, cannabis' },
-  { path: '  src/domains/daily.js', desc: 'Daily metrics (weight, sleep, etc.)' },
-  { path: '  src/domains/workouts.js', desc: 'Workout sessions + exercises' },
-  { path: '  src/domains/cross-domain.js', desc: 'Aggregation queries' },
-  { path: '  migrations/001-initial.sql', desc: 'All MVP tables' },
+  { path: '  package.json', desc: '@modelcontextprotocol/sdk + zod (ESM)' },
+  { path: '  API.md', desc: 'Tool reference for all agents' },
+  { path: '  src/index.js', desc: 'MCP server entry, registers all domains, stdio transport' },
+  { path: '  src/db.js', desc: 'DatabaseSync init, WAL mode, migration runner' },
+  { path: '  src/domains/system.js', desc: 'ping (health check with row counts)' },
+  { path: '  src/domains/consumption.js', desc: 'Food, drink, supplements, cannabis (6 tools)' },
+  { path: '  src/domains/daily.js', desc: 'Daily metrics — upsert pattern (4 tools)' },
+  { path: '  src/domains/workouts.js', desc: 'Exercise catalog + workout sessions (6 tools)' },
+  { path: '  src/domains/cross.js', desc: 'Cross-domain aggregation queries (2 tools)' },
+  { path: '  migrations/001-initial-schema.sql', desc: 'All MVP tables with constraints + indexes' },
+  { path: '  scripts/migrate-sheets.js', desc: 'One-time Google Sheets → SQLite migration' },
 ]
 
 const tables = [
@@ -168,11 +172,22 @@ const tables = [
   },
   {
     name: 'exercises',
-    desc: 'Individual exercises within a workout.',
+    desc: 'Reusable exercise catalog. Names are unique (case-insensitive).',
     columns: [
       { name: 'id', type: 'INTEGER PK', note: 'auto' },
-      { name: 'workout_id', type: 'INTEGER FK', note: '→ workouts.id' },
-      { name: 'exercise', type: 'TEXT NOT NULL', note: 'exercise name' },
+      { name: 'name', type: 'TEXT NOT NULL UNIQUE', note: 'e.g. "bench press", "barbell squat"' },
+      { name: 'category', type: 'TEXT', note: 'chest, legs, back, arms, core, cardio' },
+      { name: 'notes', type: 'TEXT', note: '' },
+      { name: 'created_at', type: 'TEXT', note: 'auto' },
+    ],
+  },
+  {
+    name: 'workout_exercises',
+    desc: 'Instances of exercises performed in a workout. FK-validated against both workouts and exercise catalog.',
+    columns: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'workout_id', type: 'INTEGER FK', note: '→ workouts.id (CASCADE delete)' },
+      { name: 'exercise_id', type: 'INTEGER FK', note: '→ exercises.id (validated before insert)' },
       { name: 'sets', type: 'INTEGER', note: '' },
       { name: 'reps', type: 'INTEGER', note: '' },
       { name: 'weight', type: 'REAL', note: 'lbs, null for bodyweight' },
@@ -210,14 +225,24 @@ const domains = [
     ],
   },
   {
+    name: 'Exercise Catalog',
+    icon: '📋',
+    color: 'blue',
+    desc: 'Reusable exercise definitions. Must create exercises here before referencing them in workouts.',
+    functions: [
+      { name: 'create_exercise', params: 'name, category?, notes?', returns: 'id', desc: 'Add exercise to catalog. Names are unique (case-insensitive dedup).' },
+      { name: 'get_exercises', params: 'category?', returns: 'exercises[]', desc: 'List catalog entries. Filter by category.' },
+    ],
+  },
+  {
     name: 'Workouts',
     icon: '💪',
     color: 'blue',
-    desc: 'Primary consumer: Wynn. Workout summaries and individual exercise details.',
+    desc: 'Primary consumer: Wynn. Workout sessions with FK-validated exercise references.',
     functions: [
-      { name: 'log_workout', params: 'date, type?, location?, duration_min?, notes?', returns: 'id', desc: 'Add workout summary, returns ID for exercise logging' },
-      { name: 'log_exercises', params: 'workout_id, exercises[{exercise, sets, reps, weight?, notes?}]', returns: 'count', desc: 'Add exercises to a workout' },
-      { name: 'get_workouts', params: 'start_date?, end_date?', returns: 'workouts[]', desc: 'Workout history with exercises included' },
+      { name: 'log_workout', params: 'date, type?, location?, duration_min?, notes?', returns: 'id', desc: 'Log a workout session, returns ID for adding exercises' },
+      { name: 'log_workout_exercises', params: 'workout_id, exercises[{exercise_id, sets?, reps?, weight?, notes?}]', returns: 'count', desc: 'Add exercises to a workout. Validates workout_id and all exercise_ids exist before inserting.' },
+      { name: 'get_workouts', params: 'start_date?, end_date?', returns: 'workouts[]', desc: 'Workout history with joined exercise names and categories' },
       { name: 'get_last_workout', params: '', returns: 'workout', desc: 'Most recent workout with exercises' },
     ],
   },
@@ -228,8 +253,8 @@ const domains = [
     color: 'purple',
     desc: 'Aggregation queries across all tables. Used by Dagr (morning brief) and Bede (pattern analysis).',
     functions: [
-      { name: 'get_day_summary', params: 'date', returns: 'everything', desc: 'All data for a date across all domains' },
-      { name: 'get_trends', params: 'days', returns: 'combined view', desc: 'Weight, calories, protein, cannabis, workouts over N days' },
+      { name: 'get_day_summary', params: 'date', returns: 'consumption + metrics + workouts', desc: 'All data for a date across all domains' },
+      { name: 'get_range_summary', params: 'start_date, end_date', returns: 'metrics[] + consumption_by_day[] + workouts[]', desc: 'Multi-day overview with per-day totals. For weekly reviews and pattern analysis.' },
     ],
   },
 ]
@@ -269,11 +294,11 @@ const notMvp = [
 ]
 
 const migration = [
-  'Build york-data with empty tables',
-  'Write a one-time migration script that reads Sheets via mcporter and inserts into york-data',
-  'Run it once',
-  'Switch agents to york-data',
-  'Google Sheets becomes read-only archive',
+  '✅ Built york-data MCP server with all tables and 19 tools',
+  '✅ Wrote migrate-sheets.js — reads all Sheets via mcporter, writes to SQLite',
+  '✅ Migrated: 69 daily metrics, 743 consumption entries, 5 workouts, 2 exercises',
+  '⬜ Switch agents to york-data (build agent-specific usage skills)',
+  '⬜ Google Sheets becomes read-only archive',
 ]
 </script>
 
