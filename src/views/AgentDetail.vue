@@ -354,6 +354,7 @@ const liveAgents = [
           { name: 'Log Daily Metrics', desc: 'Weight, wake time, bedtime, sleep, energy, kitchen closed via log_daily(). Upsert pattern — safe to call multiple times per day.', live: true },
           { name: 'Log Workout', desc: 'Two-step: log_workout() for the session, then log_workout_exercises() with FK-validated exercise catalog IDs. Bodyweight exercises omit weight field.', live: true },
           { name: 'Calorie Estimation', desc: 'Four-tier estimation: known (exact), standard (high confidence), estimated (~), unknown (ask). Common reference table grows in MEMORY.md.', live: true },
+          { name: 'Daily Closeout', desc: 'Close out yesterday. Catch late-night stragglers (seltzer, cannabis), collect missing metrics (bedtime, energy, kitchen_closed), compute sleep from bedtime+wake_up, verify calorie/protein totals, write final daily row. Interactive 2-3 exchange flow. Triggered by morning brief or ad-hoc.', live: true },
         ],
       },
       {
@@ -439,7 +440,8 @@ const liveAgents = [
       { file: 'memory/', desc: 'Daily cached data (written by overnight crons), overnight results.' },
     ],
     channels: [
-      '#dagr — posts morning brief (Discord channel 1480402223954661538)',
+      '#general — posts morning brief (1473331036648636592) so James can respond and York routes',
+      '#dagr — reserved for future Dagr features',
     ],
     skillSections: [
       {
