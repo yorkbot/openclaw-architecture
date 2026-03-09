@@ -26,6 +26,27 @@
         <span class="used-by-label">Used by:</span> {{ tool.usedBy }}
       </div>
     </div>
+
+    <div class="card border-green">
+      <h2>📁 Shared Infrastructure</h2>
+      <p style="color: #8b949e; margin-bottom: 1rem;">
+        Cross-agent paths. Agents have their own workspaces for private memory and skills,
+        but these shared directories are how they coordinate.
+      </p>
+    </div>
+
+    <div class="card" v-for="infra in sharedInfra" :key="infra.path">
+      <div class="tool-header">
+        <h3>{{ infra.icon }} {{ infra.path }}</h3>
+      </div>
+      <p class="tool-desc">{{ infra.desc }}</p>
+      <div class="tool-details">
+        <div class="tool-detail" v-for="d in infra.details" :key="d.label">
+          <span class="detail-label">{{ d.label }}</span>
+          <span class="detail-value">{{ d.value }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -177,6 +198,39 @@ const tools = [
       { label: 'Access', value: 'mcporter call dice-roller.roll notation="2d6+5"' },
     ],
     usedBy: 'Caedmon (D&D).',
+  },
+]
+
+const sharedInfra = [
+  {
+    icon: '📋',
+    path: '~/.openclaw/shared-cache/',
+    desc: 'Daily memory files written by overnight crons, read by Dagr at 8 AM for the morning brief. One file per day. Multiple agents/scripts write sections to the same file.',
+    details: [
+      { label: 'Format', value: 'YYYY-MM-DD.md with ## headed sections (Weather, Calendar, Nutrition, D&D, etc.)' },
+      { label: 'Writers', value: 'weather-cache.sh, calendar-cache.sh, nutrition script (Wynn), consumption-gap script (Wynn), D&D questions (Caedmon)' },
+      { label: 'Readers', value: 'Dagr (morning brief compilation at 8 AM)' },
+    ],
+  },
+  {
+    icon: '⚙️',
+    path: '~/.openclaw/shared-scripts/',
+    desc: 'Cron scripts that run without an LLM. Pure bash + python for data fetching and file writing. Called by OpenClaw exec crons, not by agents directly.',
+    details: [
+      { label: 'Scripts', value: 'weather-cache.sh, calendar-cache.sh (more planned: nutrition-cache, consumption-gap)' },
+      { label: 'Output', value: 'Writes sections to ~/.openclaw/shared-cache/YYYY-MM-DD.md' },
+      { label: 'LLM', value: 'None. These are bash scripts.' },
+    ],
+  },
+  {
+    icon: '🧠',
+    path: '~/.openclaw/shared-skills/',
+    desc: 'Skills shared across all agents. Currently: git-workflow (branching conventions, repo creation rules).',
+    details: [
+      { label: 'Structure', value: 'Each skill is a directory with SKILL.md entry point' },
+      { label: 'Current', value: 'git-workflow' },
+      { label: 'Access', value: 'All agents inherit these via skill scanning' },
+    ],
   },
 ]
 </script>
