@@ -444,14 +444,10 @@ const liveAgents = [
         name: 'Support',
         skills: [
           { name: 'Weather Cache', desc: 'Reads cached weather from daily memory. Location detection (Cleveland Heights default, Ann Arbor when traveling).' },
-          { name: 'Meal System', desc: 'Generate one context-aware dinner suggestion from recent meals, schedule, weather, guests. Honest when nothing sparks.' },
-          { name: 'Meal Spark', desc: 'Dinner inspiration from eating patterns. Pantry-aware, protein-tracking, casual one-liner output.' },
         ],
       },
     ],
-    spawns: [
-      'Meal sub-agent (dinner suggestion, spawned during compilation)',
-    ],
+    spawns: [],
   },
 ]
 

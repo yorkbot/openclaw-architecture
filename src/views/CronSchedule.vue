@@ -3,9 +3,10 @@
     <div class="card">
       <h2>⏰ Cron Schedule</h2>
       <p style="color: #8b949e; margin-bottom: 1rem;">
-        Scheduled jobs across all agents. All times in ET. None of these are active yet —
-        they'll be turned on as agents come online. Existing main agent crons will be retired
-        when their replacement agent is operational.
+        Scheduled jobs across all agents. All times in ET.
+        <strong>Built</strong> = agent and skill ready, cron not yet switched to the new agent.
+        <strong>On</strong> = currently running on the listed agent.
+        Existing main agent crons will be retired when their replacement agent's cron is activated.
       </p>
     </div>
 
@@ -16,8 +17,8 @@
           <tr>
             <th>Time</th>
             <th>Job</th>
-            <th>Agent</th>
-            <th>Model</th>
+            <th>Current Agent</th>
+            <th>Target Agent</th>
             <th>Status</th>
             <th>Notes</th>
           </tr>
@@ -26,8 +27,8 @@
           <tr v-for="job in group.jobs" :key="job.name" :class="{ 'row-disabled': job.status === 'Not built' }">
             <td class="cron-time">{{ job.time }}</td>
             <td>{{ job.name }}</td>
-            <td>{{ job.agent }}</td>
-            <td>{{ job.model }}</td>
+            <td>{{ job.currentAgent }}</td>
+            <td>{{ job.targetAgent }}</td>
             <td><span :class="['status-tag', statusClass(job.status)]">{{ job.status }}</span></td>
             <td class="cron-notes">{{ job.notes }}</td>
           </tr>
@@ -38,10 +39,10 @@
     <div class="card">
       <h3>Migration Plan</h3>
       <p style="color: #8b949e; line-height: 1.6;">
-        The current <code>main</code> agent has cron jobs for morning brief, nutrition/weight cache,
-        consumption gap cache, D&D questions cache, and overnight work. As each specialized agent
-        comes online, its cron replaces the corresponding main agent cron. When all are migrated,
-        the main agent's crons are deleted.
+        All crons currently run on the <code>main</code> agent. As specialized agents are verified,
+        their crons will be switched from main → target agent. "Built" means the agent workspace and
+        skills are ready — just need cron activation. When all are migrated, the main agent's
+        duplicate crons are deleted.
       </p>
     </div>
   </div>
@@ -50,102 +51,102 @@
 <script setup>
 const cronGroups = [
   {
-    icon: '🌅',
-    label: 'Morning',
+    icon: '🌙',
+    label: 'Overnight (1 AM – 7 AM)',
     jobs: [
       {
-        time: '7:30 AM',
-        name: 'Weather + Calendar Cache',
-        agent: 'Dagr 🐓',
-        model: 'Sonnet',
-        status: 'Not built',
-        notes: 'Replaces main agent weather/calendar cache crons',
+        time: '12:30 AM',
+        name: 'Queue Audit',
+        currentAgent: 'main',
+        targetAgent: 'York 🦝',
+        status: 'On',
+        notes: 'Cleans improvement-queue.md: moves done/rejected items, dedupes',
       },
       {
-        time: '7:30 AM',
+        time: 'Every 30m, 1–6 AM',
+        name: 'Overnight Work',
+        currentAgent: 'main',
+        targetAgent: 'York 🦝',
+        status: 'On',
+        notes: 'Picks one task from overnight queue, executes or spawns sub-agent',
+      },
+      {
+        time: '3:45 AM',
+        name: 'D&D Questions Cache',
+        currentAgent: 'main (default)',
+        targetAgent: 'Caedmon 🐉',
+        status: 'Built',
+        notes: 'Finds wiki gaps, spawns research sub-agents, writes worldbuilding questions. Caedmon skill ready.',
+      },
+      {
+        time: '4:15 AM',
         name: 'Nutrition + Weight Cache',
-        agent: 'Bede 🦉',
-        model: 'Sonnet sub-agent',
-        status: 'Not built',
-        notes: 'Replaces main agent nutrition-weight-cache cron',
+        currentAgent: 'main (default)',
+        targetAgent: 'Dagr 🐓',
+        status: 'Built',
+        notes: 'Caches yesterday\'s nutrition and weight to daily memory file. Dagr skill ready.',
       },
       {
-        time: '8:00 AM',
-        name: 'Morning Brief',
-        agent: 'Dagr 🐓',
-        model: 'Sonnet',
-        status: 'Not built',
-        notes: 'Replaces main agent morning-orchestrator cron',
+        time: '5:15 AM',
+        name: 'Consumption Gap Cache',
+        currentAgent: 'main (default)',
+        targetAgent: 'Dagr 🐓',
+        status: 'Built',
+        notes: 'Checks for missing consumption data. Dagr skill ready.',
       },
       {
-        time: '8:15 AM',
-        name: 'Consumption Gap Follow-up',
-        agent: 'Bede 🦉',
-        model: 'Sonnet sub-agent',
-        status: 'Not built',
-        notes: 'Replaces main agent consumption-gap cron',
+        time: '6:30 AM + 6:30 PM',
+        name: 'Calendar Context',
+        currentAgent: 'main',
+        targetAgent: 'Dagr 🐓',
+        status: 'Built',
+        notes: 'Fetches Google Calendar, writes to daily memory. Dagr skill ready.',
       },
     ],
   },
   {
-    icon: '🌙',
-    label: 'Overnight',
+    icon: '🌅',
+    label: 'Morning (7 AM – 9 AM)',
     jobs: [
       {
-        time: '1:00 AM',
-        name: 'Memory Audit — Offa',
-        agent: 'Offa 🦫',
-        model: 'Sonnet sub-agent',
-        status: 'Not built',
-        notes: 'Audit Offa workspace memory quality',
+        time: '7:30 AM + 7:30 PM',
+        name: 'Weather Cache',
+        currentAgent: 'main (unassigned)',
+        targetAgent: 'Dagr 🐓',
+        status: 'Built',
+        notes: 'Fetches weather for Cleveland Heights (+ Ann Arbor if traveling). Dagr skill ready.',
       },
       {
-        time: '1:30 AM',
-        name: 'Memory Audit — Wynn',
-        agent: 'Wynn 🦌',
-        model: 'Sonnet sub-agent',
-        status: 'Not built',
-        notes: 'Audit Wynn workspace memory quality',
+        time: '7:30 AM',
+        name: 'Compile Overnight',
+        currentAgent: 'main',
+        targetAgent: 'Dagr 🐓',
+        status: 'Built',
+        notes: 'Compiles overnight sub-agent results into overnight-results.md. Dagr skill ready.',
       },
       {
-        time: '2:00 AM',
-        name: 'Memory Audit — Hild',
-        agent: 'Hild 🦡',
-        model: 'Sonnet sub-agent',
-        status: 'Not built',
-        notes: 'Audit Hild workspace memory quality',
+        time: '7:40 AM Mon',
+        name: 'Weekly Banner',
+        currentAgent: 'main',
+        targetAgent: 'York 🦝',
+        status: 'On',
+        notes: 'Generates Discord server banner via Gemini image gen. Stays on main/York.',
       },
       {
-        time: '2:30 AM',
-        name: 'Memory Audit — Caedmon',
-        agent: 'Caedmon 🐉',
-        model: 'Sonnet sub-agent',
-        status: 'Not built',
-        notes: 'Audit Caedmon workspace memory quality',
+        time: '7:45 AM',
+        name: 'Daily Avatar',
+        currentAgent: 'main',
+        targetAgent: 'York 🦝',
+        status: 'On',
+        notes: 'Generates daily Discord avatar via Gemini image gen. Stays on main/York.',
       },
       {
-        time: '3:00 AM',
-        name: 'Memory Audit — Dagr',
-        agent: 'Dagr 🐓',
-        model: 'Sonnet sub-agent',
-        status: 'Not built',
-        notes: 'Audit Dagr workspace memory quality',
-      },
-      {
-        time: '3:30 AM',
-        name: 'Memory Audit — York',
-        agent: 'York 🦝',
-        model: 'Sonnet sub-agent',
-        status: 'Not built',
-        notes: 'Audit York workspace memory quality',
-      },
-      {
-        time: '3:30 AM',
-        name: 'D&D Wiki Research',
-        agent: 'Caedmon 🐉',
-        model: 'Opus 4.6',
-        status: 'Not built',
-        notes: 'Explore wiki, find gaps, generate worldbuilding questions. Replaces main agent dnd-questions-cache cron.',
+        time: '8:00 AM',
+        name: 'Morning Orchestrator',
+        currentAgent: 'main',
+        targetAgent: 'Dagr 🐓',
+        status: 'Built',
+        notes: 'Master brief compilation. Reads all caches, verifies, composes, posts. Dagr skill ready.',
       },
     ],
   },
@@ -154,21 +155,51 @@ const cronGroups = [
     label: 'Periodic',
     jobs: [
       {
-        time: 'Every 30m (8AM-12:30AM)',
+        time: 'Every 30m (8AM–12:30AM)',
         name: 'Heartbeat',
-        agent: 'York 🦝',
-        model: 'Opus 4.6',
+        currentAgent: 'main',
+        targetAgent: 'York 🦝',
+        status: 'On',
+        notes: 'Session continuity check. Silent most beats. Stays on main/York.',
+      },
+      {
+        time: '8:00 PM Sun',
+        name: 'Weekly Check-in',
+        currentAgent: 'main',
+        targetAgent: 'York 🦝',
+        status: 'On',
+        notes: 'Sunday evening health/fitness recap to #general. Stays on main/York.',
+      },
+      {
+        time: '11:00 PM',
+        name: 'Daily Memory Summary',
+        currentAgent: 'main (unassigned)',
+        targetAgent: 'York 🦝',
+        status: 'On',
+        notes: 'End-of-day summary of all sessions to memory file. Stays on main/York.',
+      },
+    ],
+  },
+  {
+    icon: '🔮',
+    label: 'Planned (Not Yet Built)',
+    jobs: [
+      {
+        time: '1:00–3:30 AM',
+        name: 'Memory Audits (6 agents)',
+        currentAgent: '—',
+        targetAgent: 'Bede 🦉',
         status: 'Not built',
-        notes: 'Replaces main agent heartbeat. Silent most beats.',
+        notes: 'Audit each agent\'s workspace memory quality. Bede spawns Sonnet sub-agents.',
       },
     ],
   },
 ]
 
 function statusClass(status) {
-  if (status === 'Active') return 'status-active'
+  if (status === 'On') return 'status-on'
+  if (status === 'Built') return 'status-built'
   if (status === 'Not built') return 'status-notbuilt'
-  if (status === 'Planned') return 'status-planned'
   return ''
 }
 </script>
@@ -216,19 +247,19 @@ function statusClass(status) {
   white-space: nowrap;
 }
 
-.status-active {
+.status-on {
   background: rgba(63, 185, 80, 0.15);
   color: #3fb950;
+}
+
+.status-built {
+  background: rgba(31, 111, 235, 0.15);
+  color: #58a6ff;
 }
 
 .status-notbuilt {
   background: rgba(139, 148, 158, 0.15);
   color: #8b949e;
-}
-
-.status-planned {
-  background: rgba(210, 153, 34, 0.15);
-  color: #d29922;
 }
 
 code {
