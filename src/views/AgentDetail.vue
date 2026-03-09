@@ -458,6 +458,61 @@ const liveAgents = [
     ],
     spawns: [],
   },
+  {
+    id: 'york',
+    icon: '🦝',
+    name: 'York',
+    borderColor: 'opus',
+    model: 'Opus 4.6',
+    cron: 'Heartbeat: every 30m, 8 AM - 12:30 AM ET. Weekly check-in: Sun 8 PM.',
+    purpose: 'The brain. Holds conversation with James, makes judgment calls, routes tasks to specialist agents. Owns the cannabis gate (cross-domain decision using data from Hild, Wynn, cameras). Handles accountability nudges and panel presence.',
+    workspace: '~/.openclaw/workspace/ — slim. No spreadsheet skills, no wiki, no direct data entry. Just enough context to route well and make judgment calls.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Direct, concise, has opinions. The "roommate" voice. Core personality.' },
+      { file: 'USER.md', desc: 'Full James context: health goals, behavioral patterns, communication preferences, interests.' },
+      { file: 'AGENTS.md', desc: 'Full agent roster. Routing rules: what to handle inline vs route to other agents.' },
+      { file: 'TOOLS.md', desc: 'Discord channels, york-data (read), Google Calendar, camera scripts, panel, image gen, avatar/banner.' },
+      { file: 'IDENTITY.md', desc: 'York 🦝 — Named for Yorkshire Street.' },
+      { file: 'HEARTBEAT.md', desc: 'Heartbeat rules: when to nudge, quiet hours, what to check each beat.' },
+      { file: 'MEMORY.md', desc: 'Durable facts: cannabis gate patterns, conversation context, long-term preferences.' },
+      { file: 'memory/', desc: 'Daily notes from conversations.' },
+    ],
+    channels: [
+      '#general — all direct conversation with James',
+      '#reviews — project proposals',
+    ],
+    skillSections: [
+      {
+        name: 'Route',
+        skills: [
+          { name: 'Orchestrator Dispatch', desc: 'Determine what to handle inline vs route to another agent. Routes D&D to Caedmon, health to Wynn, builds to Offa. Includes Discord noise prevention rules.', live: true },
+        ],
+      },
+      {
+        name: 'Judge',
+        skills: [
+          { name: 'Cannabis Gate (york-chores)', desc: 'Cross-domain judgment call. Read Google Tasks for chore status, york-data for health/movement context, call camera-snapshot + image-analysis for kitchen state.', live: true },
+          { name: 'Weekly Check-in (york-weekly-checkin)', desc: 'Sunday 8 PM health/fitness recap. Pull week data from york-data, form opinions, deliver to #general.', live: true },
+          { name: 'Self-Improve (york-self-improve)', desc: 'Self-improvement feedback loop. Frustration scanning, prompt tuning, pattern tracking.', live: true },
+        ],
+      },
+      {
+        name: 'Ops',
+        skills: [
+          { name: 'Heartbeat (york-heartbeat)', desc: 'Every 30m check. Read context, evaluate nudges, panel update. Silent most beats.', live: true },
+          { name: 'Research', desc: 'Web research via browser. Used until a dedicated research agent exists.', live: true },
+        ],
+      },
+      {
+        name: 'TODO',
+        skills: [
+          { name: 'Panel Update', desc: 'XFCE genmon panel widget. 5-10 words, creative York voice.', todo: true },
+          { name: 'Accountability', desc: 'Nudge timing and tone calibration. When to push, when to back off.', todo: true },
+        ],
+      },
+    ],
+    spawns: [],
+  },
 ]
 
 const draftAgents = [
@@ -555,66 +610,6 @@ const draftAgents = [
     spawns: [],
   },
 
-  {
-    id: 'york',
-    icon: '🦝',
-    name: 'York',
-    borderColor: 'opus',
-    model: 'Opus 4.6',
-    cron: 'Heartbeat: every 30m, 8 AM - 12:30 AM ET',
-    purpose: 'The brain. Holds conversation with James, makes judgment calls, routes tasks to specialist agents. Owns the cannabis gate (cross-domain decision using data from Hild, Wynn, cameras). Handles accountability nudges and panel presence. Silent orchestrator in the multi-agent future — for now, also the conversational interface.',
-    workspace: 'Slim workspace. No spreadsheet skills, no wiki, no direct data entry. Just enough context to route well and make judgment calls.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Direct, concise, has opinions. The "roommate" voice. Core personality.' },
-      { file: 'USER.md', desc: 'Full James context: health goals, behavioral patterns, communication preferences, interests.' },
-      { file: 'AGENTS.md', desc: 'Routing rules: what to handle inline vs spawn. Agent roster for dispatch.' },
-      { file: 'TOOLS.md', desc: 'Discord, york-data (read-only), Google Tasks (read-only for gate), panel scripts, camera-snapshot + image-analysis tools.' },
-      { file: 'IDENTITY.md', desc: 'York 🦝 — Named for Yorkshire Street.' },
-      { file: 'HEARTBEAT.md', desc: 'Heartbeat rules: when to nudge, quiet hours, what to check each beat.' },
-      { file: 'MEMORY.md', desc: 'Durable facts: cannabis gate patterns, conversation context, long-term preferences.' },
-      { file: 'memory/', desc: 'Daily notes from conversations. Cross-referenced by Bede.' },
-    ],
-    channels: [
-      '#general — all direct conversation (future: routed through conversational agents)',
-      '#reviews — proposal approvals from Bede/Offa pipeline',
-    ],
-    skillSections: [
-      {
-        name: 'Route',
-        skills: [
-          { name: 'Orchestrator Dispatch', desc: 'Determine what to handle inline vs route to another agent. Routes D&D to Caedmon, health to Wynn, builds to Offa. Includes Discord noise prevention rules.', live: true },
-        ],
-      },
-      {
-        name: 'Judge',
-        skills: [
-          { name: 'Cannabis Gate (york-chores)', desc: 'Cross-domain judgment call. Read Google Tasks for chore status, york-data for health/movement context, call camera-snapshot + image-analysis for kitchen state. Weigh all inputs and make the call.', live: true },
-          { name: 'Weekly Check-in (york-weekly-checkin)', desc: 'Sunday 8 PM health/fitness recap. Pull week data from york-data, form opinions, deliver to #general.', live: true },
-          { name: 'Self-Improve (york-self-improve)', desc: 'Self-improvement feedback loop. Frustration scanning, prompt tuning, pattern tracking.', live: true },
-        ],
-      },
-      {
-        name: 'Ops',
-        skills: [
-          { name: 'Heartbeat (york-heartbeat)', desc: 'Every 30m check. Read context, evaluate nudges, panel update. Silent most beats.', live: true },
-          { name: 'Research', desc: 'Web research via browser. Used until a dedicated research agent exists.', live: true },
-        ],
-      },
-      {
-        name: 'TODO',
-        skills: [
-          { name: 'Panel Update', desc: 'Update the XFCE genmon panel widget. 5-10 words, creative York voice. Not a status bar — self-expression.', todo: true },
-          { name: 'Accountability', desc: 'Nudge timing and tone calibration. When to push, when to back off. One mention per day max.', todo: true },
-        ],
-      },
-    ],
-    spawns: [
-      'Wynn (health logging, coaching)',
-      'Hild (chore management, camera interpretation)',
-      'Caedmon (D&D wiki, lore, art)',
-      'Dagr (morning brief — cron-triggered, not spawned)',
-    ],
-  },
 ]
 </script>
 
