@@ -27,27 +27,7 @@
       </div>
     </div>
 
-    <div class="card border-green">
-      <h2>📁 Shared Infrastructure</h2>
-      <p style="color: #8b949e; margin-bottom: 1rem;">
-        Cross-agent paths. Each agent has its own workspace with private memory
-        (<code>workspace-&lt;agent&gt;/memory/</code>) — Bede audits these individually.
-        The shared directories below are strictly for coordination, not agent memory.
-      </p>
-    </div>
-
-    <div class="card" v-for="infra in sharedInfra" :key="infra.path">
-      <div class="tool-header">
-        <h3>{{ infra.icon }} {{ infra.path }}</h3>
-      </div>
-      <p class="tool-desc">{{ infra.desc }}</p>
-      <div class="tool-details">
-        <div class="tool-detail" v-for="d in infra.details" :key="d.label">
-          <span class="detail-label">{{ d.label }}</span>
-          <span class="detail-value">{{ d.value }}</span>
-        </div>
-      </div>
-    </div>
+    
   </div>
 </template>
 
@@ -190,40 +170,7 @@ const tools = [
   },
 ]
 
-const sharedInfra = [
-  {
-    icon: '📋',
-    path: '~/.openclaw/shared-cache/',
-    desc: 'Cron output staging area for the morning brief. NOT agent memory — agents keep private memory in their own workspaces. This is just cached data that overnight scripts write and Dagr reads at 8 AM.',
-    details: [
-      { label: 'Format', value: 'YYYY-MM-DD.md with ## headed sections (Weather, Calendar, Nutrition, D&D, etc.)' },
-      { label: 'Writers', value: 'weather-cache.sh, calendar-cache.sh, nutrition script (Wynn), consumption-gap script (Wynn), D&D questions (Caedmon)' },
-      { label: 'Readers', value: 'Dagr (morning brief compilation at 8 AM)' },
-      { label: 'Not for', value: 'Agent memory, session history, or anything Bede audits. Those stay in workspace-<agent>/memory/.' },
-    ],
-  },
-  {
-    icon: '⚙️',
-    path: '~/.openclaw/shared-scripts/',
-    desc: 'Utility scripts available to all agents. Cron scripts run automatically; others available when James asks any agent to do something. No LLM — pure bash + python.',
-    details: [
-      { label: 'Scripts', value: 'weather-cache.sh, calendar-cache.sh (more planned: nutrition-cache, consumption-gap)' },
-      { label: 'Cron output', value: 'Writes sections to ~/.openclaw/shared-cache/YYYY-MM-DD.md' },
-      { label: 'LLM', value: 'None. These are bash scripts.' },
-      { label: 'Access', value: 'Any agent can run these if asked.' },
-    ],
-  },
-  {
-    icon: '🧠',
-    path: '~/.openclaw/skills/',
-    desc: 'Skills shared across all agents. Agents inherit these via skill scanning.',
-    details: [
-      { label: 'Structure', value: 'Each skill is a directory with SKILL.md entry point' },
-      { label: 'Current', value: 'git-workflow (branching conventions, repo rules), image-gen (model selection, prompting by model family, parameter reference), memory-management' },
-      { label: 'Access', value: 'All agents inherit these via skill scanning' },
-    ],
-  },
-]
+
 </script>
 
 <style scoped>

@@ -142,6 +142,96 @@
       </div>
     </div>
 
+    <!-- Skills Discovery -->
+    <div class="card" style="margin-top: 2rem; border-color: #bc8cff;">
+      <h2>🧠 Skills Discovery</h2>
+      <p style="color: #8b949e; margin-bottom: 1rem;">
+        OpenClaw discovers skills via YAML frontmatter in <code>SKILL.md</code> files.
+        Without frontmatter, a skill exists on disk but is invisible to the agent.
+      </p>
+
+      <div class="infra-section">
+        <h3>Required Frontmatter</h3>
+        <div class="code-block">
+          <code>---<br>name: my-skill<br>description: What this skill does and when to use it.<br>---</code>
+        </div>
+        <p class="infra-note">Every SKILL.md must start with this. The <code>name</code> and <code>description</code> are indexed into the <code>&lt;available_skills&gt;</code> block in the system prompt. No frontmatter = no discovery.</p>
+      </div>
+
+      <div class="infra-section">
+        <h3>Load Locations (precedence high → low)</h3>
+        <table class="infra-table">
+          <thead><tr><th>Location</th><th>Scope</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>&lt;workspace&gt;/skills/</code></td>
+              <td>Per-agent only</td>
+              <td>Agent-specific skills. Wiglaf's vault-schema, Wynn's log-consumption, etc.</td>
+            </tr>
+            <tr>
+              <td><code>~/.openclaw/skills/</code></td>
+              <td>All agents</td>
+              <td>Global shared skills: git-workflow, image-gen, memory-audit, memory-management.</td>
+            </tr>
+            <tr>
+              <td>Bundled (npm package)</td>
+              <td>All agents</td>
+              <td>Ships with OpenClaw. weather, github, clawhub, etc.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="infra-note">If the same skill name exists in multiple locations, workspace wins. No cross-contamination — workspace skills only load for their agent.</p>
+      </div>
+    </div>
+
+    <!-- Shared Infrastructure -->
+    <div class="card" style="margin-top: 2rem; border-color: #3fb950;">
+      <h2>📁 Shared Infrastructure</h2>
+      <p style="color: #8b949e; margin-bottom: 1rem;">
+        Cross-agent paths for coordination. Each agent has private memory in
+        <code>workspace-&lt;agent&gt;/memory/</code> — these shared dirs are NOT agent memory.
+      </p>
+
+      <div class="infra-section">
+        <h3>📋 ~/.openclaw/shared-cache/</h3>
+        <p class="infra-desc">Cron output staging. Overnight scripts write sections here; Dagr and Wiglaf read at their scheduled times.</p>
+        <table class="infra-table">
+          <thead><tr><th>Detail</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Format</td><td><code>YYYY-MM-DD.md</code> with <code>##</code> headed sections (Weather, Calendar Context, Nutrition, D&D, etc.)</td></tr>
+            <tr><td>Writers</td><td>weather-cache.sh, calendar-cache.sh, nutrition script (Wynn), consumption-gap script (Wynn), D&D questions (Caedmon)</td></tr>
+            <tr><td>Readers</td><td>Dagr (morning brief at 8 AM), Wiglaf (morning-prep at 7 AM, now-management every 15 min)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="infra-section">
+        <h3>⚙️ ~/.openclaw/shared-scripts/</h3>
+        <p class="infra-desc">Utility scripts. Cron-triggered, no LLM. Pure bash + python.</p>
+        <table class="infra-table">
+          <thead><tr><th>Detail</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Scripts</td><td>weather-cache.sh, calendar-cache.sh</td></tr>
+            <tr><td>Output</td><td>Writes sections to ~/.openclaw/shared-cache/YYYY-MM-DD.md</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="infra-section">
+        <h3>🧠 ~/.openclaw/skills/</h3>
+        <p class="infra-desc">Global skills shared across all agents via OpenClaw's skill discovery.</p>
+        <table class="infra-table">
+          <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>git-workflow</td><td>Branch strategy, commit messages, PR workflow. yorkbot repos push to main; dohertyj08 repos branch + PR.</td></tr>
+            <tr><td>image-gen</td><td>Multi-model image generation via york-tools. Model selection, prompting by family.</td></tr>
+            <tr><td>memory-audit</td><td>Nightly Sonnet sub-agent cron. Prune stale entries, flag conflicts, verify accuracy.</td></tr>
+            <tr><td>memory-management</td><td>How all agents read/write MEMORY.md and memory/ files.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Separate Install -->
     <div class="card" style="margin-top: 2rem; border-color: #d29922;">
       <h2>🃏 Separate OpenClaw Instance (On-Demand)</h2>
@@ -396,5 +486,67 @@ const dataStores = [
 .separate-grid {
   display: flex;
   justify-content: center;
+}
+
+.infra-section {
+  margin-bottom: 1.5rem;
+}
+
+.infra-section:last-child {
+  margin-bottom: 0;
+}
+
+.infra-section h3 {
+  font-size: 0.95rem;
+  color: #f0f6fc;
+  margin-bottom: 0.5rem;
+}
+
+.infra-desc {
+  color: #c9d1d9;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.infra-note {
+  color: #8b949e;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+.infra-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.infra-table th {
+  text-align: left;
+  color: #8b949e;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid #30363d;
+  font-weight: 600;
+}
+
+.infra-table td {
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid #21262d;
+  color: #c9d1d9;
+}
+
+.code-block {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+}
+
+.code-block code {
+  color: #79c0ff;
+  font-size: 0.85rem;
+  line-height: 1.6;
 }
 </style>
