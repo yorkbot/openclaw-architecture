@@ -94,35 +94,11 @@ const agentIdeas = [
     desc: 'Vet appointment tracking, feeding schedule, litter change reminders, medication if needed. Named after the cat.',
     why: 'Probably overkill as a separate agent. But the name is perfect and it could live as a york-data domain that York manages.',
   },
-  {
-    icon: '🦑',
-    name: 'Scraper',
-    priority: 'someday',
-    priorityClass: 'script',
-    priorityLabel: 'Someday',
-    desc: 'Web scraping, price monitoring, deal alerts. Watch for sales on specific items, track prices over time.',
-    why: 'Could save money on recurring purchases. "Those dumbbells you wanted are 30% off." Script-tier for the actual scraping, Small for analysis.',
-  },
 
-  {
-    icon: '🦜',
-    name: 'Social',
-    priority: 'someday',
-    priorityClass: 'script',
-    priorityLabel: 'Someday',
-    desc: 'Gift tracking, birthday reminders, Audrey visit prep automation, social calendar awareness.',
-    why: 'Low-key useful. "Audrey\'s birthday is in 2 weeks and you haven\'t gotten anything yet." Could be york-data + calendar, doesn\'t need its own agent.',
-  },
 
 ]
 
 const skillIdeas = [
-
-  {
-    agent: '🦝 York',
-    name: 'Proactive calendar awareness',
-    desc: '"You have a meeting in 45 minutes, might want to wrap up that D&D conversation." Calendar-driven nudges via heartbeat.',
-  },
 
   {
     agent: '🦌 Wynn',
@@ -154,13 +130,7 @@ const integrations = [
     statusClass: 'medium',
     desc: 'Open source smartwatch. Sleep tracking, step count, heart rate. $90, no subscription. Data feeds into Health agent.',
   },
-  {
-    icon: '⚖️',
-    name: 'DIY Smart Scale',
-    status: 'Planned',
-    statusClass: 'small',
-    desc: 'ESP32 + HX711 + load cell. Auto-log weight to york-data. ~$15 in parts. Eliminates manual weight logging entirely.',
-  },
+
   {
     icon: '💰',
     name: 'YNAB MCP',
@@ -175,13 +145,7 @@ const integrations = [
     statusClass: 'small',
     desc: 'Living room and den (smoking room) cameras for chore context. Same Tapo C103 + RTSP pattern. Frame-diff motion detection.',
   },
-  {
-    icon: '🎮',
-    name: 'Game state awareness',
-    status: 'Wild idea',
-    statusClass: 'script',
-    desc: 'Know when James is gaming (PZ, sim racing) and suppress non-urgent nudges. Could use process detection or focused window info.',
-  },
+
   {
     icon: '📱',
     name: 'SMS (Twilio)',

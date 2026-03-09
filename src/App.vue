@@ -18,7 +18,7 @@
     <AgentDetail v-if="currentView === 'agents'" />
     <Tools v-if="currentView === 'tools'" />
     <DiscordLayout v-if="currentView === 'comms'" />
-    <YorkData v-if="currentView === 'yorkdata'" />
+    <CronSchedule v-if="currentView === 'crons'" />
 
     <Brainstorm v-if="currentView === 'brainstorm'" />
   </div>
@@ -32,7 +32,7 @@ import DiscordLayout from './views/DiscordLayout.vue'
 
 import Tools from './views/Tools.vue'
 import Brainstorm from './views/Brainstorm.vue'
-import YorkData from './views/YorkData.vue'
+import CronSchedule from './views/CronSchedule.vue'
 
 const currentView = ref('agents')
 
@@ -41,7 +41,7 @@ const views = [
   { id: 'agents', label: 'Agent Details' },
   { id: 'tools', label: 'Tools' },
   { id: 'comms', label: 'Communication Channels' },
-  { id: 'yorkdata', label: 'york-data' },
+  { id: 'crons', label: 'Cron Schedule' },
 
   { id: 'brainstorm', label: 'Brainstorm' },
 ]

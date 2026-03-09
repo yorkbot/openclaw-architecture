@@ -375,8 +375,10 @@ const liveAgents = [
       { file: 'TOOLS.md', desc: 'Git (bunglers repo), gh CLI for PRs, image-gen script (Gemini), dice-roller MCP. No york-data.' },
       { file: 'IDENTITY.md', desc: 'Caedmon 🐉 — Named for Caedmon of Whitby, the first known English poet. A cowherd who received the gift of song.' },
       { file: 'MEMORY.md', desc: 'Campaign state: current party location, active plot threads, recent session context, NPC relationships.' },
-      { file: 'USER.md', desc: 'James context: DM of the Bunglers campaign, prefers factual wiki writing, knows D&D rules well.' },
       { file: 'memory/', desc: 'Daily D&D interactions, questions from James, overnight research results.' },
+    ],
+    todos: [
+      'OpenAI embeddings for wiki search — semantic search across all wiki articles instead of grep/filename matching. Would dramatically improve lore question accuracy.',
     ],
     channels: [
       '#caedmon — direct interactive sessions with James (Discord channel 1480328377956303071)',
