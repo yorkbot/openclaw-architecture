@@ -519,7 +519,7 @@ const liveAgents = [
     name: 'Wiglaf',
     borderColor: 'opus',
     model: 'Opus 4.6',
-    cron: 'morning-prep: daily 7:00 AM (Sonnet sub-agent). now-management: every 15 min (Sonnet sub-agent, work hours). Memory audit: nightly (Sonnet sub-agent).',
+    cron: 'morning-prep: daily 7:00 AM (Opus sub-agent). now-management: every 15 min (Sonnet sub-agent, work hours). Memory audit: nightly (Sonnet sub-agent).',
     purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Bede has light read visibility for pattern analysis, but Wiglaf operates independently. No heartbeat.',
     workspace: '~/.openclaw/workspace-wiglaf/ — Obsidian vault at ~/work-notes/work/ is the primary async communication channel (syncs via Obsidian Sync). Limited cross-agent visibility: Bede can read sessions/memory for pattern analysis.',
     workspaceFiles: [
@@ -541,7 +541,7 @@ const liveAgents = [
           { name: 'vault-schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.' },
           { name: 'note-processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Core input loop. Never writes to now.md. Runs ad-hoc only (no cron) — future file-watcher will trigger it on demand.' },
           { name: 'now-management', desc: 'Sole writer to now.md. Reads board.md + Daily notes, renders the current focus (1 Doing + 1 Next). Runs on 15-min Sonnet cron.' },
-          { name: 'morning-prep', desc: 'Daily pre-work cron (~8:30 AM). Creates today\\\'s Daily note, ages board.md, catches unprocessed yesterday notes, surfaces questions, refreshes now.md. Sonnet sub-agent.' },
+          { name: 'morning-prep', desc: 'Daily pre-work cron (7:00 AM). Creates today\\\'s Daily note, reads calendar from shared-cache, ages board.md, catches unprocessed yesterday notes, surfaces questions, refreshes now.md. Opus sub-agent.' },
         ],
       },
       {
