@@ -9,7 +9,7 @@
       </p>
       <div class="global-skills-grid">
         <div class="global-skill" v-for="gs in globalSkills" :key="gs.name">
-          <div class="global-skill-name">{{ gs.name }} <span v-if="gs.live" class="skill-live-tag">Live</span></div>
+          <div class="global-skill-name">{{ gs.name }} <span v-if="gs.live" class="skill-live-tag">Live</span><span v-if="gs.todo" class="skill-todo-tag">TODO</span></div>
           <div class="global-skill-desc">{{ gs.desc }}</div>
           <div class="global-skill-agents">Used by: {{ gs.agents }}</div>
         </div>
@@ -246,21 +246,25 @@ const globalSkills = [
   },
   {
     name: 'Image Analysis',
+    todo: true,
     desc: 'Calling the image-analysis tool. How to frame prompts for room assessment, document reading, or visual inspection. Structured description output format.',
     agents: 'York (gate checks), Bede (pattern analysis)',
   },
   {
     name: 'Image Generation',
+    todo: true,
     desc: 'Crafting effective prompts for image-gen (Gemini Nano Banana Pro). Style guidelines, detail level, character consistency. How to iterate on results.',
     agents: 'Caedmon (D&D art)',
   },
   {
     name: 'york-data Conventions',
+    todo: true,
     desc: 'How to call york-data MCP functions. Parameter naming, error handling, upsert patterns, date formats. The shared contract for all data access. Reference: york-data/API.md.',
     agents: 'Wynn, Hild, York, Bede, Dagr',
   },
   {
     name: 'Flag for Bede',
+    todo: true,
     desc: 'Any agent can flag something unusual for Bede\'s attention. "Something weird happened in this session." Writes a structured flag to york-data that Bede picks up on its next collection run.',
     agents: 'Any agent',
   },
@@ -303,10 +307,16 @@ const liveAgents = [
         ],
       },
       {
+        name: 'Agents',
+        skills: [
+          { name: 'Agent Building', desc: 'Full checklist for creating new agents: config entry, workspace files, Discord binding, gateway restart, verification. Includes recovery steps for broken configs.', live: true },
+          { name: 'Tool Propagation', desc: 'When building new tools or updating existing ones, propagate references to all agent TOOLS.md files that need them.', live: true },
+        ],
+      },
+      {
         name: 'TODO',
         skills: [
           { name: 'Bede Pipeline Integration', desc: 'Read suggestions from york-data, implement them, write build results back. Requires Bede\'s observation/suggestion schema.', todo: true },
-          { name: 'Agent Workspace Builder', desc: 'Scaffold a new agent\'s workspace: SOUL.md, AGENTS.md, TOOLS.md, IDENTITY.md, MEMORY.md, skills/. Templated from conventions.', todo: true },
         ],
       },
     ],
@@ -366,7 +376,7 @@ const liveAgents = [
     name: 'Caedmon',
     borderColor: 'opus',
     model: 'Opus 4.6',
-    cron: 'Overnight wiki research (TBD schedule — separate from agent build)',
+    cron: '3:45 AM — overnight wiki research',
     purpose: 'D&D campaign agent. Wiki management, lore questions, worldbuilding research, session prep, character creation, art generation. Owns the Adion Isles wiki and all campaign knowledge. Routed via #caedmon Discord channel.',
     workspace: '~/.openclaw/workspace-caedmon/ — D&D wiki (full repo access), campaign notes, session logs. Completely isolated from personal/health data.',
     workspaceFiles: [
@@ -388,21 +398,21 @@ const liveAgents = [
       {
         name: 'Wiki',
         skills: [
-          { name: 'D&D Notes (dnd-notes)', desc: 'Read, edit, and create wiki articles. Research workflow, writing style guide, article update process, post-session updates. Branch for changes, PR for review.' },
-          { name: 'Character Creation (dnd-chargen)', desc: '2024 PHB character creation and leveling. Class, species, background, feat references. Campaign-aware for Adion Isles homebrew.' },
+          { name: 'D&D Notes (dnd-notes)', desc: 'Read, edit, and create wiki articles. Research workflow, writing style guide, article update process, post-session updates. Branch for changes, PR for review.', live: true },
+          { name: 'Character Creation (dnd-chargen)', desc: '2024 PHB character creation and leveling. Class, species, background, feat references. Campaign-aware for Adion Isles homebrew.', live: true },
         ],
       },
       {
         name: 'Session',
         skills: [
-          { name: 'Session Prep (dnd-session-prep)', desc: 'Scan recent session logs, look up wiki articles for active NPCs/locations/threads, format prep sheet for #caedmon. Modular: session-scan → wiki-lookup → prep-sheet-format.' },
+          { name: 'Session Prep (dnd-session-prep)', desc: 'Scan recent session logs, look up wiki articles for active NPCs/locations/threads, format prep sheet for #caedmon. Modular: session-scan → wiki-lookup → prep-sheet-format.', live: true },
         ],
       },
       {
         name: 'Create',
         skills: [
-          { name: 'Overnight Research (dnd-questions-cache)', desc: 'Find sparse/incomplete wiki articles, spawn sub-agents for deep research, generate 5+ worldbuilding questions for James. Writes to daily memory files. Tracks asked questions to avoid repeats.' },
-          { name: 'Art Generation (image-gen)', desc: 'Generate character portraits, scenes, maps via Gemini API (bash script). Prompt enhancement with D&D/MTG art style. Supports text-to-image and image editing.' },
+          { name: 'Overnight Research (dnd-questions-cache)', desc: 'Find sparse/incomplete wiki articles, spawn sub-agents for deep research, generate 5+ worldbuilding questions for James. Writes to daily memory files. Tracks asked questions to avoid repeats.', live: true },
+          { name: 'Art Generation (image-gen)', desc: 'Generate character portraits, scenes, maps via Gemini API (bash script). Prompt enhancement with D&D/MTG art style. Supports text-to-image and image editing.', live: true },
         ],
       },
     ],
@@ -417,7 +427,7 @@ const liveAgents = [
     name: 'Dagr',
     borderColor: 'sonnet',
     model: 'Sonnet',
-    cron: '8 AM daily (cron activation pending — agent + workspace built, crons still on main agent)',
+    cron: '8 AM daily + weather 7:30 AM/PM + calendar 6:30 AM/PM',
     purpose: 'Compile and post the morning brief from pre-cached data. One cron, one job, one post. Reads overnight caches (weather, calendar, nutrition, D&D), verifies freshness, generates a dinner suggestion, posts to #dagr. Editorial voice — not a data dump.',
     workspace: '~/.openclaw/workspace-dagr/ — Reads pre-cached data from memory files. No own data sources.',
     workspaceFiles: [
@@ -426,7 +436,6 @@ const liveAgents = [
       { file: 'TOOLS.md', desc: 'Daily memory files (read-only), york-tools weather (fallback), Google Sheets (cross-check), Discord posting.' },
       { file: 'IDENTITY.md', desc: 'Dagr 🐓 — Old Norse personification of day, rides Skinfaxi across the sky.' },
       { file: 'MEMORY.md', desc: 'Brief format preferences, past corrections from James.' },
-      { file: 'USER.md', desc: 'James context: location, partner Audrey, cooking competence, work schedule.' },
       { file: 'memory/', desc: 'Daily cached data (written by overnight crons), overnight results.' },
     ],
     channels: [
@@ -436,14 +445,14 @@ const liveAgents = [
       {
         name: 'Compile',
         skills: [
-          { name: 'Morning Orchestrator', desc: 'Master compilation skill. Reads cached sections from daily memory, verifies freshness with cross-checks, spawns meal sub-agent, composes the brief, posts to #dagr.' },
-          { name: 'Morning Brief', desc: 'Brief format and content rules. Modular sections: weather, calendar, work, nutrition, weigh-in, home, overnight, meals.' },
+          { name: 'Morning Orchestrator', desc: 'Master compilation skill. Reads cached sections from daily memory, verifies freshness with cross-checks, spawns meal sub-agent, composes the brief, posts to #dagr.', live: true },
+          { name: 'Morning Brief', desc: 'Brief format and content rules. Modular sections: weather, calendar, work, nutrition, weigh-in, home, overnight, meals.', live: true },
         ],
       },
       {
         name: 'Support',
         skills: [
-          { name: 'Weather Cache', desc: 'Reads cached weather from daily memory. Location detection (Cleveland Heights default, Ann Arbor when traveling).' },
+          { name: 'Weather Cache', desc: 'Reads cached weather from daily memory. Location detection (Cleveland Heights default, Ann Arbor when traveling).', live: true },
         ],
       },
     ],
@@ -573,23 +582,30 @@ const draftAgents = [
       {
         name: 'Route',
         skills: [
-          { name: 'Dispatch', desc: 'Determine what to handle inline vs what to spawn. Route D&D to Caedmon, health logging to Wynn, chore reports to Hild. The core orchestration skill.' },
+          { name: 'Orchestrator Dispatch', desc: 'Determine what to handle inline vs route to another agent. Routes D&D to Caedmon, health to Wynn, builds to Offa. Includes Discord noise prevention rules.', live: true },
         ],
-        tbd: true,
       },
       {
         name: 'Judge',
         skills: [
-          { name: 'Cannabis Gate', desc: 'Cross-domain judgment call. Read Google Tasks for chore status, york-data for health/movement context, call camera-snapshot + image-analysis for kitchen state. Weigh all inputs and make the call. This is York\'s most complex skill — it synthesizes data from multiple agents\' domains.' },
-          { name: 'Accountability', desc: 'Nudge timing and tone calibration. When to push, when to back off. One mention per day max. Data speaks in the weekly review, not repeated nagging.' },
+          { name: 'Cannabis Gate (york-chores)', desc: 'Cross-domain judgment call. Read Google Tasks for chore status, york-data for health/movement context, call camera-snapshot + image-analysis for kitchen state. Weigh all inputs and make the call.', live: true },
+          { name: 'Weekly Check-in (york-weekly-checkin)', desc: 'Sunday 8 PM health/fitness recap. Pull week data from york-data, form opinions, deliver to #general.', live: true },
+          { name: 'Self-Improve (york-self-improve)', desc: 'Self-improvement feedback loop. Frustration scanning, prompt tuning, pattern tracking.', live: true },
         ],
       },
       {
-        name: 'Presence',
+        name: 'Ops',
         skills: [
-          { name: 'Panel Update', desc: 'Update the XFCE genmon panel widget. 5-10 words, creative York voice. Not a status bar — self-expression. Every heartbeat and end of meaningful conversations.' },
+          { name: 'Heartbeat (york-heartbeat)', desc: 'Every 30m check. Read context, evaluate nudges, panel update. Silent most beats.', live: true },
+          { name: 'Research', desc: 'Web research via browser. Used until a dedicated research agent exists.', live: true },
         ],
-        tbd: true,
+      },
+      {
+        name: 'TODO',
+        skills: [
+          { name: 'Panel Update', desc: 'Update the XFCE genmon panel widget. 5-10 words, creative York voice. Not a status bar — self-expression.', todo: true },
+          { name: 'Accountability', desc: 'Nudge timing and tone calibration. When to push, when to back off. One mention per day max.', todo: true },
+        ],
       },
     ],
     spawns: [
