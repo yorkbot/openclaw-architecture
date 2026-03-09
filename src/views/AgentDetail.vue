@@ -519,7 +519,7 @@ const liveAgents = [
     name: 'Wiglaf',
     borderColor: 'opus',
     model: 'Opus 4.6',
-    cron: 'morning-prep: daily ~8:30 AM (Sonnet sub-agent). now-management: every 15 min (Sonnet sub-agent, work hours). note-processing: every 15 min (Sonnet sub-agent, work hours). Memory audit: nightly (Sonnet sub-agent).',
+    cron: 'morning-prep: daily 7:00 AM (Sonnet sub-agent). now-management: every 15 min (Sonnet sub-agent, work hours). note-processing: every 15 min (Sonnet sub-agent, work hours). Memory audit: nightly (Sonnet sub-agent).',
     purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Bede has light read visibility for pattern analysis, but Wiglaf operates independently. No heartbeat.',
     workspace: '~/.openclaw/workspace-wiglaf/ — Obsidian vault at ~/work-notes/work/ is the primary async communication channel (syncs via Obsidian Sync). Limited cross-agent visibility: Bede can read sessions/memory for pattern analysis.',
     workspaceFiles: [
