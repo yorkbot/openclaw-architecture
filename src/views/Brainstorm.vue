@@ -156,6 +156,7 @@ const integrations = [
 ]
 
 const thinks = [
+  'Session compaction UX: when agents compact, the Discord typing indicator goes blank and all models go silent. Feels like a network drop from the user\'s side. Need a way to signal "I\'m still here, just reorganizing" — maybe a brief status message or typing indicator during compaction.',
   'Dagr (Brief) will grow — alarm integration, schedule-aware wake times. Future plans confirmed.',
   'Finance ties into Health (spending on food), Home (project costs), and Social (gift budgets). How much cross-domain access does it need? Future scope.',
   'Should there be a dedicated Avatar/Identity agent? Daily avatar generation, banner changes, panel voice. Bookmarked for later.',
