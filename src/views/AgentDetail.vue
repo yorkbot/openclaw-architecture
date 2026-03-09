@@ -536,24 +536,34 @@ const liveAgents = [
     ],
     skillSections: [
       {
-        name: 'Built',
+        name: 'Vault',
         skills: [
-          { name: 'vault-schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.' },
-          { name: 'note-processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Core input loop. Never writes to now.md. Ad-hoc only — future vault-watcher will trigger on demand.' },
-          { name: 'now-management', desc: 'Sole writer to now.md. Reads board.md + Daily notes + shared-cache calendar, renders the current focus (1 Doing + 1 Next). 15-min Sonnet cron — not wired yet.' },
-          { name: 'morning-prep', desc: 'Daily pre-work (7:00 AM). Creates today\\\'s Daily note, reads calendar from shared-cache, ages board.md, catches unprocessed yesterday notes, surfaces questions, refreshes now.md. Opus sub-agent — not wired yet.' },
+          { name: 'Vault Schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.', live: true },
+          { name: 'Note Processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Core input loop. Never writes to now.md. Ad-hoc only — future vault-watcher will trigger on demand.', live: true },
+          { name: 'Board Management', desc: 'Maintain board.md — prioritization rules, section movement, archival of old Done items.', todo: true },
+          { name: 'Vault Watcher', desc: 'No-LLM file watcher. Detects new/edited vault files, wakes note-processing and inbox-processing on demand.', todo: true },
         ],
       },
       {
-        name: 'Planned',
+        name: 'Focus',
         skills: [
-          { name: 'board-management', desc: 'Maintain board.md — prioritization rules, section movement, archival of old Done items.', todo: true },
-          { name: 'inbox-processing', desc: 'Process inbox/ items: classify, extract info, distribute to appropriate files, delete originals.', todo: true },
-          { name: 'ticket-management', desc: 'Create/update ticket files, merge eval results, track Jira status changes.', todo: true },
-          { name: 'meeting-processing', desc: 'Clean raw transcripts from inbox → meetings/, extract action items to board.md.', todo: true },
-          { name: 'devin-dispatch', desc: 'Dispatch Devin sessions, track in devin/log.md, follow up on outcomes. The endgame skill.', todo: true },
-          { name: 'question-management', desc: 'Post async questions, detect James answers (> "response"), act on them.', todo: true },
-          { name: 'vault-watcher', desc: 'No-LLM file watcher. Detects new/edited files in vault, wakes note-processing (and future inbox-processing) on demand. Eliminates polling crons.', todo: true },
+          { name: 'Now Management', desc: 'Sole writer to now.md. Reads board.md + Daily notes + shared-cache calendar, renders current focus (1 Doing + 1 Next). 15-min Sonnet cron.', live: true },
+          { name: 'Morning Prep', desc: 'Daily pre-work (7:00 AM). Creates today\\\'s Daily note, reads calendar from shared-cache, ages board.md, catches unprocessed notes, surfaces questions, refreshes now.md. Opus sub-agent.', live: true },
+        ],
+      },
+      {
+        name: 'Intake',
+        skills: [
+          { name: 'Inbox Processing', desc: 'Process inbox/ items: classify, extract info, distribute to appropriate files, delete originals.', todo: true },
+          { name: 'Meeting Processing', desc: 'Clean raw transcripts from inbox → meetings/, extract action items to board.md.', todo: true },
+          { name: 'Ticket Management', desc: 'Create/update ticket files, merge eval results, track Jira status changes.', todo: true },
+          { name: 'Question Management', desc: 'Post async questions, detect James answers (> "response"), act on them.', todo: true },
+        ],
+      },
+      {
+        name: 'Devin',
+        skills: [
+          { name: 'Devin Dispatch', desc: 'Dispatch Devin sessions, track in devin/log.md, follow up on outcomes.', todo: true },
         ],
       },
     ],
