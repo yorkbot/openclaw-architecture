@@ -60,6 +60,7 @@ const cronGroups = [
       { time: '7:30 AM / 7:30 PM', name: 'Weather Cache', agent: 'Dagr 🐓', status: 'On', notes: 'Runs twice daily. Location-aware.' },
       { time: '7:40 AM Mon', name: 'Weekly Banner', agent: 'York 🦝 (main)', status: 'On', notes: 'Gemini image gen.' },
       { time: '7:45 AM', name: 'Daily Avatar', agent: 'York 🦝 (main)', status: 'On', notes: 'Gemini image gen.' },
+      { time: '7:00 AM', name: 'Morning Prep', agent: 'Wiglaf 🐻', status: 'Not wired', notes: 'Opus sub-agent. Creates daily note, reads calendar cache, ages board, catches unprocessed notes, refreshes now.md.' },
       { time: '8:00 AM', name: 'Morning Brief', agent: 'Dagr 🐓', status: 'On', notes: 'Posts to #general.' },
     ],
   },
@@ -67,6 +68,7 @@ const cronGroups = [
     icon: '🔄',
     label: 'Daytime: Periodic',
     jobs: [
+      { time: 'Every 15m (9AM–6PM)', name: 'Now Management', agent: 'Wiglaf 🐻', status: 'Not wired', notes: 'Sonnet sub-agent. Updates now.md from board.md + daily notes + calendar.' },
       { time: 'Every 30m (8AM–12:30AM)', name: 'Heartbeat', agent: 'York 🦝 (main)', status: 'On', notes: 'Silent most beats.' },
       { time: '8:00 PM Sun', name: 'Weekly Check-in', agent: 'York 🦝 (main)', status: 'On', notes: 'Health/fitness recap to #general.' },
     ],
@@ -76,6 +78,7 @@ const cronGroups = [
 function statusClass(status) {
   if (status === 'On') return 'status-on'
   if (status === 'Not built') return 'status-notbuilt'
+  if (status === 'Not wired') return 'status-notwired'
   return ''
 }
 </script>
@@ -127,6 +130,11 @@ function statusClass(status) {
 .status-notbuilt {
   background: rgba(139, 148, 158, 0.15);
   color: #8b949e;
+}
+
+.status-notwired {
+  background: rgba(210, 153, 34, 0.15);
+  color: #d29922;
 }
 
 code {

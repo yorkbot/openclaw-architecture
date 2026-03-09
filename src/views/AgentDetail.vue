@@ -519,13 +519,13 @@ const liveAgents = [
     name: 'Wiglaf',
     borderColor: 'opus',
     model: 'Opus 4.6',
-    cron: 'morning-prep: daily 7:00 AM (Opus sub-agent). now-management: every 15 min (Sonnet sub-agent, work hours). Memory audit: nightly (Sonnet sub-agent).',
+    cron: 'Memory audit: nightly (Sonnet sub-agent). morning-prep: daily 7:00 AM — not wired yet. now-management: every 15 min — not wired yet.',
     purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Bede has light read visibility for pattern analysis, but Wiglaf operates independently. No heartbeat.',
     workspace: '~/.openclaw/workspace-wiglaf/ — Obsidian vault at ~/work-notes/work/ is the primary async communication channel (syncs via Obsidian Sync). Limited cross-agent visibility: Bede can read sessions/memory for pattern analysis.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Professional, direct, technical. No personality flourishes. Engineering leadership voice.' },
       { file: 'AGENTS.md', desc: 'This agent works alone. No system map. If James asks about anything outside work, redirect.' },
-      { file: 'TOOLS.md', desc: 'Obsidian vault (~/work-notes/work/), mcporter for MCP tools, gh CLI for GitHub. No york-data, no shared cache, no cross-agent tools.' },
+      { file: 'TOOLS.md', desc: 'Obsidian vault (~/work-notes/work/), mcporter for MCP tools, gh CLI for GitHub. Reads shared-cache for calendar data. No york-data, no cross-agent tools.' },
       { file: 'IDENTITY.md', desc: 'Wiglaf 🐻 — Named for Beowulf\'s loyal companion, the one who stays and does the work.' },
       { file: 'MEMORY.md', desc: 'Work patterns, meeting context, project state. Private — never read by other agents.' },
       { file: 'memory/', desc: 'Daily work interactions. Self-audited only.' },
@@ -536,12 +536,12 @@ const liveAgents = [
     ],
     skillSections: [
       {
-        name: 'Foundation',
+        name: 'Built',
         skills: [
           { name: 'vault-schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.' },
-          { name: 'note-processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Core input loop. Never writes to now.md. Runs ad-hoc only (no cron) — future file-watcher will trigger it on demand.' },
-          { name: 'now-management', desc: 'Sole writer to now.md. Reads board.md + Daily notes, renders the current focus (1 Doing + 1 Next). Runs on 15-min Sonnet cron.' },
-          { name: 'morning-prep', desc: 'Daily pre-work cron (7:00 AM). Creates today\\\'s Daily note, reads calendar from shared-cache, ages board.md, catches unprocessed yesterday notes, surfaces questions, refreshes now.md. Opus sub-agent.' },
+          { name: 'note-processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Core input loop. Never writes to now.md. Ad-hoc only — future vault-watcher will trigger on demand.' },
+          { name: 'now-management', desc: 'Sole writer to now.md. Reads board.md + Daily notes + shared-cache calendar, renders the current focus (1 Doing + 1 Next). 15-min Sonnet cron — not wired yet.' },
+          { name: 'morning-prep', desc: 'Daily pre-work (7:00 AM). Creates today\\\'s Daily note, reads calendar from shared-cache, ages board.md, catches unprocessed yesterday notes, surfaces questions, refreshes now.md. Opus sub-agent — not wired yet.' },
         ],
       },
       {
@@ -558,8 +558,9 @@ const liveAgents = [
       },
     ],
     todos: [
-      'Vault migration: restructure existing files to new schema (board.md, tickets/, devin/, etc.)',
-      'Wire up 15-min crons for note-processing and now-management',
+      'Vault migration: restructure existing files to new schema (board.md, tickets/, devin/, etc.) — in progress',
+      'Wire morning-prep cron (daily 7:00 AM, Opus sub-agent)',
+      'Wire now-management cron (every 15 min, Sonnet sub-agent, work hours)',
       'Build remaining planned skills iteratively',
     ],
     spawns: [],
