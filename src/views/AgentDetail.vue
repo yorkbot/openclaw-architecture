@@ -480,8 +480,7 @@ const liveAgents = [
         name: 'Vault',
         skills: [
           { name: 'Vault Schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.', live: true },
-          { name: 'Note Processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Core input loop. Never writes to now.md. Ad-hoc only — future vault-watcher will trigger on demand.', live: true },
-          { name: 'Board Management', desc: 'Maintain board.md — prioritization rules, section movement, archival of old Done items.', todo: true },
+          { name: 'Note Processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Includes board hygiene (dedup, reprioritization, stale context). Core input loop. Never writes to now.md. Ad-hoc only — future vault-watcher will trigger on demand.', live: true },
           { name: 'Vault Watcher', desc: 'No-LLM file watcher. Detects new/edited vault files, wakes note-processing and inbox-processing on demand.', todo: true },
         ],
       },
