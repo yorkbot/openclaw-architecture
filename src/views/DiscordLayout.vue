@@ -55,14 +55,11 @@
     <div class="card" style="margin-top: 1rem;">
       <h3>Design Decisions</h3>
       <ul class="decisions">
-        <li><strong>#caedmon routes directly to Caedmon.</strong> Interactive lore sessions don't burn York's context. James talks to the D&D specialist who knows the wiki cold.</li>
-        <li><strong>#offa for direct builds.</strong> James can give Offa build instructions directly without going through the Bede suggestion pipeline.</li>
-        <li><strong>#general stays as the main channel.</strong> York lives here. Quick questions, accountability, daily chat, morning briefs.</li>
-        <li><strong>#reviews is for the improvement pipeline.</strong> Bede's suggestions surface here. James approves/rejects. Offa reads approved items.</li>
-        <li><strong>No #health channel.</strong> Health conversations happen in #general. York routes to Wynn as needed. Morning brief shows appropriate health data.</li>
-        <li><strong>No #work channel.</strong> Work prep is ad-hoc, spawned by York when asked.</li>
-        <li><strong>No #mtg channel.</strong> MTG is a separate OpenClaw instance entirely.</li>
-        <li><strong>Each conversational agent gets its own voice.</strong> Caedmon sounds different from York. Future agents will have distinct personalities.</li>
+        <li><strong>Every agent with a channel gets direct routing.</strong> Messages in an agent's channel go straight to that agent. No York proxy. Less context burn, faster responses.</li>
+        <li><strong>#general stays as the main channel.</strong> York lives here. Quick questions, accountability, daily chat. York delegates to other agents as needed.</li>
+        <li><strong>Agent channels use emoji prefixes.</strong> #🐉caedmon, #🦫offa, #🦌wynn, etc. #general does not get an emoji — only channels that match an agent name.</li>
+        <li><strong>#🐻wiglaf is fully siloed.</strong> Private work agent. No cross-agent access, no Bede analysis. Separate by design.</li>
+        <li><strong>Each conversational agent gets its own voice.</strong> Caedmon sounds different from York. Wiglaf is professional and direct. Personalities are defined in SOUL.md.</li>
       </ul>
     </div>
   </div>
@@ -85,27 +82,34 @@ const categories = [
     name: 'AGENTS',
     channels: [
       {
-        name: 'caedmon',
+        name: '🐓dagr',
+        agent: 'Dagr 🐓',
+        agentClass: 'sonnet',
+        desc: 'Morning brief, daily summaries',
+      },
+      {
+        name: '🐉caedmon',
         agent: 'Caedmon 🐉',
         agentClass: 'large',
         desc: 'D&D campaign, wiki, lore, worldbuilding, session prep',
       },
       {
-        name: 'offa',
+        name: '🦫offa',
         agent: 'Offa 🦫',
         agentClass: 'large',
         desc: 'Direct build instructions, skill creation, debugging',
       },
-    ],
-  },
-  {
-    name: 'SYSTEM',
-    channels: [
       {
-        name: 'reviews',
-        agent: 'York 🦝',
+        name: '🦌wynn',
+        agent: 'Wynn 🦌',
+        agentClass: 'sonnet',
+        desc: 'Health & fitness logging, coaching',
+      },
+      {
+        name: '🐻wiglaf',
+        agent: 'Wiglaf 🐻',
         agentClass: 'large',
-        desc: 'Improvement proposals from Bede/Offa pipeline',
+        desc: 'Private work agent, prioritization, meeting prep',
       },
     ],
   },
@@ -118,19 +122,29 @@ const rules = [
     desc: 'All messages route to York. York delegates to Wynn, Hild, etc. as needed. Morning brief, nudges, daily chat.',
   },
   {
-    channel: 'caedmon',
+    channel: '🐓dagr',
+    agent: 'Dagr 🐓 (Direct)',
+    desc: 'Morning brief channel. Dagr posts daily summaries and handles morning-related conversation.',
+  },
+  {
+    channel: '🐉caedmon',
     agent: 'Caedmon 🐉 (Direct)',
-    desc: 'Messages route directly to Caedmon. No York proxy. Interactive wiki/lore sessions. York can still handle D&D questions in #general if needed.',
+    desc: 'Messages route directly to Caedmon. No York proxy. Interactive wiki/lore sessions.',
   },
   {
-    channel: 'offa',
+    channel: '🦫offa',
     agent: 'Offa 🦫 (Direct)',
-    desc: 'James gives Offa build instructions directly. Bypasses the Bede suggestion pipeline for hands-on building.',
+    desc: 'James gives Offa build instructions directly. Hands-on building and skill creation.',
   },
   {
-    channel: 'reviews',
-    agent: 'York 🦝',
-    desc: 'Bede posts suggestions here via York. James approves/rejects. Approved items feed to Offa.',
+    channel: '🦌wynn',
+    agent: 'Wynn 🦌 (Direct)',
+    desc: 'Health & fitness logging. Food, workouts, weight, coaching — all direct to Wynn.',
+  },
+  {
+    channel: '🐻wiglaf',
+    agent: 'Wiglaf 🐻 (Direct)',
+    desc: 'Private work agent. Prioritization, meeting prep, work context. Fully siloed from other agents.',
   },
 ]
 </script>

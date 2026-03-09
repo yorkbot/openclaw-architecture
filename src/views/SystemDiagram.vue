@@ -59,8 +59,8 @@
               <span class="tag heartbeat">Heartbeat 30m</span>
             </div>
             <div class="node-desc">
-              Conversation, judgment calls, routing, cannabis gate, accountability.
-              Reads york-data + Google Tasks directly for gate decisions. Spawns specialists.
+              Conversation, judgment calls, routing, accountability.
+              Reads york-data + Google Tasks directly. Spawns specialists.
             </div>
           </div>
         </div>
@@ -257,9 +257,11 @@
 <script setup>
 const channels = [
   { name: 'general', routes: '→ York 🦝' },
-  { name: 'caedmon', routes: '→ Caedmon 🐉 (direct)' },
-  { name: 'offa', routes: '→ Offa 🦫 (direct)' },
-  { name: 'reviews', routes: '→ York 🦝 (proposals)' },
+  { name: '🐓dagr', routes: '→ Dagr 🐓 (direct)' },
+  { name: '🐉caedmon', routes: '→ Caedmon 🐉 (direct)' },
+  { name: '🦫offa', routes: '→ Offa 🦫 (direct)' },
+  { name: '🦌wynn', routes: '→ Wynn 🦌 (direct)' },
+  { name: '🐻wiglaf', routes: '→ Wiglaf 🐻 (direct)' },
 ]
 
 const agents = [
@@ -290,7 +292,7 @@ const agents = [
     tierLabel: 'Sonnet',
     schedule: null,
     scheduleLabel: null,
-    desc: 'Health & fitness. Logging (consumption, weight, workouts, cannabis) and coaching.',
+    desc: 'Health & fitness. Logging (consumption, weight, workouts) and coaching.',
     border: 'border-blue',
   },
   {
@@ -322,6 +324,16 @@ const agents = [
     scheduleLabel: 'Cron 8AM',
     desc: 'Morning brief. Compile cached data, editorialize, post.',
     border: 'border-blue',
+  },
+  {
+    id: 'wiglaf',
+    name: '🐻 Wiglaf',
+    tierClass: 'large',
+    tierLabel: 'Opus 4.6',
+    schedule: null,
+    scheduleLabel: null,
+    desc: 'Private work agent. Prioritization, note processing, meeting prep, work context. Fully siloed.',
+    border: 'border-yellow',
   },
 ]
 
