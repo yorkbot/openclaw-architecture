@@ -411,6 +411,48 @@ const liveAgents = [
       'Research sub-agents (overnight wiki exploration, 5 min timeout each)',
     ],
   },
+  {
+    id: 'dagr',
+    icon: '🐓',
+    name: 'Dagr',
+    borderColor: 'sonnet',
+    model: 'Sonnet',
+    cron: '8 AM daily (cron activation pending — agent + workspace built, crons still on main agent)',
+    purpose: 'Compile and post the morning brief from pre-cached data. One cron, one job, one post. Reads overnight caches (weather, calendar, nutrition, D&D), verifies freshness, generates a dinner suggestion, posts to #dagr. Editorial voice — not a data dump.',
+    workspace: '~/.openclaw/workspace-dagr/ — Reads pre-cached data from memory files. No own data sources.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Editorial, concise, opinionated. Never fabricates missing data. Never computes dates mentally.' },
+      { file: 'AGENTS.md', desc: 'Brief format and section order, data source locations, delivery channel, hard rules, escalation.' },
+      { file: 'TOOLS.md', desc: 'Daily memory files (read-only), york-tools weather (fallback), Google Sheets (cross-check), Discord posting.' },
+      { file: 'IDENTITY.md', desc: 'Dagr 🐓 — Old Norse personification of day, rides Skinfaxi across the sky.' },
+      { file: 'MEMORY.md', desc: 'Brief format preferences, past corrections from James.' },
+      { file: 'USER.md', desc: 'James context: location, partner Audrey, cooking competence, work schedule.' },
+      { file: 'memory/', desc: 'Daily cached data (written by overnight crons), overnight results.' },
+    ],
+    channels: [
+      '#dagr — posts morning brief (Discord channel 1480402223954661538)',
+    ],
+    skillSections: [
+      {
+        name: 'Compile',
+        skills: [
+          { name: 'Morning Orchestrator', desc: 'Master compilation skill. Reads cached sections from daily memory, verifies freshness with cross-checks, spawns meal sub-agent, composes the brief, posts to #dagr.' },
+          { name: 'Morning Brief', desc: 'Brief format and content rules. Modular sections: weather, calendar, work, nutrition, weigh-in, home, overnight, meals.' },
+        ],
+      },
+      {
+        name: 'Support',
+        skills: [
+          { name: 'Weather Cache', desc: 'Reads cached weather from daily memory. Location detection (Cleveland Heights default, Ann Arbor when traveling).' },
+          { name: 'Meal System', desc: 'Generate one context-aware dinner suggestion from recent meals, schedule, weather, guests. Honest when nothing sparks.' },
+          { name: 'Meal Spark', desc: 'Dinner inspiration from eating patterns. Pantry-aware, protein-tracking, casual one-liner output.' },
+        ],
+      },
+    ],
+    spawns: [
+      'Meal sub-agent (dinner suggestion, spawned during compilation)',
+    ],
+  },
 ]
 
 const draftAgents = [
@@ -561,41 +603,6 @@ const draftAgents = [
       'Dagr (morning brief — cron-triggered, not spawned)',
     ],
   },
-  {
-    id: 'morning',
-    icon: '🐓',
-    name: 'Dagr',
-    borderColor: 'sonnet',
-    model: 'Sonnet',
-    cron: '8 AM daily',
-    purpose: 'Compile and post the morning brief from pre-cached data. One cron, one job, one post. Reads Bede\'s caches, weather, calendar, and overnight research results. Editorial voice — not just a data dump. Future: may deliver to a conversational agent instead of posting directly to #general.',
-    workspace: 'Minimal. Reads other agents\' cached output. No own data sources.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Editorial voice. Concise, opinionated, no filler. Knows what matters today.' },
-      { file: 'AGENTS.md', desc: 'Brief format, section order, data source locations, completeness checks.' },
-      { file: 'TOOLS.md', desc: 'york-data (read-only), Bede\'s cached markdown files, Discord posting.' },
-      { file: 'IDENTITY.md', desc: 'Dagr 🐓 — Old Norse for "day." The one who announces the day.' },
-      { file: 'MEMORY.md', desc: 'Brief format preferences, past corrections from James.' },
-      { file: 'memory/', desc: 'Minimal — reads other agents\' caches, doesn\'t maintain much own state.' },
-    ],
-    channels: [
-      '#general — posts morning brief (future: may route through conversational agent instead)',
-    ],
-    skillSections: [
-      {
-        name: 'Compile',
-        skills: [
-          { name: 'Morning Brief', desc: 'Read all cached data (Bede health caches, weather, calendar, Caedmon overnight research, chore summary). Format into the brief. Editorialize — have opinions about what matters today. Post to #general.' },
-          { name: 'Data Freshness Check', desc: 'Before compiling, verify all expected caches exist and are from today. Flag missing sections rather than silently omitting them.' },
-        ],
-      },
-    ],
-    spawns: [],
-  },
-]
-
-const suggestedAgents = [
-
 ]
 </script>
 
