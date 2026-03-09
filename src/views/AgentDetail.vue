@@ -519,9 +519,9 @@ const liveAgents = [
     name: 'Wiglaf',
     borderColor: 'opus',
     model: 'Opus 4.6',
-    cron: 'Memory audit only (nightly, Sonnet sub-agent)',
-    purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Fully siloed from the rest of the system. No cross-agent references, no Bede analysis, no heartbeat. Listed on architecture for completeness, but invisible to every other agent.',
-    workspace: '~/.openclaw/workspace-wiglaf/ — siloed. Obsidian vault at ~/work-notes/work/ is the primary communication channel (syncs via Obsidian Sync). No cross-agent data access.',
+    cron: 'now-management: every 15 min (Sonnet sub-agent, work hours). note-processing: every 15 min (Sonnet sub-agent, work hours). Memory audit: nightly (Sonnet sub-agent).',
+    purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Bede has light read visibility for pattern analysis, but Wiglaf operates independently. No heartbeat.',
+    workspace: '~/.openclaw/workspace-wiglaf/ — Obsidian vault at ~/work-notes/work/ is the primary async communication channel (syncs via Obsidian Sync). Limited cross-agent visibility: Bede can read sessions/memory for pattern analysis.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Professional, direct, technical. No personality flourishes. Engineering leadership voice.' },
       { file: 'AGENTS.md', desc: 'This agent works alone. No system map. If James asks about anything outside work, redirect.' },
@@ -536,15 +536,29 @@ const liveAgents = [
     ],
     skillSections: [
       {
+        name: 'Foundation',
+        skills: [
+          { name: 'vault-schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.' },
+          { name: 'note-processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Core input loop. Never writes to now.md.' },
+          { name: 'now-management', desc: 'Sole writer to now.md. Reads board.md + Daily notes, renders the current focus (1 Doing + 1 Next). Runs on 15-min Sonnet cron.' },
+        ],
+      },
+      {
         name: 'Planned',
         skills: [
-          { name: 'TBD', desc: 'No skills yet. James will design them directly with Wiglaf after it\'s alive.', todo: true },
+          { name: 'board-management', desc: 'Maintain board.md — prioritization rules, section movement, archival of old Done items.', todo: true },
+          { name: 'inbox-processing', desc: 'Process inbox/ items: classify, extract info, distribute to appropriate files, delete originals.', todo: true },
+          { name: 'ticket-management', desc: 'Create/update ticket files, merge eval results, track Jira status changes.', todo: true },
+          { name: 'meeting-processing', desc: 'Clean raw transcripts from inbox → meetings/, extract action items to board.md.', todo: true },
+          { name: 'devin-dispatch', desc: 'Dispatch Devin sessions, track in devin/log.md, follow up on outcomes. The endgame skill.', todo: true },
+          { name: 'question-management', desc: 'Post async questions, detect James answers (> "response"), act on them.', todo: true },
         ],
       },
     ],
     todos: [
-      'Skills to be designed directly with James post-launch',
-      'Vault structure documentation (after vault rewrite)',
+      'Vault migration: restructure existing files to new schema (board.md, tickets/, devin/, etc.)',
+      'Wire up 15-min crons for note-processing and now-management',
+      'Build remaining planned skills iteratively',
     ],
     spawns: [],
   },
@@ -558,8 +572,8 @@ const draftAgents = [
     borderColor: 'opus',
     model: 'Opus 4.6',
     cron: 'Overnight runs (TBD schedule)',
-    purpose: 'The self-improvement analyst. Reads session transcripts and agent memory, identifies patterns in failures and corrections, suggests measurable improvements, and tracks whether past changes were effective. Writes all findings and suggestions to york-data. EXCLUSION: Bede must never read Wiglaf\'s memory, transcripts, or sessions. Wiglaf is fully siloed for work privacy.',
-    workspace: 'Dedicated workspace. Read access to session transcripts via sessions_list/sessions_history and other agent memory files. Exception: Wiglaf is excluded — no read access to workspace-wiglaf/ or Wiglaf sessions.',
+    purpose: 'The self-improvement analyst. Reads session transcripts and agent memory, identifies patterns in failures and corrections, suggests measurable improvements, and tracks whether past changes were effective. Writes all findings and suggestions to york-data. Has light read access to Wiglaf sessions/memory for pattern analysis — limited visibility, no write access.',
+    workspace: 'Dedicated workspace. Read access to session transcripts via sessions_list/sessions_history and other agent memory files. Wiglaf: light read access for pattern analysis (sessions + memory, no vault access).',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Analytical, pattern-obsessed, evidence-driven. Speaks in observations not opinions.' },
       { file: 'AGENTS.md', desc: 'Analysis methodology: what to look for, how to categorize findings, observation and suggestion schemas.' },
