@@ -38,7 +38,7 @@
 const cronGroups = [
   {
     icon: '🌙',
-    label: 'Overnight: Memory Audit (1:00 – 3:00 AM)',
+    label: 'Overnight: Memory Audit (1:00 – 3:30 AM)',
     desc: 'Per-agent memory quality audit via Sonnet sub-agent. Skill: shared-skills/memory-audit/',
     jobs: [
       { time: '1:00 AM', name: 'Memory Audit — York', agent: 'York 🦝 (main)', status: 'On', notes: '' },
@@ -46,6 +46,7 @@ const cronGroups = [
       { time: '2:00 AM', name: 'Memory Audit — Wynn', agent: 'Wynn 🦌', status: 'On', notes: '' },
       { time: '2:30 AM', name: 'Memory Audit — Caedmon', agent: 'Caedmon 🐉', status: 'On', notes: '' },
       { time: '3:00 AM', name: 'Memory Audit — Dagr', agent: 'Dagr 🐓', status: 'On', notes: '' },
+      { time: '3:30 AM', name: 'Memory Audit — Wiglaf', agent: 'Wiglaf 🐻', status: 'On', notes: 'Self-audit only. Bede excluded.' },
     ],
   },
   {
@@ -65,7 +66,7 @@ const cronGroups = [
       { time: '7:30 AM / 7:30 PM', name: 'Weather Cache', agent: 'Dagr 🐓', status: 'On', notes: 'Runs twice daily. Location-aware.' },
       { time: '7:40 AM Mon', name: 'Weekly Banner', agent: 'York 🦝 (main)', status: 'On', notes: 'Gemini image gen.' },
       { time: '7:45 AM', name: 'Daily Avatar', agent: 'York 🦝 (main)', status: 'On', notes: 'Gemini image gen.' },
-      { time: '8:00 AM', name: 'Morning Brief', agent: 'Dagr 🐓', status: 'On', notes: 'Posts to #dagr.' },
+      { time: '8:00 AM', name: 'Morning Brief', agent: 'Dagr 🐓', status: 'On', notes: 'Posts to #general.' },
     ],
   },
   {
