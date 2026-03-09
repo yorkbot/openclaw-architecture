@@ -38,7 +38,7 @@
 const cronGroups = [
   {
     icon: '🌙',
-    label: 'Overnight: Memory Audit (1:00 – 3:30 AM)',
+    label: 'Overnight: Memory Audit (1:00 – 4:00 AM)',
     desc: 'Per-agent memory quality audit via Sonnet sub-agent. Skill: shared-skills/memory-audit/',
     jobs: [
       { time: '1:00 AM', name: 'Memory Audit — York', agent: 'York 🦝 (main)', status: 'On', notes: '' },
@@ -46,20 +46,14 @@ const cronGroups = [
       { time: '2:00 AM', name: 'Memory Audit — Wynn', agent: 'Wynn 🦌', status: 'On', notes: '' },
       { time: '2:30 AM', name: 'Memory Audit — Caedmon', agent: 'Caedmon 🐉', status: 'On', notes: '' },
       { time: '3:00 AM', name: 'Memory Audit — Dagr', agent: 'Dagr 🐓', status: 'On', notes: '' },
-      { time: '3:30 AM', name: 'Memory Audit — Wiglaf', agent: 'Wiglaf 🐻', status: 'On', notes: 'Self-audit only. Bede excluded.' },
-    ],
-  },
-  {
-    icon: '🔧',
-    label: 'Overnight: Research (3:00 – 4:00 AM)',
-    jobs: [
-      { time: '3:45 AM', name: 'D&D Questions Cache', agent: 'Caedmon 🐉', status: 'On', notes: 'Wiki research, worldbuilding questions. Opus 4.6.' },
+      { time: '3:30 AM', name: 'Memory Audit — Wiglaf', agent: 'Wiglaf 🐻', status: 'On', notes: '' },
     ],
   },
   {
     icon: '🌅',
     label: 'Morning: Cache + Prep (4:00 – 8:00 AM)',
     jobs: [
+      { time: '4:00 AM', name: 'D&D Questions Cache', agent: 'Caedmon 🐉', status: 'On', notes: 'Wiki research, worldbuilding questions. Opus 4.6.' },
       { time: '4:15 AM', name: 'Nutrition + Weight Cache', agent: 'main (temp)', status: 'On', notes: 'Stays on main until Bede is built.' },
       { time: '5:15 AM', name: 'Consumption Gap Cache', agent: 'main (temp)', status: 'On', notes: 'Stays on main until Bede is built.' },
       { time: '6:30 AM / 6:30 PM', name: 'Calendar Context', agent: 'Dagr 🐓', status: 'On', notes: 'Runs twice daily.' },
