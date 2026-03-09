@@ -458,14 +458,14 @@ const liveAgents = [
     id: 'wiglaf',
     icon: '🐻',
     name: 'Wiglaf',
-    borderColor: 'opus',
-    model: 'Opus 4.6',
-    cron: 'Memory audit: nightly (Sonnet sub-agent). morning-prep: daily 7:00 AM — not wired yet. now-management: every 15 min — not wired yet.',
-    purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Bede has light read visibility for pattern analysis, but Wiglaf operates independently. No heartbeat.',
+    borderColor: 'sonnet',
+    model: 'Sonnet (conversation + heartbeat). All skills run as Opus sub-agents.',
+    cron: 'Memory audit: 3:30 AM nightly. Work mode heartbeat: every 15m, 6AM–6PM — James toggles on/off.',
+    purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Sonnet for cheap heartbeats and conversation; Opus sub-agents for all real work. Bede has light read visibility for pattern analysis, but Wiglaf operates independently. System/agent modification is explicitly out of scope — redirects to Offa.',
     workspace: '~/.openclaw/workspace-wiglaf/ — Obsidian vault at ~/work-notes/work/ is the primary async communication channel (syncs via Obsidian Sync). Limited cross-agent visibility: Bede can read sessions/memory for pattern analysis.',
     workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Professional, direct, technical. No personality flourishes. Engineering leadership voice.' },
-      { file: 'AGENTS.md', desc: 'This agent works alone. No system map. If James asks about anything outside work, redirect.' },
+      { file: 'SOUL.md', desc: 'Professional, direct, technical. No personality flourishes. Engineering leadership voice. Pushes back on non-work topics and system modification (→ Offa).' },
+      { file: 'AGENTS.md', desc: 'This agent works alone. No system map. Redirects non-work to appropriate place, system building to Offa.' },
       { file: 'TOOLS.md', desc: 'Obsidian vault (~/work-notes/work/), mcporter for MCP tools, gh CLI for GitHub. Reads shared-cache for calendar data. No york-data, no cross-agent tools.' },
       { file: 'IDENTITY.md', desc: 'Wiglaf 🐻 — Named for Beowulf\'s loyal companion, the one who stays and does the work.' },
       { file: 'MEMORY.md', desc: 'Work patterns, meeting context, project state. Private — never read by other agents.' },
@@ -479,41 +479,42 @@ const liveAgents = [
       {
         name: 'Vault',
         skills: [
-          { name: 'Vault Schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.', live: true },
-          { name: 'Note Processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Includes board hygiene (dedup, reprioritization, stale context). Core input loop. Never writes to now.md. Ad-hoc only — future vault-watcher will trigger on demand.', live: true },
+          { name: 'Vault Schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this. Opus sub-agent.', live: true },
+          { name: 'Note Processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Includes board hygiene (dedup, reprioritization, stale context). Core input loop. Never writes to now.md. Ad-hoc only — future vault-watcher will trigger on demand. Opus sub-agent.', live: true },
           { name: 'Vault Watcher', desc: 'No-LLM file watcher. Detects new/edited vault files, wakes note-processing and inbox-processing on demand.', todo: true },
         ],
       },
       {
         name: 'Focus',
         skills: [
-          { name: 'Now Management', desc: 'Sole writer to now.md. Reads board.md + Daily notes + shared-cache calendar, renders current focus (1 Doing + 1 Next). 15-min Sonnet cron.', live: true },
-          { name: 'Morning Prep', desc: 'Daily pre-work (7:00 AM). Creates today\\\'s Daily note, reads calendar from shared-cache, ages board.md, catches unprocessed notes, surfaces questions, refreshes now.md. Opus sub-agent.', live: true },
+          { name: 'Work Mode', desc: 'Toggle heartbeat on/off. James says "turn on" → config patches heartbeat to 15m. "Turn off" → patches to 0m. Refuses to turn on after 6PM. ActiveHours hard cutoff at 6PM — zero API calls after hours.', live: true },
+          { name: 'Now Management', desc: 'Sole writer to now.md. Reads board.md + Daily notes + shared-cache calendar, renders current focus (1 Doing + 1 Next). Runs on heartbeat when work mode is on. Opus sub-agent.', live: true },
+          { name: 'Morning Prep', desc: 'Opus cron (not currently wired — James turns on work mode manually). Vault scan, daily context load, priority review. Opus sub-agent.', live: true },
         ],
       },
       {
         name: 'Intake',
         skills: [
-          { name: 'Inbox Processing', desc: 'Process inbox/ items: classify, extract info, distribute to appropriate files, delete originals.', todo: true },
-          { name: 'Meeting Processing', desc: 'Clean raw transcripts from inbox → meetings/, extract action items to board.md.', todo: true },
-          { name: 'Ticket Management', desc: 'Create/update ticket files, merge eval results, track Jira status changes.', todo: true },
-          { name: 'Question Management', desc: 'Post async questions, detect James answers (> "response"), act on them.', todo: true },
+          { name: 'Inbox Processing', desc: 'Process inbox/ items: classify, extract info, distribute to appropriate files, delete originals. Opus sub-agent.', todo: true },
+          { name: 'Meeting Processing', desc: 'Clean raw transcripts from inbox → meetings/, extract action items to board.md. Opus sub-agent.', todo: true },
+          { name: 'Ticket Management', desc: 'Create/update ticket files, merge eval results, track Jira status changes. Opus sub-agent.', todo: true },
+          { name: 'Question Management', desc: 'Post async questions, detect James answers (> "response"), act on them. Opus sub-agent.', todo: true },
         ],
       },
       {
         name: 'Devin',
         skills: [
-          { name: 'Devin Dispatch', desc: 'Dispatch Devin sessions, track in devin/log.md, follow up on outcomes.', todo: true },
+          { name: 'Devin Dispatch', desc: 'Dispatch Devin sessions, track in devin/log.md, follow up on outcomes. Opus sub-agent.', todo: true },
         ],
       },
     ],
     todos: [
       'Vault migration: restructure existing files to new schema (board.md, tickets/, devin/, etc.) — in progress',
-      'Wire morning-prep cron (daily 7:00 AM, Opus sub-agent)',
-      'Wire now-management cron (every 15 min, Sonnet sub-agent, work hours)',
       'Build remaining planned skills iteratively',
     ],
-    spawns: [],
+    spawns: [
+      'Opus sub-agent (all skills — note processing, now management, morning prep, vault operations)',
+    ],
   },
 ]
 
