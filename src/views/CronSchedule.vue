@@ -60,7 +60,7 @@ const cronGroups = [
       { time: '7:30 AM / 7:30 PM', name: 'Weather Cache', agent: 'Dagr 🐓 (script)', status: 'On', notes: 'Bash script → shared-cache. Sonnet session runs the script, no real LLM work.' },
       { time: '7:40 AM Mon', name: 'Weekly Banner', agent: 'York 🦝 (main)', status: 'On', notes: 'york-tools.image_generate (Gemini Pro). 16:9.' },
       { time: '7:45 AM', name: 'Daily Avatar', agent: 'York 🦝 (main)', status: 'On', notes: 'york-tools.image_generate (Gemini Pro). 1:1.' },
-      { time: '7:00 AM', name: 'Morning Prep', agent: 'Wiglaf 🐻', status: 'Not wired', notes: 'Opus sub-agent. Creates daily note, reads calendar cache, ages board, catches unprocessed notes, refreshes now.md.' },
+      { time: '7:00 AM', name: 'Morning Prep', agent: 'Wiglaf 🐻', status: 'Not wired', notes: 'Opus. Vault scan, daily context load. Disabled — James turns on work mode manually.' },
       { time: '8:00 AM', name: 'Morning Brief', agent: 'Dagr 🐓', status: 'On', notes: 'Posts to #general.' },
     ],
   },
@@ -68,7 +68,7 @@ const cronGroups = [
     icon: '🔄',
     label: 'Daytime: Periodic',
     jobs: [
-      { time: 'Every 15m (9AM–6PM)', name: 'Now Management', agent: 'Wiglaf 🐻', status: 'Not wired', notes: 'Sonnet sub-agent. Updates now.md from board.md + daily notes + calendar.' },
+      { time: 'Every 15m (6AM–6PM)', name: 'Work Mode Heartbeat', agent: 'Wiglaf 🐻', status: 'On', notes: 'Sonnet. James toggles on/off in #wiglaf. Config-patched to 0m when off — zero API calls. Vault scan when active.' },
       { time: 'Every 30m (8AM–12:30AM)', name: 'Heartbeat', agent: 'York 🦝 (main)', status: 'On', notes: 'Silent most beats.' },
       { time: '8:00 PM Sun', name: 'Weekly Check-in', agent: 'York 🦝 (main)', status: 'On', notes: 'Health/fitness recap to #general.' },
     ],
