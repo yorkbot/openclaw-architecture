@@ -30,8 +30,9 @@
     <div class="card border-green">
       <h2>📁 Shared Infrastructure</h2>
       <p style="color: #8b949e; margin-bottom: 1rem;">
-        Cross-agent paths. Agents have their own workspaces for private memory and skills,
-        but these shared directories are how they coordinate.
+        Cross-agent paths. Each agent has its own workspace with private memory
+        (<code>workspace-&lt;agent&gt;/memory/</code>) — Bede audits these individually.
+        The shared directories below are strictly for coordination, not agent memory.
       </p>
     </div>
 
@@ -205,21 +206,23 @@ const sharedInfra = [
   {
     icon: '📋',
     path: '~/.openclaw/shared-cache/',
-    desc: 'Daily memory files written by overnight crons, read by Dagr at 8 AM for the morning brief. One file per day. Multiple agents/scripts write sections to the same file.',
+    desc: 'Cron output staging area for the morning brief. NOT agent memory — agents keep private memory in their own workspaces. This is just cached data that overnight scripts write and Dagr reads at 8 AM.',
     details: [
       { label: 'Format', value: 'YYYY-MM-DD.md with ## headed sections (Weather, Calendar, Nutrition, D&D, etc.)' },
       { label: 'Writers', value: 'weather-cache.sh, calendar-cache.sh, nutrition script (Wynn), consumption-gap script (Wynn), D&D questions (Caedmon)' },
       { label: 'Readers', value: 'Dagr (morning brief compilation at 8 AM)' },
+      { label: 'Not for', value: 'Agent memory, session history, or anything Bede audits. Those stay in workspace-<agent>/memory/.' },
     ],
   },
   {
     icon: '⚙️',
     path: '~/.openclaw/shared-scripts/',
-    desc: 'Cron scripts that run without an LLM. Pure bash + python for data fetching and file writing. Called by OpenClaw exec crons, not by agents directly.',
+    desc: 'Utility scripts available to all agents. Cron scripts run automatically; others available when James asks any agent to do something. No LLM — pure bash + python.',
     details: [
       { label: 'Scripts', value: 'weather-cache.sh, calendar-cache.sh (more planned: nutrition-cache, consumption-gap)' },
-      { label: 'Output', value: 'Writes sections to ~/.openclaw/shared-cache/YYYY-MM-DD.md' },
+      { label: 'Cron output', value: 'Writes sections to ~/.openclaw/shared-cache/YYYY-MM-DD.md' },
       { label: 'LLM', value: 'None. These are bash scripts.' },
+      { label: 'Access', value: 'Any agent can run these if asked.' },
     ],
   },
   {
