@@ -228,24 +228,21 @@
 const globalSkills = [
   {
     name: 'Git Workflow',
-    desc: 'Branch, commit, push, open PR. Naming conventions for branches, commit message format, when to PR vs direct push. The standard workflow for any repo changes.',
+    desc: 'Branch, commit, push, open PR. Naming conventions for branches, commit message format, when to PR vs direct push. yorkbot repos: push to main. dohertyj08 repos: branch + PR.',
     agents: 'Caedmon (wiki), Offa (skills/scripts)',
     live: true,
   },
   {
     name: 'Memory Management',
-    desc: 'How to read/write daily memory files (memory/YYYY-MM-DD.md). WAL discipline: write important context BEFORE responding. What goes in daily files vs MEMORY.md. How Bede\'s rolling reflections work.',
+    desc: 'How all agents read and write memory. MEMORY.md for durable facts, memory/YYYY-MM-DD.md for daily append-only logs. WAL discipline: write BEFORE responding to significant work, not after. Defines what belongs where and what doesn\'t.',
     agents: 'All agents',
+    live: true,
   },
   {
-    name: 'Discord Messaging',
-    desc: 'Posting to channels, formatting rules (no markdown tables, use bullet lists), when to use reactions vs replies, embed suppression. Channel-specific conventions.',
-    agents: 'York, Dagr, Caedmon',
-  },
-  {
-    name: 'Web Research',
-    desc: 'Search methodology, source evaluation, structured output format. Browser usage, search term construction, confidence levels. Available to any agent that needs to look something up.',
-    agents: 'Any agent (on-demand)',
+    name: 'Memory Audit',
+    desc: 'Nightly quality check on an agent\'s memory files. Checks for gaps (sessions that didn\'t write), noise (heartbeat spam, process narration), and MEMORY.md staleness. Always run as a Sonnet sub-agent, never inline. Writes brief findings to the daily file.',
+    agents: 'All agents (via nightly cron)',
+    live: true,
   },
   {
     name: 'Image Analysis',
@@ -259,18 +256,13 @@ const globalSkills = [
   },
   {
     name: 'york-data Conventions',
-    desc: 'How to call york-data MCP functions. Parameter naming, error handling, upsert patterns, date formats. The shared contract for all data access.',
+    desc: 'How to call york-data MCP functions. Parameter naming, error handling, upsert patterns, date formats. The shared contract for all data access. Reference: york-data/API.md.',
     agents: 'Wynn, Hild, York, Bede, Dagr',
   },
   {
     name: 'Flag for Bede',
     desc: 'Any agent can flag something unusual for Bede\'s attention. "Something weird happened in this session." Writes a structured flag to york-data that Bede picks up on its next collection run.',
     agents: 'Any agent',
-  },
-  {
-    name: 'Sub-Agent Spawning',
-    desc: 'When to spawn a sub-agent vs handle inline. How to pass context, set model tier, handle results. Timeout and cleanup conventions.',
-    agents: 'York, Bede, Caedmon, Wynn',
   },
 ]
 
