@@ -1,21 +1,5 @@
 <template>
   <div>
-    <!-- Global Skills -->
-    <div class="card border-global">
-      <h2>🌐 Global Skills</h2>
-      <p style="color: #8b949e; margin-bottom: 1rem;">
-        Shared skills available to any agent. Not every agent needs to know about every skill —
-        only loaded when relevant. These codify common patterns so agents do them consistently.
-      </p>
-      <div class="global-skills-grid">
-        <div class="global-skill" v-for="gs in globalSkills" :key="gs.name">
-          <div class="global-skill-name">{{ gs.name }} <span v-if="gs.live" class="skill-live-tag">Live</span><span v-if="gs.todo" class="skill-todo-tag">TODO</span></div>
-          <div class="global-skill-desc">{{ gs.desc }}</div>
-          <div class="global-skill-agents">Used by: {{ gs.agents }}</div>
-        </div>
-      </div>
-    </div>
-
     <!-- Live Agents -->
     <div class="card" v-for="agent in liveAgents" :key="agent.id" :class="'border-' + agent.borderColor">
       <div class="agent-header">
@@ -225,50 +209,7 @@
 </template>
 
 <script setup>
-const globalSkills = [
-  {
-    name: 'Git Workflow',
-    desc: 'Branch, commit, push, open PR. Naming conventions for branches, commit message format, when to PR vs direct push. yorkbot repos: push to main. dohertyj08 repos: branch + PR.',
-    agents: 'Caedmon (wiki), Offa (skills/scripts)',
-    live: true,
-  },
-  {
-    name: 'Memory Management',
-    desc: 'How all agents read and write memory. MEMORY.md for durable facts, memory/YYYY-MM-DD.md for daily append-only logs. WAL discipline: write BEFORE responding to significant work, not after. Defines what belongs where and what doesn\'t.',
-    agents: 'All agents',
-    live: true,
-  },
-  {
-    name: 'Memory Audit',
-    desc: 'Nightly quality check on an agent\'s memory files. Checks for gaps (sessions that didn\'t write), noise (heartbeat spam, process narration), and MEMORY.md staleness. Always run as a Sonnet sub-agent, never inline. Writes brief findings to the daily file.',
-    agents: 'All agents (via nightly cron)',
-    live: true,
-  },
-  {
-    name: 'Image Analysis',
-    todo: true,
-    desc: 'Calling the image-analysis tool. How to frame prompts for room assessment, document reading, or visual inspection. Structured description output format.',
-    agents: 'York (gate checks), Bede (pattern analysis)',
-  },
-  {
-    name: 'Image Generation',
-    live: true,
-    desc: 'Model selection, per-model prompting guidance (Gemini = narrative, SD = tags), parameter reference. Calls york-tools.image_generate and york-tools.image_models. Agents with domain-specific needs (Caedmon for D&D) layer their own skill on top.',
-    agents: 'Caedmon (D&D art), any agent needing image generation',
-  },
-  {
-    name: 'york-data Conventions',
-    todo: true,
-    desc: 'How to call york-data MCP functions. Parameter naming, error handling, upsert patterns, date formats. The shared contract for all data access. Reference: york-data/API.md.',
-    agents: 'Wynn, Hild, York, Bede, Dagr',
-  },
-  {
-    name: 'Flag for Bede',
-    todo: true,
-    desc: 'Any agent can flag something unusual for Bede\'s attention. "Something weird happened in this session." Writes a structured flag to york-data that Bede picks up on its next collection run.',
-    agents: 'Any agent',
-  },
-]
+
 
 const liveAgents = [
   {
@@ -763,41 +704,6 @@ const draftAgents = [
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-}
-
-.border-global { border-color: #3fb950; border-width: 2px; }
-
-.global-skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 0.75rem;
-}
-
-.global-skill {
-  background: #0d1117;
-  border: 1px solid #21262d;
-  border-radius: 4px;
-  padding: 0.75rem;
-}
-
-.global-skill-name {
-  color: #3fb950;
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 0.3rem;
-}
-
-.global-skill-desc {
-  color: #c9d1d9;
-  font-size: 0.8rem;
-  line-height: 1.4;
-  margin-bottom: 0.4rem;
-}
-
-.global-skill-agents {
-  color: #8b949e;
-  font-size: 0.75rem;
-  font-style: italic;
 }
 
 .border-opus { border-color: #f0c040; border-width: 2px; }

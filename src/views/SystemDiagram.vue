@@ -221,12 +221,15 @@
         <h3>🧠 ~/.openclaw/skills/</h3>
         <p class="infra-desc">Global skills shared across all agents via OpenClaw's skill discovery.</p>
         <table class="infra-table">
-          <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+          <thead><tr><th>Skill</th><th>Status</th><th>Purpose</th></tr></thead>
           <tbody>
-            <tr><td>git-workflow</td><td>Branch strategy, commit messages, PR workflow. yorkbot repos push to main; dohertyj08 repos branch + PR.</td></tr>
-            <tr><td>image-gen</td><td>Multi-model image generation via york-tools. Model selection, prompting by family.</td></tr>
-            <tr><td>memory-audit</td><td>Nightly Sonnet sub-agent cron. Prune stale entries, flag conflicts, verify accuracy.</td></tr>
-            <tr><td>memory-management</td><td>How all agents read/write MEMORY.md and memory/ files.</td></tr>
+            <tr><td>git-workflow</td><td><span class="status-tag status-on">Live</span></td><td>Branch strategy, commit messages, PR workflow. yorkbot repos push to main; dohertyj08 repos branch + PR.</td></tr>
+            <tr><td>image-gen</td><td><span class="status-tag status-on">Live</span></td><td>Multi-model image generation via york-tools. Model selection, prompting by family.</td></tr>
+            <tr><td>memory-audit</td><td><span class="status-tag status-on">Live</span></td><td>Nightly Sonnet sub-agent cron. Prune stale entries, flag conflicts, verify accuracy.</td></tr>
+            <tr><td>memory-management</td><td><span class="status-tag status-on">Live</span></td><td>How all agents read/write MEMORY.md and memory/ files.</td></tr>
+            <tr><td>image-analysis</td><td><span class="status-tag status-todo">TODO</span></td><td>Calling the image-analysis tool. Prompt framing for room assessment, document reading, visual inspection.</td></tr>
+            <tr><td>york-data-conventions</td><td><span class="status-tag status-todo">TODO</span></td><td>How to call york-data MCP functions. Parameter naming, error handling, upsert patterns, date formats.</td></tr>
+            <tr><td>flag-for-bede</td><td><span class="status-tag status-todo">TODO</span></td><td>Any agent can flag something unusual for Bede. Structured flag to york-data for Bede's next collection run.</td></tr>
           </tbody>
         </table>
       </div>
@@ -548,5 +551,23 @@ const dataStores = [
   color: #79c0ff;
   font-size: 0.85rem;
   line-height: 1.6;
+}
+
+.status-tag {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-on {
+  background: rgba(63, 185, 80, 0.15);
+  color: #3fb950;
+}
+
+.status-todo {
+  background: rgba(139, 148, 158, 0.15);
+  color: #8b949e;
 }
 </style>
