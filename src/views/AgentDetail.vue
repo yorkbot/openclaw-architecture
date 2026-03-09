@@ -252,9 +252,9 @@ const globalSkills = [
   },
   {
     name: 'Image Generation',
-    todo: true,
-    desc: 'Crafting effective prompts for image-gen (Gemini Nano Banana Pro). Style guidelines, detail level, character consistency. How to iterate on results.',
-    agents: 'Caedmon (D&D art)',
+    live: true,
+    desc: 'Model selection, per-model prompting guidance (Gemini = narrative, SD = tags), parameter reference. Calls york-tools.image_generate and york-tools.image_models. Agents with domain-specific needs (Caedmon for D&D) layer their own skill on top.',
+    agents: 'Caedmon (D&D art), any agent needing image generation',
   },
   {
     name: 'york-data Conventions',
