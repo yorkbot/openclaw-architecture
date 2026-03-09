@@ -316,6 +316,50 @@ const liveAgents = [
     ],
     spawns: [],
   },
+  {
+    id: 'wynn',
+    icon: '🦌',
+    name: 'Wynn',
+    borderColor: 'sonnet',
+    model: 'Sonnet 4.5 (can spawn Opus sub-agent for workout programming)',
+    cron: 'None. On-demand.',
+    purpose: 'All health and fitness data operations. Nutrition logging, calorie estimation, weight tracking, workout logging, exercise guidance. Owns the data entry layer — Bede handles collection and analysis of that data.',
+    workspace: '~/.openclaw/workspace-wynn/ — york-data access for all health domains.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Precise on data, encouraging on fitness. Brief on logging. Transparent about estimation confidence.' },
+      { file: 'AGENTS.md', desc: 'Domain-focused: own role, system map, escalation paths. Knows York handles cannabis judgment, Bede handles analysis.' },
+      { file: 'TOOLS.md', desc: 'Full york-data command reference with every tool spelled out. Consumption, daily metrics, exercise catalog, workouts, cross-domain queries.' },
+      { file: 'IDENTITY.md', desc: 'Wynn 🦌 — Old English for "joy/wellness."' },
+      { file: 'MEMORY.md', desc: 'Calorie reference, James\'s patterns — grows over time.' },
+    ],
+    channels: [
+      '#wynn — direct health/fitness logging and questions from James',
+      'All data writes via york-data MCP server (mcporter)',
+    ],
+    skillSections: [
+      {
+        name: 'Log',
+        skills: [
+          { name: 'Log Consumption', desc: 'Parse food/drink descriptions, classify type (food/drink/supplement/cannabis), estimate calories and protein, write via log_food(). Batch logging for multiple items. Corrections via update/delete.', live: true },
+          { name: 'Log Daily Metrics', desc: 'Weight, wake time, bedtime, sleep, energy, kitchen closed via log_daily(). Upsert pattern — safe to call multiple times per day.', live: true },
+          { name: 'Log Workout', desc: 'Two-step: log_workout() for the session, then log_workout_exercises() with FK-validated exercise catalog IDs. Bodyweight exercises omit weight field.', live: true },
+          { name: 'Calorie Estimation', desc: 'Four-tier estimation: known (exact), standard (high confidence), estimated (~), unknown (ask). Common reference table grows in MEMORY.md.', live: true },
+        ],
+      },
+      {
+        name: 'Coach',
+        skills: [
+          { name: 'Workout Programming', desc: 'Suggest exercises based on equipment, history, and progressive overload. Spawns Opus sub-agent for complex program design.', todo: true },
+        ],
+      },
+    ],
+    todos: [
+      'Workout programming skill — needs Opus sub-agent spawning pattern',
+    ],
+    spawns: [
+      'Opus sub-agent (for complex workout programming)',
+    ],
+  },
 ]
 
 const draftAgents = [
@@ -412,49 +456,7 @@ const draftAgents = [
     ],
     spawns: [],
   },
-  {
-    id: 'wynn',
-    icon: '🦌',
-    name: 'Wynn',
-    borderColor: 'sonnet',
-    model: 'Sonnet (can spawn Opus sub-agent for complex tasks)',
-    cron: 'On-demand for logging and coaching.',
-    purpose: 'All health and fitness data operations. Nutrition logging, calorie estimation, weight tracking, workout logging, exercise guidance. Owns the data entry layer — Bede handles collection and analysis of that data.',
-    workspace: 'Dedicated workspace. york-data access for all health domains (consumption, daily metrics, workouts, cannabis).',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Precise on data, encouraging on fitness. Logs exactly what\'s told, estimates clearly labeled. Exercise suggestions are practical and adaptive.' },
-      { file: 'AGENTS.md', desc: 'Consumption logging rules, calorie estimation guidelines, Dashboard field mappings, workout programming methodology, progressive overload tracking.' },
-      { file: 'TOOLS.md', desc: 'york-data functions for all health domains. Exercise library reference. No direct spreadsheet access.' },
-      { file: 'IDENTITY.md', desc: 'Wynn 🦌 — Old English for "joy/wellness."' },
-      { file: 'MEMORY.md', desc: 'Calorie estimation reference, common meal shortcuts, James\'s exercise history, equipment availability, workout preferences.' },
-      { file: 'memory/', desc: 'Daily logs, workout history context, nutrition caches.' },
-    ],
-    channels: [
-      'Writes all health/fitness data via york-data',
-    ],
-    skillSections: [
-      {
-        name: 'Log',
-        skills: [
-          { name: 'Log Consumption', desc: 'Parse food/drink descriptions, estimate calories and protein, write to york-data via log_food(). Handle corrections via update_consumption() and delete_consumption().' },
-          { name: 'Log Daily Metrics', desc: 'Write weight, wake time, bedtime, sleep, energy, kitchen closed to york-data via log_daily(). Upsert pattern — partial updates are fine.' },
-          { name: 'Log Workout', desc: 'Record workout sessions and individual exercises with sets, reps, weight via log_workout() and log_exercises().' },
-          { name: 'Log Cannabis', desc: 'Record cannabis sessions with time via log_cannabis().' },
-        ],
-      },
-      {
-        name: 'Coach',
-        skills: [
-          { name: 'Workout Programming', desc: 'Suggest exercises based on equipment availability, recent workout history, and progressive overload goals. Adapt to schedule and energy. May spawn Opus sub-agent for complex program design.' },
-          { name: 'Calorie Estimation', desc: 'Reference data for estimating calories and protein from natural language food descriptions. Restaurant lookup when possible.' },
-        ],
-        tbd: true,
-      },
-    ],
-    spawns: [
-      'Opus sub-agent (for complex workout programming or deep nutrition analysis)',
-    ],
-  },
+
   {
     id: 'caedmon',
     icon: '🐉',
