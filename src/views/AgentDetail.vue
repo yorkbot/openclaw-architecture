@@ -465,16 +465,16 @@ const liveAgents = [
     borderColor: 'opus',
     model: 'Opus 4.6',
     cron: 'Heartbeat: every 30m, 8 AM - 12:30 AM ET. Weekly check-in: Sun 8 PM.',
-    purpose: 'The brain. Holds conversation with James, makes judgment calls, routes tasks to specialist agents. Owns the cannabis gate (cross-domain decision using data from Hild, Wynn, cameras). Handles accountability nudges and panel presence.',
-    workspace: '~/.openclaw/workspace/ — slim. No spreadsheet skills, no wiki, no direct data entry. Just enough context to route well and make judgment calls.',
+    purpose: 'The brain. Holds conversation with James, makes judgment calls, routes tasks to specialist agents. Handles accountability (weekly check-in), panel presence, avatar/banner generation, and research. Getting slimmer as domain agents take over.',
+    workspace: '~/.openclaw/workspace/ — slim. No spreadsheet skills, no wiki, no direct data entry. Just enough context to route well and have opinions.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Direct, concise, has opinions. The "roommate" voice. Core personality.' },
       { file: 'USER.md', desc: 'Full James context: health goals, behavioral patterns, communication preferences, interests.' },
       { file: 'AGENTS.md', desc: 'Full agent roster. Routing rules: what to handle inline vs route to other agents.' },
-      { file: 'TOOLS.md', desc: 'Discord channels, york-data (read), Google Calendar, camera scripts, panel, image gen, avatar/banner.' },
+      { file: 'TOOLS.md', desc: 'Discord channels, york-data (read), york-tools (panel, camera, avatar, weather), Google Calendar, image gen.' },
       { file: 'IDENTITY.md', desc: 'York 🦝 — Named for Yorkshire Street.' },
       { file: 'HEARTBEAT.md', desc: 'Heartbeat rules: when to nudge, quiet hours, what to check each beat.' },
-      { file: 'MEMORY.md', desc: 'Durable facts: cannabis gate patterns, conversation context, long-term preferences.' },
+      { file: 'MEMORY.md', desc: 'Durable facts: conversation context, long-term preferences, accountability patterns.' },
       { file: 'memory/', desc: 'Daily notes from conversations.' },
     ],
     channels: [
@@ -489,9 +489,8 @@ const liveAgents = [
         ],
       },
       {
-        name: 'Judge',
+        name: 'Accountability',
         skills: [
-          { name: 'Cannabis Gate (york-chores)', desc: 'Cross-domain judgment call. Read Google Tasks for chore status, york-data for health/movement context, call camera-snapshot + image-analysis for kitchen state.', live: true },
           { name: 'Weekly Check-in (york-weekly-checkin)', desc: 'Sunday 8 PM health/fitness recap. Pull week data from york-data, form opinions, deliver to #general.', live: true },
         ],
       },
@@ -576,32 +575,38 @@ const draftAgents = [
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: 'None. Spawned on-demand.',
-    purpose: 'Home management. Chore tracking via Google Tasks, smart scheduling for seasonal and weather-dependent tasks. Home projects scope confirmed but skills deferred. Reports facts — doesn\'t make judgment calls.',
-    workspace: 'Dedicated workspace. Google Tasks and Calendar access.',
+    purpose: 'Home management and cannabis gate. Chore tracking via Google Tasks, smart scheduling for seasonal and weather-dependent tasks, and the cannabis accountability gate (moved from York). Reports facts — doesn\'t make judgment calls on routing, but DOES make judgment calls on the gate.',
+    workspace: 'Dedicated workspace. Google Tasks, Calendar, york-data (consumption read), york-tools (camera) access.',
     workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Observational, factual. Reports what it sees, doesn\'t editorialize.' },
-      { file: 'AGENTS.md', desc: 'Chore definitions, frequency rules, seasonal/weather task logic.' },
-      { file: 'TOOLS.md', desc: 'Google Tasks API, Google Calendar (write).' },
+      { file: 'SOUL.md', desc: 'Observational, factual for chores. Opinionated and firm for the cannabis gate — this is the one place Hild pushes back hard.' },
+      { file: 'AGENTS.md', desc: 'Chore definitions, frequency rules, seasonal/weather task logic, cannabis gate flow and philosophy.' },
+      { file: 'TOOLS.md', desc: 'Google Tasks API, Google Calendar (write), york-data (read consumption/workouts), york-tools (camera snapshots).' },
       { file: 'IDENTITY.md', desc: 'Hild 🦡 — Named for Abbess Hild of Whitby, who ran the most organized monastery in Anglo-Saxon England.' },
-      { file: 'MEMORY.md', desc: 'Seasonal chore patterns, scheduling history.' },
-      { file: 'memory/', desc: 'Daily chore summaries (written when Bede asks).' },
+      { file: 'MEMORY.md', desc: 'Seasonal chore patterns, scheduling history, gate interaction log.' },
+      { file: 'memory/', desc: 'Daily chore summaries, gate decisions and outcomes.' },
     ],
     channels: [
+      '#hild — cannabis gate interactions, chore reports (Discord channel TBD)',
       'Google Tasks — chore tracking (recurrence, completion, due dates)',
-      'Google Calendar — home project scheduling (future)',
-      'Responds to Bede\'s daily chore summary requests',
     ],
     skillSections: [
+      {
+        name: 'Gate',
+        skills: [
+          { name: 'Cannabis Gate', desc: 'When James asks to smoke. Checks three domains: house state (chores + camera), diet (consumption data from york-data, dinner plan), movement (workout history). Context-aware judgment call, not a checklist. Full autonomy on requirements. Evolves over time.' },
+        ],
+      },
       {
         name: 'Track',
         skills: [
           { name: 'Log Completion', desc: 'Mark chores as completed in Google Tasks when James reports them done.' },
+          { name: 'Chore Status', desc: 'Report what\'s done and what\'s left today. Pull from Google Tasks.' },
         ],
       },
       {
         name: 'Schedule',
         skills: [
-          { name: 'Smart Scheduling', desc: 'The intelligence layer on top of Google Tasks recurrence. Create/adjust tasks based on season, weather, and context. Google handles daily/weekly/monthly; Hild handles "it snowed" and "it\'s gutter season." Multiple skills here — TBD.' },
+          { name: 'Smart Scheduling', desc: 'The intelligence layer on top of Google Tasks recurrence. Create/adjust tasks based on season, weather, and context. Google handles daily/weekly/monthly; Hild handles "it snowed" and "it\'s gutter season."' },
         ],
         tbd: true,
       },
