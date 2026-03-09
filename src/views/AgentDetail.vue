@@ -360,6 +360,55 @@ const liveAgents = [
       'Opus sub-agent (for complex workout programming)',
     ],
   },
+  {
+    id: 'caedmon',
+    icon: '🐉',
+    name: 'Caedmon',
+    borderColor: 'opus',
+    model: 'Opus 4.6',
+    cron: 'Overnight wiki research (TBD schedule — separate from agent build)',
+    purpose: 'D&D campaign agent. Wiki management, lore questions, worldbuilding research, session prep, character creation, art generation. Owns the Adion Isles wiki and all campaign knowledge. Routed via #caedmon Discord channel.',
+    workspace: '~/.openclaw/workspace-caedmon/ — D&D wiki (full repo access), campaign notes, session logs. Completely isolated from personal/health data.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'In-world perspective, creative but never fabricates. Over-researches before writing. Wiki archivist voice.' },
+      { file: 'AGENTS.md', desc: 'Wiki conventions, branching rules, research workflow requirements, article templates, escalation rules.' },
+      { file: 'TOOLS.md', desc: 'Git (bunglers repo), gh CLI for PRs, image-gen script (Gemini), dice-roller MCP. No york-data.' },
+      { file: 'IDENTITY.md', desc: 'Caedmon 🐉 — Named for Caedmon of Whitby, the first known English poet. A cowherd who received the gift of song.' },
+      { file: 'MEMORY.md', desc: 'Campaign state: current party location, active plot threads, recent session context, NPC relationships.' },
+      { file: 'USER.md', desc: 'James context: DM of the Bunglers campaign, prefers factual wiki writing, knows D&D rules well.' },
+      { file: 'memory/', desc: 'Daily D&D interactions, questions from James, overnight research results.' },
+    ],
+    channels: [
+      '#caedmon — direct interactive sessions with James (Discord channel 1480328377956303071)',
+      'Writes overnight research to memory files for morning brief',
+    ],
+    skillSections: [
+      {
+        name: 'Wiki',
+        skills: [
+          { name: 'D&D Notes (dnd-notes)', desc: 'Read, edit, and create wiki articles. Research workflow, writing style guide, article update process, post-session updates. Branch for changes, PR for review.' },
+          { name: 'Character Creation (dnd-chargen)', desc: '2024 PHB character creation and leveling. Class, species, background, feat references. Campaign-aware for Adion Isles homebrew.' },
+        ],
+      },
+      {
+        name: 'Session',
+        skills: [
+          { name: 'Session Prep (dnd-session-prep)', desc: 'Scan recent session logs, look up wiki articles for active NPCs/locations/threads, format prep sheet for #caedmon. Modular: session-scan → wiki-lookup → prep-sheet-format.' },
+        ],
+      },
+      {
+        name: 'Create',
+        skills: [
+          { name: 'Overnight Research (dnd-questions-cache)', desc: 'Find sparse/incomplete wiki articles, spawn sub-agents for deep research, generate 5+ worldbuilding questions for James. Writes to daily memory files. Tracks asked questions to avoid repeats.' },
+          { name: 'Art Generation (image-gen)', desc: 'Generate character portraits, scenes, maps via Gemini API (bash script). Prompt enhancement with D&D/MTG art style. Supports text-to-image and image editing.' },
+        ],
+      },
+    ],
+    spawns: [
+      'Sonnet sub-agent (bulk wiki compilation, session prep, batch art generation)',
+      'Research sub-agents (overnight wiki exploration, 5 min timeout each)',
+    ],
+  },
 ]
 
 const draftAgents = [
@@ -457,54 +506,6 @@ const draftAgents = [
     spawns: [],
   },
 
-  {
-    id: 'caedmon',
-    icon: '🐉',
-    name: 'Caedmon',
-    borderColor: 'opus',
-    model: 'Opus 4.6',
-    cron: 'Overnight wiki research (TBD schedule)',
-    purpose: 'D&D campaign agent. Wiki management, lore questions, worldbuilding research, session prep, art generation. Owns the Adion Isles wiki and all campaign knowledge. Interactive conversations route here via #general (D&D topics).',
-    workspace: 'D&D wiki (full repo access), campaign notes, session logs. Completely isolated from personal/health data.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Wiki-toned, in-world perspective. Creative but never fabricates. Over-researches before writing.' },
-      { file: 'AGENTS.md', desc: 'Wiki conventions, branching rules, research workflow requirements, article templates, image prompt guidelines.' },
-      { file: 'TOOLS.md', desc: 'Git (bunglers repo), gh CLI for PRs, image-gen tool. No york-data, no spreadsheets.' },
-      { file: 'IDENTITY.md', desc: 'Caedmon 🐉 — Named for Caedmon of Whitby, the first known English poet. A cowherd who received the gift of song.' },
-      { file: 'MEMORY.md', desc: 'Campaign state: current party location, active plot threads, recent session context, NPC relationships.' },
-      { file: 'memory/', desc: 'Daily D&D interactions, questions from James, overnight research results.' },
-    ],
-    channels: [
-      '#caedmon — direct interactive sessions with James',
-      'Writes overnight research to memory files for morning brief',
-    ],
-    skillSections: [
-      {
-        name: 'Wiki',
-        skills: [
-          { name: 'Wiki Management', desc: 'Read, edit, and create wiki articles. Follow wiki conventions, maintain cross-references, update links. Branch for large changes, PR for review.' },
-          { name: 'Lore Research', desc: 'Cross-reference wiki articles to find connections, contradictions, and gaps. Build context from session logs, existing articles, and James\'s notes.' },
-        ],
-      },
-      {
-        name: 'Session',
-        skills: [
-          { name: 'Session Prep', desc: 'Compile NPC, location, plot, and faction context for an upcoming session. Pull from wiki, recent session logs, and active plot threads. Could spawn Sonnet sub-agent for bulk compilation.' },
-          { name: 'Session Recap', desc: 'After a session, generate a narrative recap from session notes. Update wiki with new developments, NPC status changes, location discoveries.' },
-        ],
-      },
-      {
-        name: 'Create',
-        skills: [
-          { name: 'Overnight Research', desc: 'Find sparse or incomplete wiki articles, research context from surrounding articles and session logs, generate worldbuilding questions for James. Self-directed cron work.' },
-          { name: 'Art Generation', desc: 'Create image prompts for D&D characters, locations, items, and scenes. Uses deep wiki/lore context to craft detailed prompts, then calls image-gen tool (Gemini Nano Banana Pro). Could spawn Sonnet sub-agent for bulk art.' },
-        ],
-      },
-    ],
-    spawns: [
-      'Sonnet sub-agent (bulk wiki compilation, session prep, batch art generation)',
-    ],
-  },
   {
     id: 'york',
     icon: '🦝',
