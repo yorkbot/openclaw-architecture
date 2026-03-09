@@ -516,6 +516,59 @@ const liveAgents = [
       'Opus sub-agent (all skills — note processing, now management, morning prep, vault operations)',
     ],
   },
+
+  {
+    id: 'hild',
+    icon: '🦡',
+    name: 'Hild',
+    borderColor: 'sonnet',
+    model: 'Sonnet',
+    cron: 'None. Spawned on-demand.',
+    purpose: 'Home management. Chore tracking via Google Tasks — status, completions, and house state reporting. Cannabis gate decision lives with York; Hild only reports house facts when asked.',
+    workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Practical, observational, brief. Reports facts without drama.' },
+      { file: 'AGENTS.md', desc: 'System context, chore tracking role, escalation rules, memory discipline.' },
+      { file: 'TOOLS.md', desc: 'Google Tasks MCP API — list/create/complete/update/delete tasks and task lists.' },
+      { file: 'IDENTITY.md', desc: 'Hild 🦡 — Named for Abbess Hild of Whitby, who ran the most organized monastery in Anglo-Saxon England.' },
+      { file: 'MEMORY.md', desc: 'Chore system design, task list IDs, scheduling patterns.' },
+      { file: 'memory/', desc: 'Daily chore summaries.' },
+    ],
+    channels: [
+      '#hild — chore interactions (Discord channel 1480700823435477225)',
+      'Google Tasks — chore tracking (recurrence, completion, due dates)',
+    ],
+    skillSections: [
+      {
+        name: 'Track',
+        skills: [
+          { name: 'Chore Status', desc: 'Report what\'s done and what\'s left today. Pull from Google Tasks. Categorize as done/due/overdue.' },
+          { name: 'Log Completion', desc: 'Mark chores as completed in Google Tasks when James reports them done.' },
+        ],
+      },
+      {
+        name: 'Report',
+        skills: [
+          { name: 'House Check', desc: 'When York asks about house state for cross-agent checks (e.g. cannabis gate). Reports factual chore status — completions, overdue items, rate. No judgment, no recommendation.' },
+        ],
+      },
+      {
+        name: 'Inspect',
+        skills: [
+          { name: 'Camera Snapshot Review', desc: 'Take a camera snapshot via york-tools and review the house state visually. Complement chore data with what the camera actually shows.' },
+        ],
+        tbd: true,
+      },
+      {
+        name: 'Schedule',
+        skills: [
+          { name: 'Smart Scheduling', desc: 'The intelligence layer on top of Google Tasks recurrence. Create/adjust tasks based on season, weather, and context. Google handles daily/weekly/monthly; Hild handles "it snowed" and "it\'s gutter season."' },
+        ],
+        tbd: true,
+      },
+    ],
+    spawns: [],
+  },
 ]
 
 const draftAgents = [
@@ -571,52 +624,6 @@ const draftAgents = [
     spawns: [
       'transcript-preprocessor (Small tier — summarize high-volume transcript batches before deep analysis)',
     ],
-  },
-
-  {
-    id: 'hild',
-    icon: '🦡',
-    name: 'Hild',
-    borderColor: 'sonnet',
-    model: 'Sonnet',
-    cron: 'None. Spawned on-demand.',
-    purpose: 'Home management and cannabis gate. Chore tracking via Google Tasks, smart scheduling for seasonal and weather-dependent tasks, and the cannabis accountability gate (moved from York). Reports facts — doesn\'t make judgment calls on routing, but DOES make judgment calls on the gate.',
-    workspace: 'Dedicated workspace. Google Tasks, Calendar, york-data (consumption read), york-tools (camera) access.',
-    workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Observational, factual for chores. Opinionated and firm for the cannabis gate — this is the one place Hild pushes back hard.' },
-      { file: 'AGENTS.md', desc: 'Chore definitions, frequency rules, seasonal/weather task logic, cannabis gate flow and philosophy.' },
-      { file: 'TOOLS.md', desc: 'Google Tasks API, Google Calendar (write), york-data (read consumption/workouts), york-tools (camera snapshots).' },
-      { file: 'IDENTITY.md', desc: 'Hild 🦡 — Named for Abbess Hild of Whitby, who ran the most organized monastery in Anglo-Saxon England.' },
-      { file: 'MEMORY.md', desc: 'Seasonal chore patterns, scheduling history, gate interaction log.' },
-      { file: 'memory/', desc: 'Daily chore summaries, gate decisions and outcomes.' },
-    ],
-    channels: [
-      '#hild — cannabis gate interactions, chore reports (Discord channel TBD)',
-      'Google Tasks — chore tracking (recurrence, completion, due dates)',
-    ],
-    skillSections: [
-      {
-        name: 'Gate',
-        skills: [
-          { name: 'Cannabis Gate', desc: 'When James asks to smoke. Checks three domains: house state (chores + camera), diet (consumption data from york-data, dinner plan), movement (workout history). Context-aware judgment call, not a checklist. Full autonomy on requirements. Evolves over time.' },
-        ],
-      },
-      {
-        name: 'Track',
-        skills: [
-          { name: 'Log Completion', desc: 'Mark chores as completed in Google Tasks when James reports them done.' },
-          { name: 'Chore Status', desc: 'Report what\'s done and what\'s left today. Pull from Google Tasks.' },
-        ],
-      },
-      {
-        name: 'Schedule',
-        skills: [
-          { name: 'Smart Scheduling', desc: 'The intelligence layer on top of Google Tasks recurrence. Create/adjust tasks based on season, weather, and context. Google handles daily/weekly/monthly; Hild handles "it snowed" and "it\'s gutter season."' },
-        ],
-        tbd: true,
-      },
-    ],
-    spawns: [],
   },
 
 ]
