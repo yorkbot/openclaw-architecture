@@ -120,9 +120,8 @@
           <div class="node service-node" style="border-color: #3fb950;">
             <div class="node-title">york-tools</div>
             <div class="node-desc">
-              Utility tools. camera_snapshot(), weather_fetch(), calendar_fetch(),
-              panel_update(), avatar_set(), twilio_send(), wiki_search(),
-              transcript_export(). Replaces standalone scripts with typed MCP calls.
+              Utility tools. camera_snapshot(), weather_fetch(),
+              panel_update(), avatar_set(). Stateless functions as MCP calls.
             </div>
           </div>
         </div>
