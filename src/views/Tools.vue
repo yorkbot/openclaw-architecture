@@ -215,7 +215,7 @@ const sharedInfra = [
   },
   {
     icon: '🧠',
-    path: '~/.openclaw/shared-skills/',
+    path: '~/.openclaw/skills/',
     desc: 'Skills shared across all agents. Agents inherit these via skill scanning.',
     details: [
       { label: 'Structure', value: 'Each skill is a directory with SKILL.md entry point' },

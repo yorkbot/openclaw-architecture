@@ -39,7 +39,7 @@ const cronGroups = [
   {
     icon: '🌙',
     label: 'Overnight: Memory Audit (1:00 – 4:00 AM)',
-    desc: 'Per-agent memory quality audit via Sonnet sub-agent. Skill: shared-skills/memory-audit/',
+    desc: 'Per-agent memory quality audit via Sonnet sub-agent. Skill: skills/memory-audit/',
     jobs: [
       { time: '1:00 AM', name: 'Memory Audit — York', agent: 'York 🦝 (main)', status: 'On', notes: '' },
       { time: '1:30 AM', name: 'Memory Audit — Offa', agent: 'Offa 🦫', status: 'On', notes: '' },
