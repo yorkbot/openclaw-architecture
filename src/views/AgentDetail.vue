@@ -383,7 +383,7 @@ const liveAgents = [
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'In-world perspective, creative but never fabricates. Over-researches before writing. Wiki archivist voice.' },
       { file: 'AGENTS.md', desc: 'Wiki conventions, branching rules, research workflow requirements, article templates, escalation rules.' },
-      { file: 'TOOLS.md', desc: 'Git (bunglers repo), gh CLI for PRs, image-gen script (Gemini), dice-roller MCP. No york-data.' },
+      { file: 'TOOLS.md', desc: 'Git (bunglers repo), gh CLI for PRs, york-tools image_generate (MCP), dice-roller MCP. No york-data.' },
       { file: 'IDENTITY.md', desc: 'Caedmon 🐉 — Named for Caedmon of Whitby, the first known English poet. A cowherd who received the gift of song.' },
       { file: 'MEMORY.md', desc: 'Campaign state: current party location, active plot threads, recent session context, NPC relationships.' },
       { file: 'memory/', desc: 'Daily D&D interactions, questions from James, overnight research results.' },
@@ -413,7 +413,7 @@ const liveAgents = [
         name: 'Create',
         skills: [
           { name: 'Overnight Research (dnd-questions-cache)', desc: 'Find sparse/incomplete wiki articles, spawn sub-agents for deep research, generate 5+ worldbuilding questions for James. Writes to daily memory files. Tracks asked questions to avoid repeats.', live: true },
-          { name: 'Art Generation (image-gen)', desc: 'Generate character portraits, scenes, maps via Gemini API (bash script). Prompt enhancement with D&D/MTG art style. Supports text-to-image and image editing.', live: true },
+          { name: 'Art Generation (image-gen)', desc: 'Generate character portraits, scenes, maps via york-tools.image_generate (MCP). D&D-specific prompting layered on global image-gen skill. Supports text-to-image and image editing.', live: true },
         ],
       },
     ],
@@ -429,12 +429,12 @@ const liveAgents = [
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: '8 AM daily + weather 7:30 AM/PM + calendar 6:30 AM/PM',
-    purpose: 'Compile and post the morning brief from pre-cached data. One cron, one job, one post. Reads overnight caches (weather, calendar, nutrition, D&D), verifies freshness, generates a dinner suggestion, posts to #dagr. Editorial voice — not a data dump.',
-    workspace: '~/.openclaw/workspace-dagr/ — Reads pre-cached data from memory files. No own data sources.',
+    purpose: 'Compile and post the morning brief from pre-cached data. One cron, one job, one post. Reads overnight caches (weather, calendar, nutrition, D&D), cross-checks against york-data, posts to #general. Editorial voice — not a data dump.',
+    workspace: '~/.openclaw/workspace-dagr/ — Reads pre-cached data from ~/.openclaw/shared-cache/. Verifies against york-data.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Editorial, concise, opinionated. Never fabricates missing data. Never computes dates mentally.' },
       { file: 'AGENTS.md', desc: 'Brief format and section order, data source locations, delivery channel, hard rules, escalation.' },
-      { file: 'TOOLS.md', desc: 'Daily memory files (read-only), york-tools weather (fallback), Google Sheets (cross-check), Discord posting.' },
+      { file: 'TOOLS.md', desc: 'Shared cache (read-only), york-data (verification), york-tools weather (fallback), Discord posting.' },
       { file: 'IDENTITY.md', desc: 'Dagr 🐓 — Old Norse personification of day, rides Skinfaxi across the sky.' },
       { file: 'MEMORY.md', desc: 'Brief format preferences, past corrections from James.' },
       { file: 'memory/', desc: 'Daily cached data (written by overnight crons), overnight results.' },
@@ -447,8 +447,8 @@ const liveAgents = [
       {
         name: 'Compile',
         skills: [
-          { name: 'Morning Orchestrator', desc: 'Master compilation skill. Reads cached sections from daily memory, verifies freshness with cross-checks, spawns meal sub-agent, composes the brief, posts to #dagr.', live: true },
-          { name: 'Morning Brief', desc: 'Brief format and content rules. Modular sections: weather, calendar, work, nutrition, weigh-in, home, overnight, meals.', live: true },
+          { name: 'Morning Orchestrator', desc: 'Master compilation skill. Reads cached sections from shared-cache, cross-checks nutrition/weight/workouts against york-data, composes the brief, posts to #general.', live: true },
+          { name: 'Morning Brief', desc: 'Brief format and content rules. Sections: weather, calendar, nutrition & weight, gaps, movement, home, D&D, closeout prompt.', live: true },
         ],
       },
       {
@@ -510,6 +510,43 @@ const liveAgents = [
           { name: 'Accountability', desc: 'Nudge timing and tone calibration. When to push, when to back off.', todo: true },
         ],
       },
+    ],
+    spawns: [],
+  },
+]
+
+  {
+    id: 'wiglaf',
+    icon: '🐻',
+    name: 'Wiglaf',
+    borderColor: 'opus',
+    model: 'Opus 4.6',
+    cron: 'Memory audit only (nightly, Sonnet sub-agent)',
+    purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Fully siloed from the rest of the system. No cross-agent references, no Bede analysis, no heartbeat. Listed on architecture for completeness, but invisible to every other agent.',
+    workspace: '~/.openclaw/workspace-wiglaf/ — siloed. Obsidian vault at ~/work-notes/work/ is the primary communication channel (syncs via Obsidian Sync). No cross-agent data access.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Professional, direct, technical. No personality flourishes. Engineering leadership voice.' },
+      { file: 'AGENTS.md', desc: 'This agent works alone. No system map. If James asks about anything outside work, redirect.' },
+      { file: 'TOOLS.md', desc: 'Obsidian vault (~/work-notes/work/), mcporter for MCP tools, gh CLI for GitHub. No york-data, no shared cache, no cross-agent tools.' },
+      { file: 'IDENTITY.md', desc: 'Wiglaf 🐻 — Named for Beowulf\'s loyal companion, the one who stays and does the work.' },
+      { file: 'MEMORY.md', desc: 'Work patterns, meeting context, project state. Private — never read by other agents.' },
+      { file: 'memory/', desc: 'Daily work interactions. Self-audited only.' },
+    ],
+    channels: [
+      '#wiglaf — direct work conversations with James',
+      '~/work-notes/work/ — Obsidian vault (primary async communication channel, syncs via Obsidian Sync)',
+    ],
+    skillSections: [
+      {
+        name: 'Planned',
+        skills: [
+          { name: 'TBD', desc: 'No skills yet. James will design them directly with Wiglaf after it\'s alive.', todo: true },
+        ],
+      },
+    ],
+    todos: [
+      'Skills to be designed directly with James post-launch',
+      'Vault structure documentation (after vault rewrite)',
     ],
     spawns: [],
   },
