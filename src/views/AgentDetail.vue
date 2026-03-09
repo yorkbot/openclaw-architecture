@@ -513,8 +513,6 @@ const liveAgents = [
     ],
     spawns: [],
   },
-]
-
   {
     id: 'wiglaf',
     icon: '🐻',
@@ -560,8 +558,8 @@ const draftAgents = [
     borderColor: 'opus',
     model: 'Opus 4.6',
     cron: 'Overnight runs (TBD schedule)',
-    purpose: 'The self-improvement analyst. Reads session transcripts and agent memory, identifies patterns in failures and corrections, suggests measurable improvements, and tracks whether past changes were effective. Writes all findings and suggestions to york-data.',
-    workspace: 'Dedicated workspace. Read access to session transcripts via sessions_list/sessions_history and other agent memory files.',
+    purpose: 'The self-improvement analyst. Reads session transcripts and agent memory, identifies patterns in failures and corrections, suggests measurable improvements, and tracks whether past changes were effective. Writes all findings and suggestions to york-data. EXCLUSION: Bede must never read Wiglaf\'s memory, transcripts, or sessions. Wiglaf is fully siloed for work privacy.',
+    workspace: 'Dedicated workspace. Read access to session transcripts via sessions_list/sessions_history and other agent memory files. Exception: Wiglaf is excluded — no read access to workspace-wiglaf/ or Wiglaf sessions.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Analytical, pattern-obsessed, evidence-driven. Speaks in observations not opinions.' },
       { file: 'AGENTS.md', desc: 'Analysis methodology: what to look for, how to categorize findings, observation and suggestion schemas.' },
