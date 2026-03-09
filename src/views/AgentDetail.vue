@@ -493,7 +493,6 @@ const liveAgents = [
         skills: [
           { name: 'Cannabis Gate (york-chores)', desc: 'Cross-domain judgment call. Read Google Tasks for chore status, york-data for health/movement context, call camera-snapshot + image-analysis for kitchen state.', live: true },
           { name: 'Weekly Check-in (york-weekly-checkin)', desc: 'Sunday 8 PM health/fitness recap. Pull week data from york-data, form opinions, deliver to #general.', live: true },
-          { name: 'Self-Improve (york-self-improve)', desc: 'Self-improvement feedback loop. Frustration scanning, prompt tuning, pattern tracking.', live: true },
         ],
       },
       {
