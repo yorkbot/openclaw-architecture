@@ -57,7 +57,7 @@ const phases = [
     label: 'OS + Base Setup',
     desc: 'Get the Pi booted with a working OS, user account, and network access.',
     steps: [
-      { step: 'Choose OS', details: '<strong>Raspberry Pi OS Lite (64-bit, Bookworm)</strong> recommended. Headless — no desktop needed. Alternatively, Ubuntu Server 24.04 ARM64 works fine.<br><br>The SD card that ships with the Pi may have a desktop OS. Reflash it with Lite using Raspberry Pi Imager — less overhead, more RAM for agents.', verify: 'cat /etc/os-release shows expected OS' },
+      { step: 'Choose OS', details: '<strong>Ubuntu Server 24.04 LTS ARM64</strong> — decided. Headless, no desktop. LTS supported until 2029 (2034 with ESM). Good Pi 5 support, current packages, easy to troubleshoot.<br><br>The SD card that ships with the Pi may have Pi OS preloaded. Reflash it using Raspberry Pi Imager → Other general-purpose OS → Ubuntu → Ubuntu Server 24.04 LTS (64-bit).', verify: 'cat /etc/os-release shows Ubuntu 24.04' },
       { step: 'Flash SD card', details: 'Use <code>Raspberry Pi Imager</code> on the VM or another machine. In settings (gear icon): enable SSH, set username <code>york</code>, set password, configure WiFi if needed, set hostname (e.g., <code>yorks-pi</code>).', verify: 'Pi boots, you can SSH in: ssh york@yorks-pi.local' },
       { step: 'First boot + updates', details: '<code>sudo apt update && sudo apt upgrade -y</code><br>Then: <code>sudo apt install -y git curl build-essential sqlite3 python3 python3-pip</code>', verify: 'git --version, sqlite3 --version, python3 --version all return' },
       { step: 'Set timezone', details: '<code>sudo timedatectl set-timezone America/New_York</code>', verify: 'timedatectl shows America/New_York' },
@@ -176,7 +176,7 @@ const inventory = [
   { category: 'Git repos', items: '~/york/ (monorepo: york-tools, google-tasks, scripts, builds), ~/york-data/ (MCP server + DB)' },
   { category: 'Obsidian vault', items: '~/work-notes/work/ (Wiglaf\'s vault, syncs via Syncthing/Obsidian Sync)' },
   { category: 'Config files', items: '~/.openclaw/openclaw.json (main config), ~/.mcporter/mcporter.json (MCP server registry)' },
-  { category: 'Architecture', items: 'Current host: x64 (Manjaro). Target: ARM64 (RPi OS Lite / Ubuntu Server). Key difference: npm install must be re-run for native modules. Node 22+ LTS recommended for ARM64 stability.' },
+  { category: 'Architecture', items: 'Current host: x64 (Manjaro). Target: ARM64 (Ubuntu Server 24.04 LTS). Key difference: npm install must be re-run for native modules. Node 22+ LTS recommended for ARM64 stability.' },
 ]
 </script>
 
