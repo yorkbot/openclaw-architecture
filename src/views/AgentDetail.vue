@@ -469,10 +469,9 @@ const liveAgents = [
       {
         name: 'Intake',
         skills: [
-          { name: 'Inbox Processing', desc: 'Process inbox/ items: classify, extract info, distribute to appropriate files, delete originals. Opus sub-agent.', todo: true },
-          { name: 'Meeting Processing', desc: 'Clean raw transcripts from inbox → meetings/, extract action items to board.md. Opus sub-agent.', todo: true },
-          { name: 'Ticket Management', desc: 'Create/update ticket files, merge eval results, track Jira status changes. Opus sub-agent.', todo: true },
-          { name: 'Question Management', desc: 'Post async questions, detect James answers (> "response"), act on them. Opus sub-agent.', todo: true },
+          { name: 'Inbox Processing', desc: 'Process inbox/ items: classify (transcripts, emails, Devin output), route to appropriate handlers, delete originals. PDFs unsupported (TODO). Opus sub-agent.', live: true },
+          { name: 'Meeting Processing', desc: 'Clean raw transcripts from inbox → readable summaries in meetings/, extract action items to board.md, delete originals. Handles WebVTT, SRT, plain text. Opus sub-agent.', live: true },
+          { name: 'Ticket Management', desc: 'Create/update ticket files, merge Devin eval results, archive stale closed tickets, maintain board sync. No external system integration yet. Opus sub-agent.', live: true },
         ],
       },
       {
