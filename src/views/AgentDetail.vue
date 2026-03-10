@@ -548,6 +548,13 @@ const liveAgents = [
           { name: 'Smart Scheduling', desc: 'Seasonal and contextual task management. Weather-dependent chores, gutter season, snow removal. Applied to stacks — not standalone.', todo: true },
         ],
       },
+      {
+        name: 'Domains',
+        skills: [
+          { name: 'Car Maintenance', desc: 'Oil changes, registration, inspection reminders, maintenance history. Google Tasks + calendar events.', todo: true },
+          { name: 'Ginny (Cat)', desc: 'Vet appointments, feeding schedule, litter change reminders, medication tracking.', todo: true },
+        ],
+      },
     ],
   },
   {

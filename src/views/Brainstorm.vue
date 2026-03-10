@@ -8,22 +8,6 @@
       </p>
     </div>
 
-    <!-- Agent Ideas -->
-    <div class="card">
-      <h3>Agent Ideas Beyond Current Plan</h3>
-      <div class="idea-grid">
-        <div class="idea-card" v-for="idea in agentIdeas" :key="idea.name" :class="'priority-' + idea.priority">
-          <div class="idea-header">
-            <span class="idea-emoji">{{ idea.icon }}</span>
-            <span class="idea-name">{{ idea.name }}</span>
-            <span :class="['tag', idea.priorityClass]">{{ idea.priorityLabel }}</span>
-          </div>
-          <p class="idea-desc">{{ idea.desc }}</p>
-          <p class="idea-why" v-if="idea.why">{{ idea.why }}</p>
-        </div>
-      </div>
-    </div>
-
     <!-- Skill Ideas -->
     <div class="card">
       <h3>Skill Ideas for Existing Agents</h3>
@@ -65,29 +49,6 @@
 </template>
 
 <script setup>
-const agentIdeas = [
-  {
-    icon: '🐕',
-    name: 'Car',
-    priority: 'someday',
-    priorityClass: 'script',
-    priorityLabel: 'Someday',
-    desc: 'Maintenance schedules, oil changes, registration, inspection reminders. James has a handwritten note to share.',
-    why: 'Probably doesn\'t need its own agent — could be a york-data domain + calendar events. But if maintenance history gets deep, it might earn one.',
-  },
-  {
-    icon: '🐈',
-    name: 'Ginny',
-    priority: 'fun',
-    priorityClass: 'heartbeat',
-    priorityLabel: 'Fun',
-    desc: 'Vet appointment tracking, feeding schedule, litter change reminders, medication if needed. Named after the cat.',
-    why: 'Probably overkill as a separate agent. But the name is perfect and it could live as a york-data domain that York manages.',
-  },
-
-
-]
-
 const skillIdeas = [
 
   {
