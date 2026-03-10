@@ -162,7 +162,7 @@ const rules = [
   {
     channel: '🦡hild',
     agent: 'Hild 🦡 (Direct)',
-    desc: 'Home management. Chore status, habit stacks, completions. Cannabis gate evaluation.',
+    desc: 'Home management. Chore status, habit stacks, completions. Evening gate evaluation.',
   },
   {
     channel: '🐺guthlac',

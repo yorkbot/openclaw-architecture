@@ -334,7 +334,7 @@ const agents = [
     tierLabel: 'Opus 4.6',
     schedule: null,
     scheduleLabel: null,
-    desc: 'Private work agent. Prioritization, note processing, meeting prep, work context. Fully siloed.',
+    desc: 'Private work agent. Prioritization, note processing, meeting prep, work context. Vault-watcher driven, on-demand. Fully siloed.',
     border: 'border-yellow',
   },
   {

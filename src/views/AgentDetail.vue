@@ -260,7 +260,7 @@ const liveAgents = [
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Precise on data, encouraging on fitness. Brief on logging. Transparent about estimation confidence. Coach decides intensity/progression.' },
       { file: 'USER.md', desc: 'James\'s health context: goals (220 lbs by EOY 2026), fitness level (deconditioned, former D1 swimmer), equipment, preferences, coaching philosophy.' },
-      { file: 'AGENTS.md', desc: 'Domain-focused: own role, system map, escalation paths. Knows York handles cannabis judgment, Bede handles analysis.' },
+      { file: 'AGENTS.md', desc: 'Domain-focused: own role, system map, escalation paths. Knows York handles evening gate judgment, Bede handles analysis.' },
       { file: 'TOOLS.md', desc: 'Full york-data command reference with every tool spelled out. Consumption, daily metrics, exercise catalog, workouts, programs, program_days, cross-domain queries.' },
       { file: 'IDENTITY.md', desc: 'Wynn 🦌 — Old English for "joy/wellness."' },
       { file: 'MEMORY.md', desc: 'Calorie reference, James\'s patterns, workout programming context.' },
@@ -278,7 +278,7 @@ const liveAgents = [
           { name: 'Log Daily Metrics', desc: 'Weight, wake time, bedtime, sleep, energy, kitchen closed via log_daily(). Upsert pattern — safe to call multiple times per day.', live: true },
           { name: 'Log Workout', desc: 'Two-step: log_workout() for the session, then log_workout_exercises() with FK-validated exercise catalog IDs. Bodyweight exercises omit weight field.', live: true },
           { name: 'Calorie Estimation', desc: 'Four-tier estimation: known (exact), standard (high confidence), estimated (~), unknown (ask). Common reference table grows in MEMORY.md.', live: true },
-          { name: 'Daily Closeout', desc: 'Close out yesterday. Catch late-night stragglers (seltzer, cannabis), collect missing metrics (bedtime, energy, kitchen_closed), compute sleep from bedtime+wake_up, verify calorie/protein totals, write final daily row. Interactive 2-3 exchange flow. Triggered by morning brief or ad-hoc.', live: true },
+          { name: 'Daily Closeout', desc: 'Close out yesterday. Catch late-night stragglers (seltzer, wind-down), collect missing metrics (bedtime, energy, kitchen_closed), compute sleep from bedtime+wake_up, verify calorie/protein totals, write final daily row. Interactive 2-3 exchange flow. Triggered by morning brief or ad-hoc.', live: true },
         ],
       },
       {
@@ -403,7 +403,7 @@ const liveAgents = [
       {
         name: 'Route',
         skills: [
-          { name: 'Orchestrator Dispatch', desc: 'Determine what to handle inline vs route to another agent. Routes D&D to Caedmon, health to Wynn, builds to Offa, cannabis gate to Hild, chores to Hild. Includes Discord noise prevention rules.', live: true },
+          { name: 'Orchestrator Dispatch', desc: 'Determine what to handle inline vs route to another agent. Routes D&D to Caedmon, health to Wynn, builds to Offa, evening gate to Hild, chores to Hild. Includes Discord noise prevention rules.', live: true },
         ],
       },
       {
@@ -432,10 +432,10 @@ const liveAgents = [
     id: 'wiglaf',
     icon: '🐻',
     name: 'Wiglaf',
-    borderColor: 'sonnet',
-    model: 'Sonnet (conversation + heartbeat). All skills run as Opus sub-agents.',
-    cron: 'Memory audit: 3:30 AM nightly. Work mode heartbeat: every 15m, 6AM–6PM — James toggles on/off.',
-    purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Sonnet for cheap heartbeats and conversation; Opus sub-agents for all real work. Bede has light read visibility for pattern analysis, but Wiglaf operates independently. System/agent modification is explicitly out of scope — redirects to Offa.',
+    borderColor: 'opus',
+    model: 'Opus 4.6',
+    cron: 'Memory audit: 3:30 AM nightly. Morning prep: 7 AM weekdays.',
+    purpose: 'Private work agent. Engineering leadership support — prioritization, note processing, meeting prep, work triage. Runs Opus directly, no sub-agents. Vault watcher triggers skills on-demand when files change. Bede has light read visibility for pattern analysis, but Wiglaf operates independently. System/agent modification is explicitly out of scope — redirects to Offa.',
     workspace: '~/.openclaw/workspace-wiglaf/ — Obsidian vault at ~/work-notes/work/ is the primary async communication channel (syncs via Obsidian Sync). Limited cross-agent visibility: Bede can read sessions/memory for pattern analysis.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Professional, direct, technical. No personality flourishes. Engineering leadership voice. Pushes back on non-work topics and system modification (→ Offa).' },
@@ -454,30 +454,28 @@ const liveAgents = [
         name: 'Vault',
         skills: [
           { name: 'Vault Schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.', live: true },
-          { name: 'Note Processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Includes board hygiene (dedup, reprioritization, stale context). Core input loop. Never writes to now.md. Ad-hoc only — future vault-watcher will trigger on demand. Opus sub-agent.', live: true },
-          { name: 'Vault Watcher', desc: 'No-LLM Node.js file watcher (systemd service). Monitors inbox/, Daily/, questions.md via inotify. Debounce + cooldown, then dispatches one-shot cron jobs to Wiglaf for inbox-processing or note-processing.', live: true },
+          { name: 'Vault Update', desc: 'Combined note processing + now.md update in one pass. Triggered by vault-watcher on Daily/ file changes. Phase 1: extract actionable items from Daily notes to board/tickets/questions/journal with board hygiene. Phase 2: classify items, determine Doing/Next/Blocked, write now.md. Replaces separate note-processing + now-management skills.', live: true },
+          { name: 'Vault Watcher', desc: 'No-LLM Node.js file watcher (systemd service). Monitors inbox/, Daily/, questions.md via inotify. Debounce (60s for Daily/) + cooldown (2min), then dispatches one-shot cron jobs to Wiglaf for vault-update or inbox-processing. Zero cost when idle.', live: true },
         ],
       },
       {
         name: 'Focus',
         skills: [
-          { name: 'Work Mode', desc: 'Toggle heartbeat on/off. James says "turn on" → config patches heartbeat to 15m. "Turn off" → patches to 0m. Refuses to turn on after 6PM. ActiveHours hard cutoff at 6PM — zero API calls after hours.', live: true },
-          { name: 'Now Management', desc: 'Sole writer to now.md. Reads board.md + Daily notes + shared-cache calendar, renders current focus (1 Doing + 1 Next). Runs on heartbeat when work mode is on. Opus sub-agent.', live: true },
-          { name: 'Morning Prep', desc: 'Opus cron (not currently wired — James turns on work mode manually). Vault scan, daily context load, priority review. Opus sub-agent.', live: true },
+          { name: 'Morning Prep', desc: '7 AM weekday cron. Creates daily note, reads calendar cache, ages board.md (rollover, waiting checks, Friday promotions), catches unprocessed yesterday notes, surfaces questions, refreshes now.md.', live: true },
         ],
       },
       {
         name: 'Intake',
         skills: [
-          { name: 'Inbox Processing', desc: 'Process inbox/ items: classify (transcripts, emails, Devin output), route to appropriate handlers, delete originals. PDFs unsupported (TODO). Opus sub-agent.', live: true },
-          { name: 'Meeting Processing', desc: 'Clean raw transcripts from inbox → readable summaries in meetings/, extract action items to board.md, delete originals. Handles WebVTT, SRT, plain text. Opus sub-agent.', live: true },
-          { name: 'Ticket Management', desc: 'Create/update ticket files, merge Devin eval results, archive stale closed tickets, maintain board sync. No external system integration yet. Opus sub-agent.', live: true },
+          { name: 'Inbox Processing', desc: 'Process inbox/ items: classify (transcripts, emails, Devin output), route to appropriate handlers, delete originals. Triggered by vault-watcher on inbox/ changes.', live: true },
+          { name: 'Meeting Processing', desc: 'Clean raw transcripts from inbox → readable summaries in meetings/, extract action items to board.md, delete originals. Handles WebVTT, SRT, plain text.', live: true },
+          { name: 'Ticket Management', desc: 'Create/update ticket files, merge Devin eval results, archive stale closed tickets, maintain board sync. No external system integration yet.', live: true },
         ],
       },
       {
         name: 'Devin',
         skills: [
-          { name: 'Devin Dispatch', desc: 'Dispatch Devin sessions, track in devin/log.md, follow up on outcomes. Opus sub-agent.', todo: true },
+          { name: 'Devin Dispatch', desc: 'Dispatch Devin sessions, track in devin/log.md, follow up on outcomes.', todo: true },
         ],
       },
     ],
@@ -493,12 +491,12 @@ const liveAgents = [
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: '6 AM daily (morning cache + stack reset), 5:30 PM M-F (after-work nudge), 9 PM daily (after-dinner nudge)',
-    purpose: 'Home management and cannabis gate. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the cannabis gate: evaluates requests to smoke with a coach-style conversation, checking chores, food plan, workout status, and context.',
+    purpose: 'Home management and evening gate. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the evening gate: evaluates requests to smoke with a coach-style conversation, checking chores, food plan, workout status, and context.',
     workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Practical, observational, brief. Reports facts without drama.' },
       { file: 'AGENTS.md', desc: 'System context, chore tracking role, escalation rules, memory discipline.' },
-      { file: 'TOOLS.md', desc: 'Google Tasks MCP API + york-data read access (consumption, workouts, cannabis history) for the gate.' },
+      { file: 'TOOLS.md', desc: 'Google Tasks MCP API + york-data read access (consumption, workouts, consumption history) for the gate.' },
       { file: 'IDENTITY.md', desc: 'Hild 🦡 — Named for Abbess Hild of Whitby, who ran the most organized monastery in Anglo-Saxon England.' },
       { file: 'MEMORY.md', desc: 'Chore system design, task list IDs, scheduling patterns.' },
       { file: 'memory/', desc: 'Daily chore summaries.' },
@@ -527,7 +525,7 @@ const liveAgents = [
       {
         name: 'Gate',
         skills: [
-          { name: 'Cannabis Gate', desc: 'Evaluate James\'s request to smoke. Coach-style conversation: check chores, food plan, workout status, time/day context. If yes, brief green light. If no, give a concrete path to unlock it tonight. Opus sub-agent. Context-aware: weekday vs weekend, after-work vs late night.', live: true },
+          { name: 'Evening Gate', desc: 'Evaluate James\'s request to smoke. Coach-style conversation: check chores, food plan, workout status, time/day context. If yes, brief green light. If no, give a concrete path to unlock it tonight. Opus sub-agent. Context-aware: weekday vs weekend, after-work vs late night.', live: true },
         ],
       },
       {
@@ -618,7 +616,7 @@ const draftAgents = [
           { name: 'Collect Health Pulse', desc: 'Frequent, lightweight. Runs every few hours. Keeps a rolling tab of last ~2 days of health data from york-data (Wynn\'s domain). Can\'t be more than a handful of hours behind.' },
           { name: 'Collect Health Daily', desc: 'Daily compilation. Pulls yesterday\'s consumption, calculates calorie/protein totals, weight entry, workout activity. Structured summary to york-data. Used by morning brief and other agents.' },
           { name: 'Collect Health Deep', desc: 'Weekly, comprehensive. Bigger model. Pulls full week of health data, calculates trends, identifies patterns across domains. Writes detailed analysis to york-data.' },
-          { name: 'Collect Consumption Gaps', desc: 'Analyze recent days for missing data — no food logged, missing daily metrics, cannabis sessions unrecorded. Write specific gap questions to york-data for follow-up.' },
+          { name: 'Collect Consumption Gaps', desc: 'Analyze recent days for missing data — no food logged, missing daily metrics, consumption sessions unrecorded. Write specific gap questions to york-data for follow-up.' },
           { name: 'Collect Chore Summary', desc: 'Daily. Asks Hild for a summary of chore completions, overdue items, and skipped tasks. Writes a rolling reflection to markdown — not a raw log. Old entries naturally age out.' },
           { name: 'Collect Build Results', desc: 'Collects build results and verification status from Offa. Did what got built actually work? Feeds into the improvement loop.' },
         ],
@@ -762,6 +760,7 @@ const draftAgents = [
 
 .border-opus { border-color: #f0c040; border-width: 2px; }
 .border-sonnet { border-color: #58a6ff; border-width: 2px; }
+.border-grok { border-color: #e04040; border-width: 2px; }
 .border-none { border-color: #30363d; }
 
 .tag.live {

@@ -129,7 +129,7 @@ const structure = [
 const tables = [
   {
     name: 'consumption',
-    desc: 'Food, drinks, supplements, and cannabis. Cannabis is just a consumption type.',
+    desc: 'Food, drinks, supplements, and cannabis. Tracked as a consumption type.',
     columns: [
       { name: 'id', type: 'INTEGER PK', note: 'auto' },
       { name: 'date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD' },
@@ -235,14 +235,14 @@ const domains = [
     name: 'Consumption',
     icon: '🍎',
     color: 'green',
-    desc: 'Primary consumer: Wynn. Food, drinks, supplements, and cannabis. Cannabis is just a consumption type.',
+    desc: 'Primary consumer: Wynn. Food, drinks, supplements, and cannabis. Tracked as a consumption type.',
     functions: [
       { name: 'log_food', params: 'date, item, quantity?, calories?, protein?, time?, type?, notes?', desc: 'Append a consumption item (food, drink, supplement, or cannabis)' },
       { name: 'get_consumption', params: 'date, type?', returns: 'items[]', desc: 'All items for a date, optionally filtered by type' },
       { name: 'get_consumption_range', params: 'start_date, end_date, type?', returns: 'items[]', desc: 'Items across date range' },
       { name: 'update_consumption', params: 'id, fields...', desc: 'Fix a specific entry' },
       { name: 'delete_consumption', params: 'id', desc: 'Remove a mis-logged entry' },
-      { name: 'get_cannabis_history', params: 'days', returns: 'days[] + avg_per_day + total', desc: 'Convenience query: cannabis frequency and patterns' },
+      { name: 'get_cannabis_history', params: 'days', returns: 'days[] + avg_per_day + total', desc: 'Convenience query: consumption frequency and patterns for a specific type' },
     ],
   },
   {
