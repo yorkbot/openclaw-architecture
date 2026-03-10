@@ -186,12 +186,6 @@
         </ul>
       </div>
 
-      <div class="agent-section" v-if="agent.spawns?.length">
-        <h3>Expected Sub-Agents</h3>
-        <div class="spawn-tags">
-          <span class="tag small" v-for="s in agent.spawns" :key="s">{{ s }}</span>
-        </div>
-      </div>
     </div>
   </div>
 </template>
