@@ -60,12 +60,6 @@
         </ul>
       </div>
 
-      <div class="agent-section" v-if="agent.spawns?.length">
-        <h3>Expected Sub-Agents</h3>
-        <div class="spawn-tags">
-          <span class="tag small" v-for="s in agent.spawns" :key="s">{{ s }}</span>
-        </div>
-      </div>
     </div>
 
     <!-- Draft Agents (Bede, Offa) -->
@@ -130,12 +124,6 @@
         </ul>
       </div>
 
-      <div class="agent-section" v-if="agent.spawns?.length">
-        <h3>Expected Sub-Agents</h3>
-        <div class="spawn-tags">
-          <span class="tag small" v-for="s in agent.spawns" :key="s">{{ s }}</span>
-        </div>
-      </div>
     </div>
 
     <!-- Suggested Agents (everything else) -->
@@ -265,7 +253,6 @@ const liveAgents = [
       'Bede pipeline: no channel yet — needs york-data observations/suggestions domain (build when Bede is built)',
       'Build result reporting: no structured format yet for Bede to verify Offa\'s work',
     ],
-    spawns: [],
   },
   {
     id: 'wynn',
@@ -307,9 +294,6 @@ const liveAgents = [
     ],
     todos: [
       'Workout programming skill — needs Opus sub-agent spawning pattern',
-    ],
-    spawns: [
-      'Opus sub-agent (for complex workout programming)',
     ],
   },
   {
@@ -358,10 +342,6 @@ const liveAgents = [
         ],
       },
     ],
-    spawns: [
-      'Sonnet sub-agent (bulk wiki compilation, session prep, batch art generation)',
-      'Research sub-agents (overnight wiki exploration, 5 min timeout each)',
-    ],
   },
   {
     id: 'dagr',
@@ -399,7 +379,6 @@ const liveAgents = [
         ],
       },
     ],
-    spawns: [],
   },
   {
     id: 'york',
@@ -452,7 +431,6 @@ const liveAgents = [
         ],
       },
     ],
-    spawns: [],
   },
   {
     id: 'wiglaf',
@@ -512,9 +490,6 @@ const liveAgents = [
       'Vault migration: restructure existing files to new schema (board.md, tickets/, devin/, etc.) — in progress',
       'Build remaining planned skills iteratively',
     ],
-    spawns: [
-      'Opus sub-agent (all skills — note processing, now management, morning prep, vault operations)',
-    ],
   },
 
   {
@@ -542,32 +517,38 @@ const liveAgents = [
       {
         name: 'Track',
         skills: [
-          { name: 'Chore Status', desc: 'Report what\'s done and what\'s left today. Pull from Google Tasks. Categorize as done/due/overdue.' },
-          { name: 'Log Completion', desc: 'Mark chores as completed in Google Tasks when James reports them done.' },
+          { name: 'Chore Status', desc: 'Report what\'s done and what\'s left today. Pull from Google Tasks. Categorize as done/due/overdue.', live: true },
+          { name: 'Log Completion', desc: 'Mark chores as completed in Google Tasks when James reports them done.', live: true },
+        ],
+      },
+      {
+        name: 'Stacks',
+        skills: [
+          { name: 'Habit Stacks', desc: 'Ordered sequences of chores grouped into timed slots (morning M-F 8am, after-work M-F 5:30pm, weekend Sun 9am). Daily reset cycle, completion tracking per stack, streak counting, pattern detection.', live: true },
+          { name: 'Morning Brief', desc: 'Produce chore summary for Dagr\'s morning brief. Yesterday\'s completion, today\'s stacks, streaks. Writes to shared-cache.', live: true },
+          { name: 'Nudge', desc: 'Timed nudges at stack slot times. Posts to #hild with today\'s stack, carryover from earlier stacks, pattern observations.', live: true },
+          { name: 'Progressive Loading', desc: 'Auto-add items to stacks when completion rate is high, remove when consistently skipped. Adaptive difficulty.', todo: true },
         ],
       },
       {
         name: 'Report',
         skills: [
-          { name: 'House Check', desc: 'When York asks about house state for cross-agent checks (e.g. cannabis gate). Reports factual chore status — completions, overdue items, rate. No judgment, no recommendation.' },
+          { name: 'House Check', desc: 'When York asks about house state for cross-agent checks (e.g. cannabis gate). Reports factual chore status — completions, overdue items, rate. No judgment, no recommendation. Opus sub-agent.', live: true },
         ],
       },
       {
         name: 'Inspect',
         skills: [
-          { name: 'Camera Snapshot Review', desc: 'Take a camera snapshot via york-tools and review the house state visually. Complement chore data with what the camera actually shows.' },
+          { name: 'Camera Snapshot Review', desc: 'Take a camera snapshot via york-tools and review the house state visually. Complement chore data with what the camera actually shows.', todo: true },
         ],
-        tbd: true,
       },
       {
         name: 'Schedule',
         skills: [
-          { name: 'Smart Scheduling', desc: 'The intelligence layer on top of Google Tasks recurrence. Create/adjust tasks based on season, weather, and context. Google handles daily/weekly/monthly; Hild handles "it snowed" and "it\'s gutter season."' },
+          { name: 'Smart Scheduling', desc: 'Seasonal and contextual task management. Weather-dependent chores, gutter season, snow removal. Applied to stacks — not standalone.', todo: true },
         ],
-        tbd: true,
       },
     ],
-    spawns: [],
   },
 ]
 
@@ -620,9 +601,6 @@ const draftAgents = [
         skills: [],
         tbd: true,
       },
-    ],
-    spawns: [
-      'transcript-preprocessor (Small tier — summarize high-volume transcript batches before deep analysis)',
     ],
   },
 
