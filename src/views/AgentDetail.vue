@@ -253,20 +253,22 @@ const liveAgents = [
     icon: '🦌',
     name: 'Wynn',
     borderColor: 'sonnet',
-    model: 'Sonnet 4.5 (can spawn Opus sub-agent for workout programming)',
-    cron: 'None. On-demand.',
-    purpose: 'All health and fitness data operations. Nutrition logging, calorie estimation, weight tracking, workout logging, exercise guidance. Owns the data entry layer — Bede handles collection and analysis of that data.',
-    workspace: '~/.openclaw/workspace-wynn/ — york-data access for all health domains.',
+    model: 'Sonnet 4.5 (Opus sub-agent for workout programming)',
+    cron: '6:00 AM workout cache (script), weekly program review (Opus sub-agent)',
+    purpose: 'All health and fitness data operations. Nutrition logging, calorie estimation, weight tracking, workout logging, workout programming. Owns the data entry layer and workout programs — Bede handles collection and analysis of that data.',
+    workspace: '~/.openclaw/workspace-wynn/ — york-data access for all health domains including programs.',
     workspaceFiles: [
-      { file: 'SOUL.md', desc: 'Precise on data, encouraging on fitness. Brief on logging. Transparent about estimation confidence.' },
+      { file: 'SOUL.md', desc: 'Precise on data, encouraging on fitness. Brief on logging. Transparent about estimation confidence. Coach decides intensity/progression.' },
+      { file: 'USER.md', desc: 'James\'s health context: goals (220 lbs by EOY 2026), fitness level (deconditioned, former D1 swimmer), equipment, preferences, coaching philosophy.' },
       { file: 'AGENTS.md', desc: 'Domain-focused: own role, system map, escalation paths. Knows York handles cannabis judgment, Bede handles analysis.' },
-      { file: 'TOOLS.md', desc: 'Full york-data command reference with every tool spelled out. Consumption, daily metrics, exercise catalog, workouts, cross-domain queries.' },
+      { file: 'TOOLS.md', desc: 'Full york-data command reference with every tool spelled out. Consumption, daily metrics, exercise catalog, workouts, programs, program_days, cross-domain queries.' },
       { file: 'IDENTITY.md', desc: 'Wynn 🦌 — Old English for "joy/wellness."' },
-      { file: 'MEMORY.md', desc: 'Calorie reference, James\'s patterns — grows over time.' },
+      { file: 'MEMORY.md', desc: 'Calorie reference, James\'s patterns, workout programming context.' },
     ],
     channels: [
       '#wynn — direct health/fitness logging and questions from James',
       'All data writes via york-data MCP server (mcporter)',
+      'Workout cache writes to shared-cache for Dagr morning brief',
     ],
     skillSections: [
       {
@@ -282,13 +284,13 @@ const liveAgents = [
       {
         name: 'Coach',
         skills: [
-          { name: 'Workout Programming', desc: 'Suggest exercises based on equipment, history, and progressive overload. Spawns Opus sub-agent for complex program design.', todo: true },
+          { name: 'Workout Programming', desc: 'Design multi-week training programs. Opus sub-agent reads USER.md, weight trend, previous program stats, equipment status. Outputs structured program to york-data (programs + program_days tables). Couch to 5K progression built in. Movement every day, rest days = active recovery.', live: true },
+          { name: 'Daily Workout', desc: 'Present today\'s workout from the active program. Handle weather swaps (outdoor → indoor), phlebotomy adjustments. Compare actual vs programmed after James logs. Writes to shared-cache for Dagr morning brief.', live: true },
+          { name: 'Program Review', desc: 'End-of-program review. Spawns Opus sub-agent in the last week to analyze adherence, progression, weight trend, feedback. Designs next program. Infinite chain — there is always a next program.', live: true },
         ],
       },
     ],
-    todos: [
-      'Workout programming skill — needs Opus sub-agent spawning pattern',
-    ],
+    todos: [],
   },
   {
     id: 'caedmon',

@@ -120,7 +120,9 @@ const structure = [
   { path: '  src/domains/daily.js', desc: 'Daily metrics — upsert pattern (4 tools)' },
   { path: '  src/domains/workouts.js', desc: 'Exercise catalog + workout sessions (6 tools)' },
   { path: '  src/domains/cross.js', desc: 'Cross-domain aggregation queries (2 tools)' },
+  { path: '  src/domains/programs.js', desc: 'Workout programs + daily prescriptions (8 tools)' },
   { path: '  migrations/001-initial-schema.sql', desc: 'All MVP tables with constraints + indexes' },
+  { path: '  migrations/002-programs.sql', desc: 'Programs + program_days tables' },
   { path: '  scripts/migrate-sheets.js', desc: 'One-time Google Sheets → SQLite migration' },
 ]
 
@@ -194,6 +196,37 @@ const tables = [
       { name: 'notes', type: 'TEXT', note: '' },
     ],
   },
+  {
+    name: 'programs',
+    desc: 'Multi-week training programs. Only one can be active at a time.',
+    columns: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'name', type: 'TEXT NOT NULL', note: 'e.g. "Bodyweight Foundation - Weeks 1-4"' },
+      { name: 'start_date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD' },
+      { name: 'end_date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD (calculated)' },
+      { name: 'weeks', type: 'INTEGER NOT NULL', note: '1-52' },
+      { name: 'status', type: 'TEXT NOT NULL', note: 'draft, active, completed, cancelled' },
+      { name: 'goals', type: 'TEXT', note: 'free text' },
+      { name: 'notes', type: 'TEXT', note: '' },
+      { name: 'created_at', type: 'TEXT', note: 'auto' },
+    ],
+  },
+  {
+    name: 'program_days',
+    desc: 'Daily workout prescriptions within a program.',
+    columns: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'program_id', type: 'INTEGER FK', note: '→ programs.id' },
+      { name: 'week_number', type: 'INTEGER NOT NULL', note: '1-based' },
+      { name: 'day_number', type: 'INTEGER NOT NULL', note: '1=Mon, 7=Sun' },
+      { name: 'date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD (future dates allowed)' },
+      { name: 'type', type: 'TEXT NOT NULL', note: 'strength, cardio, active_recovery, rest, flexibility' },
+      { name: 'plan', type: 'TEXT NOT NULL', note: 'JSON string — workout prescription' },
+      { name: 'notes', type: 'TEXT', note: '' },
+      { name: 'swapped_with_date', type: 'TEXT', note: 'original date if weather-swapped' },
+      { name: 'created_at', type: 'TEXT', note: 'auto' },
+    ],
+  },
 
 ]
 
@@ -248,6 +281,22 @@ const domains = [
   },
 
   {
+    name: 'Programs',
+    icon: '📅',
+    color: 'yellow',
+    desc: 'Primary consumer: Wynn. Multi-week training programs and daily workout prescriptions. Weather-aware swapping, adherence tracking.',
+    functions: [
+      { name: 'create_program', params: 'name, start_date, weeks, goals?, notes?', returns: 'id, start_date, end_date', desc: 'Create and activate a program. Auto-completes any existing active program. Calculates end_date.' },
+      { name: 'add_program_days', params: 'program_id, days[{week_number, day_number, date, type, plan, notes?}]', returns: 'added', desc: 'Bulk insert daily workout prescriptions. Validates dates, types, JSON plans.' },
+      { name: 'get_active_program', params: 'include_days?', returns: 'program + days[]', desc: 'Get the active program with all its days. include_days defaults to true.' },
+      { name: 'get_program_day', params: 'date?', returns: 'day', desc: 'Get today\'s (or specified date\'s) workout from the active program.' },
+      { name: 'swap_program_days', params: 'day_id_1, day_id_2, reason?', returns: 'swapped info', desc: 'Swap type/plan/notes between two days. Records swap history. For weather swaps.' },
+      { name: 'update_program_day', params: 'id, type?, plan?, notes?', returns: 'updated', desc: 'Partial update of a program day. Validates JSON if plan provided.' },
+      { name: 'complete_program', params: 'program_id', returns: 'completed', desc: 'Set program status to completed.' },
+      { name: 'get_program_summary', params: 'program_id', returns: 'program + adherence stats', desc: 'Cross-references workouts table for adherence: training_days, workouts_logged, adherence_pct.' },
+    ],
+  },
+  {
     name: 'Cross-Domain',
     icon: '🔗',
     color: 'purple',
@@ -267,7 +316,10 @@ const validations = [
   { field: 'Energy', rule: '1–5 integer.' },
   { field: 'Sleep', rule: '0–24 hours.' },
   { field: 'Type', rule: 'Must be: food, drink, supplement, or cannabis.' },
-  { field: 'Future dates', rule: 'No future dates for consumption/workouts.' },
+  { field: 'Future dates', rule: 'No future dates for consumption/workouts. Program days allow future dates (planning data).' },
+  { field: 'Program status', rule: 'Must be: draft, active, completed, or cancelled.' },
+  { field: 'Day type', rule: 'Must be: strength, cardio, active_recovery, rest, or flexibility.' },
+  { field: 'Plan JSON', rule: 'Must be valid JSON string.' },
 ]
 
 const gotchas = [
@@ -294,9 +346,10 @@ const notMvp = [
 ]
 
 const migration = [
-  '✅ Built york-data MCP server with all tables and 19 tools',
+  '✅ Built york-data MCP server with all tables and 27 tools (19 MVP + 8 programs)',
   '✅ Wrote migrate-sheets.js — reads all Sheets via mcporter, writes to SQLite',
   '✅ Migrated: 69 daily metrics, 743 consumption entries, 5 workouts, 2 exercises',
+  '✅ Added programs domain: 8 tools for multi-week workout programming',
   '⬜ Switch agents to york-data (build agent-specific usage skills)',
   '⬜ Google Sheets becomes read-only archive',
 ]
