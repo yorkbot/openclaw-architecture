@@ -81,7 +81,7 @@ const tools = [
       { label: 'Repo', value: '~/york/google-tasks/' },
       { label: 'Access', value: 'mcporter call google-tasks.<tool>(...)' },
     ],
-    usedBy: 'Hild (chore management, habit stacks), York (evening gate — reads task completion).',
+    usedBy: 'Hild (chore management, habit stacks), York (green light — reads task completion).',
   },
   {
     icon: '👁️',
@@ -96,7 +96,7 @@ const tools = [
       { label: 'Output', value: 'Structured text description' },
       { label: 'Model', value: 'Gemini Flash or cheapest vision model available' },
     ],
-    usedBy: 'York (evening gate camera checks), Hild (chore state from photos).',
+    usedBy: 'York (green light camera checks), Hild (chore state from photos).',
   },
   {
     icon: '📹',

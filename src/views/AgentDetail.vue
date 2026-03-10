@@ -260,7 +260,7 @@ const liveAgents = [
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Precise on data, encouraging on fitness. Brief on logging. Transparent about estimation confidence. Coach decides intensity/progression.' },
       { file: 'USER.md', desc: 'James\'s health context: goals (220 lbs by EOY 2026), fitness level (deconditioned, former D1 swimmer), equipment, preferences, coaching philosophy.' },
-      { file: 'AGENTS.md', desc: 'Domain-focused: own role, system map, escalation paths. Knows York handles evening gate judgment, Bede handles analysis.' },
+      { file: 'AGENTS.md', desc: 'Domain-focused: own role, system map, escalation paths. Knows York handles green light judgment, Bede handles analysis.' },
       { file: 'TOOLS.md', desc: 'Full york-data command reference with every tool spelled out. Consumption, daily metrics, exercise catalog, workouts, programs, program_days, cross-domain queries.' },
       { file: 'IDENTITY.md', desc: 'Wynn 🦌 — Old English for "joy/wellness."' },
       { file: 'MEMORY.md', desc: 'Calorie reference, James\'s patterns, workout programming context.' },
@@ -403,7 +403,7 @@ const liveAgents = [
       {
         name: 'Route',
         skills: [
-          { name: 'Orchestrator Dispatch', desc: 'Determine what to handle inline vs route to another agent. Routes D&D to Caedmon, health to Wynn, builds to Offa, evening gate to Hild, chores to Hild. Includes Discord noise prevention rules.', live: true },
+          { name: 'Orchestrator Dispatch', desc: 'Determine what to handle inline vs route to another agent. Routes D&D to Caedmon, health to Wynn, builds to Offa, green light to Hild, chores to Hild. Includes Discord noise prevention rules.', live: true },
         ],
       },
       {
@@ -491,7 +491,7 @@ const liveAgents = [
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: '6 AM daily (morning cache + stack reset), 5:30 PM M-F (after-work nudge), 9 PM daily (after-dinner nudge)',
-    purpose: 'Home management and evening gate. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the evening gate: evaluates requests to smoke with a coach-style conversation, checking chores, food plan, workout status, and context.',
+    purpose: 'Home management and green light. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the green light: evaluates requests to smoke with a coach-style conversation, checking chores, food plan, workout status, and context.',
     workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Practical, observational, brief. Reports facts without drama.' },
@@ -525,7 +525,7 @@ const liveAgents = [
       {
         name: 'Gate',
         skills: [
-          { name: 'Evening Gate', desc: 'Evaluate James\'s request to smoke. Coach-style conversation: check chores, food plan, workout status, time/day context. If yes, brief green light. If no, give a concrete path to unlock it tonight. Opus sub-agent. Context-aware: weekday vs weekend, after-work vs late night.', live: true },
+          { name: 'Green Light', desc: 'Evaluate James\'s request to smoke. Coach-style conversation: check chores, food plan, workout status, time/day context. If yes, brief green light. If no, give a concrete path to unlock it tonight. Opus sub-agent. Context-aware: weekday vs weekend, after-work vs late night.', live: true },
         ],
       },
       {
