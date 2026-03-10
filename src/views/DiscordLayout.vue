@@ -15,7 +15,7 @@
 
     <div class="server">
       <div class="server-header">
-        <span class="server-icon">🦝</span>
+        <span class="server-icon">🦊</span>
         <span class="server-name">York's Server</span>
       </div>
 
@@ -72,7 +72,7 @@ const categories = [
     channels: [
       {
         name: 'general',
-        agent: 'York 🦝',
+        agent: 'York 🦊',
         agentClass: 'large',
         desc: 'Main conversation, morning briefs, accountability',
       },
@@ -118,7 +118,7 @@ const categories = [
 const rules = [
   {
     channel: 'general',
-    agent: 'York 🦝',
+    agent: 'York 🦊',
     desc: 'All messages route to York. York delegates to Wynn, Hild, etc. as needed. Morning brief, nudges, daily chat.',
   },
   {

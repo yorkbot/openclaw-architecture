@@ -376,7 +376,7 @@ const liveAgents = [
   },
   {
     id: 'york',
-    icon: '🦝',
+    icon: '🦊',
     name: 'York',
     borderColor: 'opus',
     model: 'Opus 4.6',
@@ -388,7 +388,7 @@ const liveAgents = [
       { file: 'USER.md', desc: 'Full James context: health goals, behavioral patterns, communication preferences, interests.' },
       { file: 'AGENTS.md', desc: 'Full agent roster. Routing rules: what to handle inline vs route to other agents.' },
       { file: 'TOOLS.md', desc: 'Discord channels, york-data (read), york-tools (panel, camera, avatar, weather), Google Calendar, image gen.' },
-      { file: 'IDENTITY.md', desc: 'York 🦝 — Named for Yorkshire Street.' },
+      { file: 'IDENTITY.md', desc: 'York 🦊 — Named for Yorkshire Street.' },
       { file: 'HEARTBEAT.md', desc: 'Heartbeat rules: when to nudge, quiet hours, what to check each beat.' },
       { file: 'MEMORY.md', desc: 'Durable facts: conversation context, long-term preferences, accountability patterns.' },
       { file: 'memory/', desc: 'Daily notes from conversations.' },

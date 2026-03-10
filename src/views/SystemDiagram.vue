@@ -52,7 +52,7 @@
         <div class="layer-label">ORCHESTRATOR</div>
         <div class="layer-content">
           <div class="node orchestrator-node">
-            <div class="node-icon">🦝</div>
+            <div class="node-icon">🦊</div>
             <div class="node-title">York</div>
             <div class="node-detail">
               <span class="tag large">Opus 4.6</span>
@@ -256,7 +256,7 @@
 
 <script setup>
 const channels = [
-  { name: 'general', routes: '→ York 🦝' },
+  { name: 'general', routes: '→ York 🦊' },
   { name: '🐓dagr', routes: '→ Dagr 🐓 (direct)' },
   { name: '🐉caedmon', routes: '→ Caedmon 🐉 (direct)' },
   { name: '🦫offa', routes: '→ Offa 🦫 (direct)' },
