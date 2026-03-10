@@ -518,7 +518,7 @@ const liveAgents = [
       {
         name: 'Stacks',
         skills: [
-          { name: 'Habit Stacks', desc: 'Ordered sequences of chores grouped into timed slots (morning M-F 8am, after-work M-F 5:30pm, weekend Sun 9am). Daily reset cycle, completion tracking per stack, streak counting, pattern detection.', live: true },
+          { name: 'Habit Stacks', desc: 'Ordered sequences of chores grouped into timed slots (morning M-F 8am, after-work M-F 5:30pm, after-dinner daily 9pm, weekend Sun 9am). Daily reset cycle, completion tracking per stack, streak counting, pattern detection.', live: true },
           { name: 'Morning Brief', desc: 'Produce chore summary for Dagr\'s morning brief. Yesterday\'s completion, today\'s stacks, streaks. Writes to shared-cache.', live: true },
           { name: 'Nudge', desc: 'Timed nudges at stack slot times. Posts to #hild with today\'s stack, carryover from earlier stacks, pattern observations.', live: true },
           { name: 'Progressive Loading', desc: 'Auto-add items to stacks when completion rate is high, remove when consistently skipped. Adaptive difficulty.', todo: true },

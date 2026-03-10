@@ -71,6 +71,7 @@ const cronGroups = [
     label: 'Daytime: Periodic',
     jobs: [
       { time: '5:30 PM M-F', name: 'After-Work Nudge', agent: 'Hild 🦡', status: 'On', notes: 'After-work stack to #hild. Checks morning stack completion.' },
+      { time: '9:00 PM', name: 'After-Dinner Nudge', agent: 'Hild 🦡', status: 'On', notes: 'After-dinner stack to #hild. Last check on today\'s stacks.' },
       { time: '9:00 AM Sun', name: 'Weekend Nudge', agent: 'Hild 🦡', status: 'On', notes: 'Weekend stack to #hild. Week summary.' },
       { time: 'Every 15m (6AM–6PM)', name: 'Work Mode Heartbeat', agent: 'Wiglaf 🐻', status: 'On', notes: 'Sonnet. James toggles on/off in #wiglaf. Config-patched to 0m when off — zero API calls. Vault scan when active.' },
       { time: 'Every 30m (8AM–12:30AM)', name: 'Heartbeat', agent: 'York 🦝 (main)', status: 'On', notes: 'Silent most beats.' },
