@@ -455,7 +455,7 @@ const liveAgents = [
         skills: [
           { name: 'Vault Schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.', live: true },
           { name: 'Note Processing', desc: 'Read Daily notes, extract actionable items, distribute to board.md / tickets / questions / journal. Includes board hygiene (dedup, reprioritization, stale context). Core input loop. Never writes to now.md. Ad-hoc only — future vault-watcher will trigger on demand. Opus sub-agent.', live: true },
-          { name: 'Vault Watcher', desc: 'No-LLM file watcher. Detects new/edited vault files, wakes note-processing and inbox-processing on demand.', todo: true },
+          { name: 'Vault Watcher', desc: 'No-LLM Node.js file watcher (systemd service). Monitors inbox/, Daily/, questions.md via inotify. Debounce + cooldown, then dispatches one-shot cron jobs to Wiglaf for inbox-processing or note-processing.', live: true },
         ],
       },
       {
