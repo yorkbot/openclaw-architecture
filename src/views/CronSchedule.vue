@@ -57,7 +57,7 @@ const cronGroups = [
       { time: '4:00 AM', name: 'D&D Questions Cache', agent: 'Caedmon 🐉', status: 'On', notes: 'Wiki research, worldbuilding questions. Opus 4.6.' },
       { time: '4:15 AM', name: 'Nutrition + Weight Cache', agent: 'main (temp)', status: 'On', notes: 'Stays on main until Bede is built.' },
       { time: '5:15 AM', name: 'Consumption Gap Cache', agent: 'main (temp)', status: 'On', notes: 'Stays on main until Bede is built.' },
-      { time: '6:00 AM M-F', name: 'Chore Cache + Stack Reset', agent: 'Hild 🦡', status: 'On', notes: 'Cache chore data to shared-cache for morning brief. Reset today\'s stacks.' },
+      { time: '6:00 AM', name: 'Chore Cache + Stack Reset', agent: 'Hild 🦡', status: 'On', notes: 'Reset recurring tasks, cache chore data to shared-cache for morning brief. Daily.' },
       { time: '6:30 AM / 6:30 PM', name: 'Calendar Context', agent: 'Dagr 🐓 (script)', status: 'On', notes: 'Bash script → shared-cache. Sonnet session runs the script, no real LLM work.' },
       { time: '7:30 AM / 7:30 PM', name: 'Weather Cache', agent: 'Dagr 🐓 (script)', status: 'On', notes: 'Bash script → shared-cache. Sonnet session runs the script, no real LLM work.' },
       { time: '7:40 AM Mon', name: 'Weekly Banner', agent: 'York 🦝 (main)', status: 'On', notes: 'york-tools.image_generate (Gemini Pro). 16:9.' },
@@ -71,8 +71,7 @@ const cronGroups = [
     label: 'Daytime: Periodic',
     jobs: [
       { time: '5:30 PM M-F', name: 'After-Work Nudge', agent: 'Hild 🦡', status: 'On', notes: 'After-work stack to #hild. Checks morning stack completion.' },
-      { time: '9:00 PM', name: 'After-Dinner Nudge', agent: 'Hild 🦡', status: 'On', notes: 'After-dinner stack to #hild. Last check on today\'s stacks.' },
-      { time: '9:00 AM Sun', name: 'Weekend Nudge', agent: 'Hild 🦡', status: 'On', notes: 'Weekend stack to #hild. Week summary.' },
+      { time: '9:00 PM', name: 'After-Dinner Nudge', agent: 'Hild 🦡', status: 'On', notes: 'After-dinner stack to #hild. Last check on today\'s stacks. Daily.' },
       { time: 'Every 15m (6AM–6PM)', name: 'Work Mode Heartbeat', agent: 'Wiglaf 🐻', status: 'On', notes: 'Sonnet. James toggles on/off in #wiglaf. Config-patched to 0m when off — zero API calls. Vault scan when active.' },
       { time: 'Every 30m (8AM–12:30AM)', name: 'Heartbeat', agent: 'York 🦝 (main)', status: 'On', notes: 'Silent most beats.' },
       { time: '8:00 PM Sun', name: 'Weekly Check-in', agent: 'York 🦝 (main)', status: 'On', notes: 'Health/fitness recap to #general.' },
