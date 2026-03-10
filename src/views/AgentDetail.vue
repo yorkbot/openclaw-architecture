@@ -562,7 +562,7 @@ const liveAgents = [
     borderColor: 'grok',
     model: 'Grok 4.1 Fast Reasoning (xAI)',
     cron: 'Memory audit 4 AM daily (Sonnet sub-agent)',
-    purpose: 'Private personal agent. General purpose — venting, thinking, conversation. Starts with no personality. James shapes it over time via built-in skills. Fully siloed: no cross-agent references, no supervisor analysis.',
+    purpose: 'Private personal agent. General purpose — venting, thinking, conversation. Starts with no personality. James shapes it over time via built-in skills. Excluded from Bede analysis.',
     workspace: 'Dedicated workspace. Minimal tooling — image gen and memory only.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Blank by default. Populated via personality-builder skill.' },

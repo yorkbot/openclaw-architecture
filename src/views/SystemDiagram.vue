@@ -256,7 +256,7 @@
 
 <script setup>
 const channels = [
-  { name: 'general', routes: '→ York 🦊' },
+  { name: '🦊york', routes: '→ York 🦊' },
   { name: '🐓dagr', routes: '→ Dagr 🐓 (direct)' },
   { name: '🐉caedmon', routes: '→ Caedmon 🐉 (direct)' },
   { name: '🦫offa', routes: '→ Offa 🦫 (direct)' },
@@ -334,7 +334,7 @@ const agents = [
     tierLabel: 'Opus 4.6',
     schedule: null,
     scheduleLabel: null,
-    desc: 'Private work agent. Prioritization, note processing, meeting prep, work context. Vault-watcher driven, on-demand. Fully siloed.',
+    desc: 'Private work agent. Prioritization, note processing, meeting prep, work context. Vault-watcher driven, on-demand. Excluded from Bede analysis.',
     border: 'border-yellow',
   },
   {
@@ -344,7 +344,7 @@ const agents = [
     tierLabel: 'Grok 4.1',
     schedule: null,
     scheduleLabel: null,
-    desc: 'Private personal agent. Conversation, venting, thinking. Personality shaped over time. Fully siloed.',
+    desc: 'Private personal agent. Conversation, venting, thinking. Personality shaped over time. Excluded from Bede analysis.',
     border: 'border-green',
   },
 ]

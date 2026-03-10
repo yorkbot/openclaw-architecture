@@ -52,17 +52,7 @@
       </div>
     </div>
 
-    <div class="card" style="margin-top: 1rem;">
-      <h3>Design Decisions</h3>
-      <ul class="decisions">
-        <li><strong>Every agent with a channel gets direct routing.</strong> Messages in an agent's channel go straight to that agent. No York proxy. Less context burn, faster responses.</li>
-        <li><strong>#general stays as the main channel.</strong> York lives here. Quick questions, accountability, daily chat. York delegates to other agents as needed.</li>
-        <li><strong>Agent channels use emoji prefixes.</strong> #🐉caedmon, #🦫offa, #🦌wynn, etc. #general does not get an emoji — only channels that match an agent name.</li>
-        <li><strong>#🐻wiglaf is fully siloed.</strong> Private work agent. No cross-agent access, no Bede analysis. Separate by design.</li>
-        <li><strong>#🐺guthlac is fully siloed.</strong> Private personal agent. No cross-agent access, no Bede analysis. xAI model (Grok).</li>
-        <li><strong>Each conversational agent gets its own voice.</strong> Caedmon sounds different from York. Wiglaf is professional and direct. Personalities are defined in SOUL.md.</li>
-      </ul>
-    </div>
+
   </div>
 </template>
 
@@ -72,7 +62,7 @@ const categories = [
     name: 'DAILY',
     channels: [
       {
-        name: 'general',
+        name: '🦊york',
         agent: 'York 🦊',
         agentClass: 'large',
         desc: 'Main conversation, morning briefs, accountability',
@@ -130,7 +120,7 @@ const categories = [
 
 const rules = [
   {
-    channel: 'general',
+    channel: '🦊york',
     agent: 'York 🦊',
     desc: 'All messages route to York. York delegates to Wynn, Hild, etc. as needed. Morning brief, nudges, daily chat.',
   },
@@ -157,17 +147,17 @@ const rules = [
   {
     channel: '🐻wiglaf',
     agent: 'Wiglaf 🐻 (Direct)',
-    desc: 'Private work agent. Prioritization, meeting prep, work context. Fully siloed from other agents.',
+    desc: 'Private work agent. Prioritization, meeting prep, work context. Excluded from Bede analysis.',
   },
   {
     channel: '🦡hild',
     agent: 'Hild 🦡 (Direct)',
-    desc: 'Home management. Chore status, habit stacks, completions. Evening gate evaluation.',
+    desc: 'Home management. Chore status, habit stacks, completions. Green light evaluation.',
   },
   {
     channel: '🐺guthlac',
     agent: 'Guthlac 🐺 (Direct)',
-    desc: 'Private personal agent. Conversation, venting, thinking. Fully siloed. xAI Grok model.',
+    desc: 'Private personal agent. Conversation, venting, thinking. Excluded from Bede analysis. xAI Grok model.',
   },
 ]
 </script>
