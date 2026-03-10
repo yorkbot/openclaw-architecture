@@ -262,6 +262,8 @@ const channels = [
   { name: '🦫offa', routes: '→ Offa 🦫 (direct)' },
   { name: '🦌wynn', routes: '→ Wynn 🦌 (direct)' },
   { name: '🐻wiglaf', routes: '→ Wiglaf 🐻 (direct)' },
+  { name: '🦡hild', routes: '→ Hild 🦡 (direct)' },
+  { name: '🐺guthlac', routes: '→ Guthlac 🐺 (direct)' },
 ]
 
 const agents = [
@@ -334,6 +336,16 @@ const agents = [
     scheduleLabel: null,
     desc: 'Private work agent. Prioritization, note processing, meeting prep, work context. Fully siloed.',
     border: 'border-yellow',
+  },
+  {
+    id: 'guthlac',
+    name: '🐺 Guthlac',
+    tierClass: 'grok',
+    tierLabel: 'Grok 4.1',
+    schedule: null,
+    scheduleLabel: null,
+    desc: 'Private personal agent. Conversation, venting, thinking. Personality shaped over time. Fully siloed.',
+    border: 'border-green',
   },
 ]
 

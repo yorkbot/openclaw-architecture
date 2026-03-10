@@ -48,6 +48,7 @@ const cronGroups = [
       { time: '3:00 AM', name: 'Memory Audit — Dagr', agent: 'Dagr 🐓', status: 'On', notes: '' },
       { time: '3:30 AM', name: 'Memory Audit — Wiglaf', agent: 'Wiglaf 🐻', status: 'On', notes: '' },
       { time: '4:00 AM', name: 'Memory Audit — Hild', agent: 'Hild 🦡', status: 'On', notes: '' },
+      { time: '4:00 AM', name: 'Memory Audit — Guthlac', agent: 'Guthlac 🐺', status: 'On', notes: 'Sonnet sub-agent. Siloed — no cross-agent data.' },
     ],
   },
   {

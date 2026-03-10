@@ -59,6 +59,7 @@
         <li><strong>#general stays as the main channel.</strong> York lives here. Quick questions, accountability, daily chat. York delegates to other agents as needed.</li>
         <li><strong>Agent channels use emoji prefixes.</strong> #🐉caedmon, #🦫offa, #🦌wynn, etc. #general does not get an emoji — only channels that match an agent name.</li>
         <li><strong>#🐻wiglaf is fully siloed.</strong> Private work agent. No cross-agent access, no Bede analysis. Separate by design.</li>
+        <li><strong>#🐺guthlac is fully siloed.</strong> Private personal agent. No cross-agent access, no Bede analysis. xAI model (Grok).</li>
         <li><strong>Each conversational agent gets its own voice.</strong> Caedmon sounds different from York. Wiglaf is professional and direct. Personalities are defined in SOUL.md.</li>
       </ul>
     </div>
@@ -111,6 +112,18 @@ const categories = [
         agentClass: 'large',
         desc: 'Private work agent, prioritization, meeting prep',
       },
+      {
+        name: '🦡hild',
+        agent: 'Hild 🦡',
+        agentClass: 'sonnet',
+        desc: 'Home management, chore tracking, habit stacks',
+      },
+      {
+        name: '🐺guthlac',
+        agent: 'Guthlac 🐺',
+        agentClass: 'grok',
+        desc: 'Private personal agent, conversation, personality shaping',
+      },
     ],
   },
 ]
@@ -145,6 +158,16 @@ const rules = [
     channel: '🐻wiglaf',
     agent: 'Wiglaf 🐻 (Direct)',
     desc: 'Private work agent. Prioritization, meeting prep, work context. Fully siloed from other agents.',
+  },
+  {
+    channel: '🦡hild',
+    agent: 'Hild 🦡 (Direct)',
+    desc: 'Home management. Chore status, habit stacks, completions. Cannabis gate evaluation.',
+  },
+  {
+    channel: '🐺guthlac',
+    agent: 'Guthlac 🐺 (Direct)',
+    desc: 'Private personal agent. Conversation, venting, thinking. Fully siloed. xAI Grok model.',
   },
 ]
 </script>

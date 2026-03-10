@@ -551,6 +551,36 @@ const liveAgents = [
       },
     ],
   },
+  {
+    id: 'guthlac',
+    icon: '🐺',
+    name: 'Guthlac',
+    borderColor: 'grok',
+    model: 'Grok 4.1 Fast Reasoning (xAI)',
+    cron: 'Memory audit 4 AM daily (Sonnet sub-agent)',
+    purpose: 'Private personal agent. General purpose — venting, thinking, conversation. Starts with no personality. James shapes it over time via built-in skills. Fully siloed: no cross-agent references, no supervisor analysis.',
+    workspace: 'Dedicated workspace. Minimal tooling — image gen and memory only.',
+    workspaceFiles: [
+      { file: 'SOUL.md', desc: 'Blank by default. Populated via personality-builder skill.' },
+      { file: 'AGENTS.md', desc: 'Solo agent. No system map, no cross-agent references. Privacy-first.' },
+      { file: 'TOOLS.md', desc: 'grok-imagine-image (via york-tools MCP), memory search/recall.' },
+      { file: 'IDENTITY.md', desc: 'Guthlac 🐺 — Named for Saint Guthlac of Crowland, the Anglo-Saxon warrior-hermit who went alone to the Fens to face his own mind.' },
+      { file: 'MEMORY.md', desc: 'Personality evolution, conversation themes, what matters to James.' },
+      { file: 'memory/', desc: 'Daily notes.' },
+    ],
+    channels: [
+      '#guthlac — private conversations with James (Discord channel 1480763554297679943)',
+    ],
+    skillSections: [
+      {
+        name: 'Personality',
+        skills: [
+          { name: 'Personality Builder', desc: 'Interactive conversation to define tone, boundaries, style, topics. Writes results to SOUL.md. Collaborative — James drives, Guthlac suggests.', live: true },
+          { name: 'Personality Reset', desc: 'Wipes SOUL.md back to blank. Confirms before executing.', live: true },
+        ],
+      },
+    ],
+  },
 ]
 
 const draftAgents = [
