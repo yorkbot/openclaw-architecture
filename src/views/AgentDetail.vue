@@ -274,7 +274,7 @@ const liveAgents = [
       {
         name: 'Log',
         skills: [
-          { name: 'Log Consumption', desc: 'Parse food/drink descriptions, classify type (food/drink/supplement/cannabis), estimate calories and protein, write via log_food(). Batch logging for multiple items. Corrections via update/delete.', live: true },
+          { name: 'Log Consumption', desc: 'Parse food/drink descriptions, classify type, estimate calories and protein, write via log_food(). Batch logging for multiple items. Corrections via update/delete.', live: true },
           { name: 'Log Daily Metrics', desc: 'Weight, wake time, bedtime, sleep, energy, kitchen closed via log_daily(). Upsert pattern — safe to call multiple times per day.', live: true },
           { name: 'Log Workout', desc: 'Two-step: log_workout() for the session, then log_workout_exercises() with FK-validated exercise catalog IDs. Bodyweight exercises omit weight field.', live: true },
           { name: 'Calorie Estimation', desc: 'Four-tier estimation: known (exact), standard (high confidence), estimated (~), unknown (ask). Common reference table grows in MEMORY.md.', live: true },
@@ -491,7 +491,7 @@ const liveAgents = [
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: '6 AM daily (morning cache + stack reset), 5:30 PM M-F (after-work nudge), 9 PM daily (after-dinner nudge)',
-    purpose: 'Home management and green light. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the green light: evaluates requests to smoke with a coach-style conversation, checking chores, food plan, workout status, and context.',
+    purpose: 'Home management and green light. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the green light: checks chores, food plan, workout status, and context before giving the go-ahead.',
     workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Practical, observational, brief. Reports facts without drama.' },
@@ -525,7 +525,7 @@ const liveAgents = [
       {
         name: 'Gate',
         skills: [
-          { name: 'Green Light', desc: 'Evaluate James\'s request to smoke. Coach-style conversation: check chores, food plan, workout status, time/day context. If yes, brief green light. If no, give a concrete path to unlock it tonight. Opus sub-agent. Context-aware: weekday vs weekend, after-work vs late night.', live: true },
+          { name: 'Green Light', desc: 'Evaluate green light request. Coach-style conversation: check chores, food plan, workout status, time/day context. If yes, brief green light. If no, give a concrete path to unlock it tonight. Opus sub-agent. Context-aware: weekday vs weekend, after-work vs late night.', live: true },
         ],
       },
       {
