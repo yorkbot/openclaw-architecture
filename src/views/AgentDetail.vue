@@ -482,7 +482,6 @@ const liveAgents = [
       },
     ],
     todos: [
-      'Vault migration: restructure existing files to new schema (board.md, tickets/, devin/, etc.) — in progress',
       'Build remaining planned skills iteratively',
     ],
   },
@@ -493,7 +492,7 @@ const liveAgents = [
     name: 'Hild',
     borderColor: 'sonnet',
     model: 'Sonnet',
-    cron: 'None. Spawned on-demand.',
+    cron: '6 AM daily (morning cache + stack reset), 5:30 PM M-F (after-work nudge), 9 PM daily (after-dinner nudge)',
     purpose: 'Home management and cannabis gate. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the cannabis gate: evaluates requests to smoke with a coach-style conversation, checking chores, food plan, workout status, and context.',
     workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
     workspaceFiles: [
@@ -630,6 +629,38 @@ const draftAgents = [
       {
         name: 'Suggest',
         skills: [],
+        tbd: true,
+      },
+    ],
+  },
+  {
+    id: 'alcuin',
+    icon: '🐦‍⬛',
+    name: 'Alcuin',
+    borderColor: 'sonnet',
+    model: 'TBD',
+    cron: 'TBD',
+    purpose: 'Finance agent. Budget tracking, YNAB integration, spending pattern analysis, monthly reviews. Natural cross-domain fit: food spending ties into health, project costs tie into home. Named for Alcuin of York, the scholar who organized Charlemagne\'s finances and education system.',
+    workspace: 'TBD — dedicated workspace with YNAB MCP access.',
+    workspaceFiles: [],
+    channels: [
+      '#alcuin — finance conversations (TBD)',
+    ],
+    skillSections: [
+      {
+        name: 'Track',
+        skills: [
+          { name: 'Budget Status', desc: 'Pull current budget state from YNAB. Category spending, remaining, overspent categories.' },
+          { name: 'Spending Analysis', desc: 'Pattern detection across spending categories. Monthly trends, anomalies, recurring charges.' },
+        ],
+        tbd: true,
+      },
+      {
+        name: 'Report',
+        skills: [
+          { name: 'Monthly Review', desc: 'End-of-month financial summary. Income vs spending, category breakdown, notable transactions.' },
+          { name: 'Cross-Domain Insights', desc: 'Tie spending patterns to health data (food spending vs calorie quality) and home data (project costs vs completion).' },
+        ],
         tbd: true,
       },
     ],

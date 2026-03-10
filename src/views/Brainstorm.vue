@@ -67,16 +67,6 @@
 <script setup>
 const agentIdeas = [
   {
-    icon: '🦎',
-    name: 'Finance',
-    priority: 'likely',
-    priorityClass: 'medium',
-    priorityLabel: 'Likely',
-    desc: 'Budget tracking, YNAB integration, spending pattern analysis, monthly reviews. James already has the YNAB MCP built.',
-    why: 'Natural fit with weekly review: weight + spending + consumption in one analysis. Cross-domain pattern recognition is the killer feature.',
-  },
-
-  {
     icon: '🐕',
     name: 'Car',
     priority: 'someday',
