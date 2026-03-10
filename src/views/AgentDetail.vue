@@ -403,7 +403,7 @@ const liveAgents = [
       {
         name: 'Route',
         skills: [
-          { name: 'Orchestrator Dispatch', desc: 'Determine what to handle inline vs route to another agent. Routes D&D to Caedmon, health to Wynn, builds to Offa. Includes Discord noise prevention rules.', live: true },
+          { name: 'Orchestrator Dispatch', desc: 'Determine what to handle inline vs route to another agent. Routes D&D to Caedmon, health to Wynn, builds to Offa, cannabis gate to Hild, chores to Hild. Includes Discord noise prevention rules.', live: true },
         ],
       },
       {
@@ -495,12 +495,12 @@ const liveAgents = [
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: 'None. Spawned on-demand.',
-    purpose: 'Home management. Chore tracking via Google Tasks — status, completions, and house state reporting. Cannabis gate decision lives with York; Hild only reports house facts when asked.',
+    purpose: 'Home management and cannabis gate. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the cannabis gate: evaluates requests to smoke with a coach-style conversation, checking chores, food plan, workout status, and context.',
     workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Practical, observational, brief. Reports facts without drama.' },
       { file: 'AGENTS.md', desc: 'System context, chore tracking role, escalation rules, memory discipline.' },
-      { file: 'TOOLS.md', desc: 'Google Tasks MCP API — list/create/complete/update/delete tasks and task lists.' },
+      { file: 'TOOLS.md', desc: 'Google Tasks MCP API + york-data read access (consumption, workouts, cannabis history) for the gate.' },
       { file: 'IDENTITY.md', desc: 'Hild 🦡 — Named for Abbess Hild of Whitby, who ran the most organized monastery in Anglo-Saxon England.' },
       { file: 'MEMORY.md', desc: 'Chore system design, task list IDs, scheduling patterns.' },
       { file: 'memory/', desc: 'Daily chore summaries.' },
@@ -527,9 +527,15 @@ const liveAgents = [
         ],
       },
       {
+        name: 'Gate',
+        skills: [
+          { name: 'Cannabis Gate', desc: 'Evaluate James\'s request to smoke. Coach-style conversation: check chores, food plan, workout status, time/day context. If yes, brief green light. If no, give a concrete path to unlock it tonight. Opus sub-agent. Context-aware: weekday vs weekend, after-work vs late night.', live: true },
+        ],
+      },
+      {
         name: 'Report',
         skills: [
-          { name: 'House Check', desc: 'When York asks about house state for cross-agent checks (e.g. cannabis gate). Reports factual chore status — completions, overdue items, rate. No judgment, no recommendation. Opus sub-agent.', live: true },
+          { name: 'House Check', desc: 'When York asks about house state. Reports factual chore status — completions, overdue items, rate. No judgment, no recommendation.', live: true },
         ],
       },
       {
