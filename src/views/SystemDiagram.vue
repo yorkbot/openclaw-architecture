@@ -344,8 +344,8 @@ const agents = [
     tierLabel: 'Grok 4.1',
     schedule: null,
     scheduleLabel: null,
-    desc: 'Private personal agent. Conversation, venting, thinking. Personality shaped over time. Excluded from Bede analysis.',
-    border: 'border-green',
+    desc: 'Private personal agent. General purpose — conversation, thinking. xAI Grok model. Excluded from Bede analysis.',
+    border: 'border-grok',
   },
 ]
 
@@ -501,6 +501,7 @@ const dataStores = [
 .border-red { border-color: #f85149; }
 .border-yellow { border-color: #d29922; }
 .border-green { border-color: #3fb950; }
+.border-grok { border-color: #e04040; }
 .border-purple { border-color: #bc8cff; }
 
 .agents-grid {
