@@ -569,7 +569,7 @@ const liveAgents = [
         name: 'Schedule',
         skills: [
           { name: 'Smart Scheduling', desc: 'Take a group of projects, break them into tasks, schedule tasks at smart times based on context (weather, energy, day of week), present one task at a time until the project is done. Seasonal awareness (gutter season, snow, etc). The intelligence layer for when things happen.', todo: true },
-          { name: 'Task Intake', desc: 'Ad-hoc task intake from conversation. Extracts title, effort, stack, deadline. Confirms before creating in york-data. Auto-deactivates on completion.', live: true },
+          { name: 'Task Intake', desc: 'Task creation from conversation. One-time things ("I need to call the dentist") → adhoc. Habits ("I want to start stretching") → candidate for the planner to promote when the stack is ready.', live: true },
           { name: 'Task → Calendar Event', desc: 'Recognize when a task is actually a calendar event (appointment, deadline, time-specific commitment) and create the Google Calendar event automatically.', todo: true },
         ],
       },
