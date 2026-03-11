@@ -515,7 +515,7 @@ const liveAgents = [
     name: 'Hild',
     borderColor: 'sonnet',
     model: 'Sonnet',
-    cron: '6 AM daily (morning cache + stack reset), 5 PM M-F (after-work nudge), 9 PM daily (after-dinner nudge)',
+    cron: '6 AM daily (morning stack reset + cache), 4 PM M-F (after-work reset + nudge), 7 PM daily (after-dinner reset + nudge)',
     purpose: 'Home management and green light. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the green light: checks chores, food plan, workout status, and context before giving the go-ahead.',
     workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
     workspaceFiles: [

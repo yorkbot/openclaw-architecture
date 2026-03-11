@@ -74,8 +74,8 @@ const cronGroups = [
     jobs: [
       { time: '3:00 AM Mon', name: 'Banner — Monday', agent: 'York 🦊 (main)', status: 'On', notes: 'york-tools.image_generate (Gemini Pro). 16:9.' },
       { time: '4:00 PM Fri', name: 'Banner — Friday', agent: 'York 🦊 (main)', status: 'On', notes: 'york-tools.image_generate (Gemini Pro). 16:9. Weekend fresh.' },
-      { time: '5:00 PM M-F', name: 'After-Work Nudge', agent: 'Hild 🦡', status: 'On', notes: 'After-work stack to #hild. Checks morning stack completion.' },
-      { time: '9:00 PM', name: 'After-Dinner Nudge', agent: 'Hild 🦡', status: 'On', notes: 'After-dinner stack to #hild. Last check on today\'s stacks. Daily.' },
+      { time: '4:00 PM M-F', name: 'After-Work Reset + Nudge', agent: 'Hild 🦡', status: 'On', notes: 'Resets after-work stack tasks, then posts to #hild. Checks morning stack completion.' },
+      { time: '7:00 PM', name: 'After-Dinner Reset + Nudge', agent: 'Hild 🦡', status: 'On', notes: 'Resets after-dinner stack tasks, then posts to #hild. Last check on today\'s stacks. Daily.' },
 
       { time: 'Every 30m (8AM–12:30AM)', name: 'Heartbeat', agent: 'York 🦊 (main)', status: 'On', notes: 'Silent most beats.' },
       { time: '8:00 PM Sun', name: 'Weekly Check-in', agent: 'York 🦊 (main)', status: 'On', notes: 'Health/fitness recap to #general.' },
