@@ -516,34 +516,35 @@ const liveAgents = [
     borderColor: 'sonnet',
     model: 'Sonnet',
     cron: '5:30 AM daily (Opus daily planner + morning sync), 4 PM M-F (after-work reset + nudge), 7 PM daily (after-dinner reset + nudge)',
-    purpose: 'Home management and green light. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the green light: checks chores, food plan, workout status, and context before giving the go-ahead.',
-    workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
+    purpose: 'Home management and green light. Task definitions and planning via york-data (intelligence layer), Google Tasks for execution (what James sees). Owns the green light: checks chores, food plan, workout status, and context before giving the go-ahead.',
+    workspace: 'Dedicated workspace. york-data tasks domain + Google Tasks (MCP via mcporter).',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Practical, observational, brief. Reports facts without drama.' },
       { file: 'AGENTS.md', desc: 'System context, chore tracking role, escalation rules, memory discipline.' },
-      { file: 'TOOLS.md', desc: 'Google Tasks MCP API + york-data read access (consumption, workouts, consumption history) for the gate.' },
+      { file: 'TOOLS.md', desc: 'york-data task tools (definitions, planning, completion) + Google Tasks sync + york-data read access for green light.' },
       { file: 'IDENTITY.md', desc: 'Hild 🦡 — Named for Abbess Hild of Whitby, who ran the most organized monastery in Anglo-Saxon England.' },
-      { file: 'MEMORY.md', desc: 'Chore system design, task list IDs, scheduling patterns.' },
-      { file: 'memory/', desc: 'Daily chore summaries.' },
+      { file: 'MEMORY.md', desc: 'Stack slot config, Google Tasks list IDs. Task definitions live in york-data.' },
+      { file: 'memory/', desc: 'Daily planner decisions, chore summaries.' },
     ],
     channels: [
       '#hild — chore interactions (Discord channel 1480700823435477225)',
-      'Google Tasks — chore tracking (recurrence, completion, due dates)',
+      'york-data — task definitions, recurrence, completion tracking (intelligence layer)',
+      'Google Tasks — execution layer (what James sees on his phone)',
     ],
     skillSections: [
       {
         name: 'Track',
         skills: [
-          { name: 'Chore Status', desc: 'Report what\'s done and what\'s left today. Pull from Google Tasks. Categorize as done/due/overdue.', live: true },
-          { name: 'Log Completion', desc: 'Mark chores as completed in Google Tasks when James reports them done.', live: true },
+          { name: 'Chore Status', desc: 'Report what\'s done and what\'s left today. Pull from york-data + Google Tasks. Cross-references both sources.', live: true },
+          { name: 'Log Completion', desc: 'Mark tasks completed in york-data (source of truth) + Google Tasks (execution layer). Adhoc tasks auto-deactivate.', live: true },
         ],
       },
       {
         name: 'Stacks',
         skills: [
-          { name: 'Habit Stacks', desc: 'Ordered sequences of chores grouped into timed slots (morning M-F, after-work M-F 5:30pm, after-dinner daily 9pm, weekend Sat-Sun). Self-managed recurrence via tags. Cron-driven reset cycle, completion tracking per stack, streak counting, pattern detection.', live: true },
+          { name: 'Habit Stacks', desc: 'Ordered task sequences grouped into timed slots (morning daily, after-work M-F 4pm, after-dinner daily 7pm, weekend Sat-Sun). Definitions in york-data with recurrence patterns (daily, weekdays, weekly:day, monthly:day). Per-stack reset at nudge time.', live: true },
           { name: 'Daily Planner', desc: 'Opus morning cron. Computes stacks, schedules ad-hocs, evaluates growth candidates, syncs morning stack to Google Tasks, writes plan to shared-cache for Dagr.', live: true },
-          { name: 'Nudge', desc: 'Timed nudges at stack slot times. Posts to #hild with today\'s stack, carryover from earlier stacks, pattern observations.', live: true },
+          { name: 'Nudge', desc: 'Timed nudges at stack slot times (4 PM after-work, 7 PM after-dinner). Syncs stack to Google Tasks, posts to #hild with today\'s tasks, carryover from earlier stacks.', live: true },
         ],
       },
       {
@@ -575,8 +576,7 @@ const liveAgents = [
       {
         name: 'Growth',
         skills: [
-          { name: 'Progressive Loading', desc: 'Auto-add items to stacks when completion rate is high, remove when consistently skipped. Adaptive difficulty.', todo: true },
-          { name: 'Stack Growth', desc: 'Slowly grow habit stacks over time. Start small, build momentum, add complexity as habits stick. Track which items have been consistent for 2+ weeks and suggest additions.', todo: true },
+          { name: 'Stack Growth', desc: 'Built into the daily planner. Evaluates completion rates (>80% for 7+ days), stack capacity, and cooldowns (14 days between promotions). Promotes candidate tasks to permanent. One promotion per day max.', live: true },
         ],
       },
       {
@@ -594,7 +594,7 @@ const liveAgents = [
     name: 'Guthlac',
     borderColor: 'grok',
     model: 'Grok 4.1 Fast Reasoning (xAI)',
-    cron: 'Memory audit 4 AM daily (Sonnet sub-agent)',
+    cron: 'Memory audit 4:15 AM daily (Sonnet sub-agent)',
     purpose: 'Private personal agent. General purpose — venting, thinking, conversation. Starts with no personality. James shapes it over time via built-in skills. Excluded from Bede analysis.',
     workspace: 'Dedicated workspace. Minimal tooling — image gen and memory only.',
     workspaceFiles: [

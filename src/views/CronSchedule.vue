@@ -49,7 +49,7 @@ const cronGroups = [
       { time: '3:00 AM', name: 'Memory Audit — Dagr', agent: 'Dagr 🐓', status: 'On', notes: '' },
       { time: '3:30 AM', name: 'Memory Audit — Wiglaf', agent: 'Wiglaf 🐻', status: 'On', notes: '' },
       { time: '3:45 AM', name: 'Memory Audit — Hild', agent: 'Hild 🦡', status: 'On', notes: '' },
-      { time: '4:00 AM', name: 'Memory Audit — Guthlac', agent: 'Guthlac 🐺', status: 'On', notes: 'Sonnet sub-agent. Excluded from Bede analysis.' },
+      { time: '4:15 AM', name: 'Memory Audit — Guthlac', agent: 'Guthlac 🐺', status: 'On', notes: 'Sonnet sub-agent. Excluded from Bede analysis.' },
     ],
   },
   {
@@ -74,8 +74,8 @@ const cronGroups = [
     jobs: [
       { time: '3:00 AM Mon', name: 'Banner — Monday', agent: 'York 🦊 (main)', status: 'On', notes: 'york-tools.image_generate (Gemini Pro). 16:9.' },
       { time: '4:00 PM Fri', name: 'Banner — Friday', agent: 'York 🦊 (main)', status: 'On', notes: 'york-tools.image_generate (Gemini Pro). 16:9. Weekend fresh.' },
-      { time: '4:00 PM M-F', name: 'After-Work Reset + Nudge', agent: 'Hild 🦡', status: 'On', notes: 'Resets after-work stack tasks, then posts to #hild. Checks morning stack completion.' },
-      { time: '7:00 PM', name: 'After-Dinner Reset + Nudge', agent: 'Hild 🦡', status: 'On', notes: 'Resets after-dinner stack tasks, then posts to #hild. Last check on today\'s stacks. Daily.' },
+      { time: '4:00 PM M-F', name: 'After-Work Reset + Nudge', agent: 'Hild 🦡', status: 'On', notes: 'Reads after-work stack from york-data, syncs to Google Tasks, posts to #hild. Checks morning completion.' },
+      { time: '7:00 PM', name: 'After-Dinner Reset + Nudge', agent: 'Hild 🦡', status: 'On', notes: 'Reads after-dinner stack from york-data, syncs to Google Tasks, posts to #hild. Last check on today\'s stacks. Daily.' },
 
       { time: 'Every 30m (8AM–12:30AM)', name: 'Heartbeat', agent: 'York 🦊 (main)', status: 'On', notes: 'Silent most beats.' },
       { time: '8:00 PM Sun', name: 'Weekly Check-in', agent: 'York 🦊 (main)', status: 'On', notes: 'Health/fitness recap to #general.' },
