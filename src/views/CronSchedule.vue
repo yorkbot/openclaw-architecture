@@ -60,7 +60,7 @@ const cronGroups = [
       { time: '4:15 AM', name: 'Nutrition + Weight Cache', agent: 'main (temp)', status: 'On', notes: 'Stays on main until Bede is built.' },
       { time: '5:15 AM', name: 'Consumption Gap Cache', agent: 'main (temp)', status: 'On', notes: 'Stays on main until Bede is built.' },
       { time: '6:00 AM', name: 'Workout Cache', agent: 'Wynn 🦌 (script)', status: 'On', notes: 'Reads active program, checks weather, swaps outdoor/indoor if needed, writes to shared-cache. Daily.' },
-      { time: '6:00 AM', name: 'Chore Cache + Stack Reset', agent: 'Hild 🦡', status: 'On', notes: 'Reset recurring tasks, cache chore data to shared-cache for morning brief. Daily.' },
+      { time: '5:30 AM', name: 'Daily Planner', agent: 'Hild 🦡 (Opus)', status: 'On', notes: 'Compute stacks from york-data, schedule ad-hocs, evaluate growth, sync morning to Google Tasks, write plan to shared-cache. Daily.' },
       { time: '6:30 AM / 6:30 PM', name: 'Calendar Context', agent: 'Dagr 🐓 (script)', status: 'On', notes: 'Bash script → shared-cache. Sonnet session runs the script, no real LLM work.' },
       { time: '7:30 AM / 7:30 PM', name: 'Weather Cache (5-day)', agent: 'Dagr 🐓 (script)', status: 'On', notes: 'Open-Meteo API → shared-cache. 5-day rolling forecast. No LLM work.' },
       { time: '7:45 AM', name: 'Daily Avatar', agent: 'York 🦊 (main)', status: 'On', notes: 'york-tools.image_generate (Gemini Pro). 1:1.' },

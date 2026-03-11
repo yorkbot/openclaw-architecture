@@ -515,7 +515,7 @@ const liveAgents = [
     name: 'Hild',
     borderColor: 'sonnet',
     model: 'Sonnet',
-    cron: '6 AM daily (morning stack reset + cache), 4 PM M-F (after-work reset + nudge), 7 PM daily (after-dinner reset + nudge)',
+    cron: '5:30 AM daily (Opus daily planner + morning sync), 4 PM M-F (after-work reset + nudge), 7 PM daily (after-dinner reset + nudge)',
     purpose: 'Home management and green light. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the green light: checks chores, food plan, workout status, and context before giving the go-ahead.',
     workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
     workspaceFiles: [
@@ -542,7 +542,7 @@ const liveAgents = [
         name: 'Stacks',
         skills: [
           { name: 'Habit Stacks', desc: 'Ordered sequences of chores grouped into timed slots (morning M-F, after-work M-F 5:30pm, after-dinner daily 9pm, weekend Sat-Sun). Self-managed recurrence via tags. Cron-driven reset cycle, completion tracking per stack, streak counting, pattern detection.', live: true },
-          { name: 'Morning Brief', desc: 'Produce chore summary for Dagr\'s morning brief. Yesterday\'s completion, today\'s stacks, streaks. Writes to shared-cache.', live: true },
+          { name: 'Daily Planner', desc: 'Opus morning cron. Computes stacks, schedules ad-hocs, evaluates growth candidates, syncs morning stack to Google Tasks, writes plan to shared-cache for Dagr.', live: true },
           { name: 'Nudge', desc: 'Timed nudges at stack slot times. Posts to #hild with today\'s stack, carryover from earlier stacks, pattern observations.', live: true },
         ],
       },
