@@ -121,8 +121,10 @@ const structure = [
   { path: '  src/domains/workouts.js', desc: 'Exercise catalog + workout sessions (6 tools)' },
   { path: '  src/domains/cross.js', desc: 'Cross-domain aggregation queries (2 tools)' },
   { path: '  src/domains/programs.js', desc: 'Workout programs + daily prescriptions (8 tools)' },
+  { path: '  src/domains/tasks.js', desc: 'Hild task definitions, daily planning, completion tracking (8 tools)' },
   { path: '  migrations/001-initial-schema.sql', desc: 'All MVP tables with constraints + indexes' },
   { path: '  migrations/002-programs.sql', desc: 'Programs + program_days tables' },
+  { path: '  migrations/003-tasks.sql', desc: 'Task definitions + daily log tables' },
   { path: '  scripts/migrate-sheets.js', desc: 'One-time Google Sheets → SQLite migration' },
 ]
 
@@ -228,6 +230,39 @@ const tables = [
     ],
   },
 
+  {
+    name: 'task_definitions',
+    desc: 'Hild task definitions — permanent habits, recurring chores, growth candidates, ad-hoc tasks.',
+    fields: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'title', type: 'TEXT NOT NULL', note: 'Task name' },
+      { name: 'stack', type: 'TEXT NOT NULL', note: 'morning, after-work, after-dinner, weekend' },
+      { name: 'type', type: 'TEXT NOT NULL', note: 'permanent, recurring, candidate, adhoc' },
+      { name: 'effort_minutes', type: 'INTEGER', note: '1-60. >60 rejected.' },
+      { name: 'recur_pattern', type: 'TEXT', note: 'daily, weekdays, weekends, weekly:<day>, monthly:<day>' },
+      { name: 'position', type: 'INTEGER', note: 'Order within stack (lower = first)' },
+      { name: 'active', type: 'INTEGER', note: '1=active, 0=paused/completed' },
+      { name: 'deadline', type: 'TEXT', note: 'YYYY-MM-DD, for adhoc tasks' },
+      { name: 'notes', type: 'TEXT', note: '' },
+      { name: 'google_task_id', type: 'TEXT', note: 'FK to Google Tasks for sync' },
+      { name: 'created_at', type: 'TEXT', note: 'auto' },
+      { name: 'completed_at', type: 'TEXT', note: 'When adhoc task was completed' },
+    ],
+  },
+  {
+    name: 'task_daily_log',
+    desc: 'Per-date scheduling and completion tracking. Written by prepare_daily_stacks, updated by log_task_completion.',
+    fields: [
+      { name: 'id', type: 'INTEGER PK', note: 'auto' },
+      { name: 'date', type: 'TEXT NOT NULL', note: 'YYYY-MM-DD' },
+      { name: 'task_definition_id', type: 'INTEGER FK', note: '→ task_definitions.id' },
+      { name: 'stack', type: 'TEXT NOT NULL', note: 'Stack at time of scheduling' },
+      { name: 'scheduled', type: 'INTEGER', note: '1=placed on stack, 0=skipped' },
+      { name: 'completed', type: 'INTEGER', note: '0=not done, 1=done' },
+      { name: 'skipped_reason', type: 'TEXT', note: 'Why skipped' },
+      { name: 'created_at', type: 'TEXT', note: 'auto' },
+    ],
+  },
 ]
 
 const domains = [
@@ -294,6 +329,22 @@ const domains = [
       { name: 'update_program_day', params: 'id, type?, plan?, notes?', returns: 'updated', desc: 'Partial update of a program day. Validates JSON if plan provided.' },
       { name: 'complete_program', params: 'program_id', returns: 'completed', desc: 'Set program status to completed.' },
       { name: 'get_program_summary', params: 'program_id', returns: 'program + adherence stats', desc: 'Cross-references workouts table for adherence: training_days, workouts_logged, adherence_pct.' },
+    ],
+  },
+  {
+    name: 'Tasks',
+    icon: '✅',
+    color: 'green',
+    desc: 'Primary consumer: Hild. Task definitions, daily stack planning, completion tracking. Intelligence layer — Google Tasks is the execution layer.',
+    functions: [
+      { name: 'create_task_definition', params: 'title, stack, type?, effort_minutes?, recur_pattern?, position?, deadline?, notes?', returns: 'id, title, stack, type', desc: 'Create a task. Types: permanent, recurring, candidate, adhoc. 60m+ rejected.' },
+      { name: 'update_task_definition', params: 'id, fields...', returns: 'updated', desc: 'Partial update of a task definition.' },
+      { name: 'delete_task_definition', params: 'id, hard?', returns: 'deactivated or deleted', desc: 'Soft-delete (default) or hard delete with history.' },
+      { name: 'get_task_definitions', params: 'stack?, type?, active?', returns: 'tasks[]', desc: 'List definitions filtered by stack, type, active status.' },
+      { name: 'prepare_daily_stacks', params: 'date?, write_log?', returns: 'stacks{}, effort{}, total', desc: 'Deterministic daily plan. Matches recurrence patterns to date. write_log=1 records to daily log.' },
+      { name: 'log_task_completion', params: 'task_definition_id, date?', returns: 'completed', desc: 'Mark task done for a date. Adhoc tasks auto-deactivate.' },
+      { name: 'get_task_completion', params: 'date?, start_date?, end_date?, stack?', returns: 'entries[] + summary', desc: 'Completion status with scheduled/completed/rate.' },
+      { name: 'get_stack_stats', params: 'days?, stack?', returns: 'stats per stack', desc: 'Completion rates over N days. Used for growth decisions.' },
     ],
   },
   {

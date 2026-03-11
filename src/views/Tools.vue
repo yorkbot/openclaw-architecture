@@ -42,8 +42,8 @@ const tools = [
     desc: 'Custom MCP server. Central data layer. Typed functions with validation, schema enforcement. Replaces direct Google Sheets calls for health data.',
     details: [
       { label: 'Type', value: 'MCP Server (Node.js, better-sqlite3)' },
-      { label: 'Domains', value: 'Consumption (food/drink/supplement), Daily Metrics, Workouts, Exercises' },
-      { label: 'Tools', value: '19 tools across 3 domains + cross-domain queries' },
+      { label: 'Domains', value: 'Consumption, Daily Metrics, Workouts, Exercises, Programs, Tasks' },
+      { label: 'Tools', value: '30 tools across 5 domains + cross-domain queries' },
       { label: 'Repo', value: 'yorkbot/york-data' },
       { label: 'Access', value: 'mcporter call york-data.<tool>(...)' },
     ],
