@@ -239,11 +239,13 @@ const liveAgents = [
       {
         name: 'TODO',
         skills: [
+          { name: 'Overnight Project Execution', desc: 'Break large projects into clean steps, store plans + progress in york-data, execute one step at a time during low-volume overnight hours. Track completion per step. Report results in the morning brief via Dagr.', todo: true },
           { name: 'Bede Pipeline Integration', desc: 'Read suggestions from york-data, implement them, write build results back. Requires Bede\'s observation/suggestion schema.', todo: true },
         ],
       },
     ],
     todos: [
+      'Overnight build pipeline: york-data project/step schema → cron-driven execution → morning brief reporting',
       'Bede pipeline: no channel yet — needs york-data observations/suggestions domain (build when Bede is built)',
       'Build result reporting: no structured format yet for Bede to verify Offa\'s work',
     ],
@@ -289,8 +291,16 @@ const liveAgents = [
           { name: 'Program Review', desc: 'End-of-program review. Spawns Opus sub-agent in the last week to analyze adherence, progression, weight trend, feedback. Designs next program. Infinite chain — there is always a next program.', live: true },
         ],
       },
+      {
+        name: 'TODO',
+        skills: [
+          { name: 'Meal & Snack Suggestions', desc: 'Context-aware meal and snack recommendations based on time of day, what\'s been eaten so far, calorie/protein remaining, what James actually cooks (from consumption history), and what\'s in season. "You\'re 40g short on protein and it\'s 3pm — Greek yogurt or protein shake?"', todo: true },
+        ],
+      },
     ],
-    todos: [],
+    todos: [
+      'Context-aware meal/snack suggestions',
+    ],
   },
   {
     id: 'caedmon',
@@ -374,6 +384,13 @@ const liveAgents = [
           { name: 'Weather Cache', desc: 'Reads cached weather from daily memory. Location detection (Cleveland Heights default, Ann Arbor when traveling).', live: true },
         ],
       },
+      {
+        name: 'TODO',
+        skills: [
+          { name: 'Alarm Clock', desc: 'Phone alarm integration via Tasker/hooks. Set, adjust, and cancel alarms. Dynamic wake-up times based on sunrise data and calendar schedule — earlier wake for early meetings, later on empty mornings.', todo: true },
+          { name: 'Overnight Cron Scheduler', desc: 'Orchestrate overnight cron scheduling with zero overlaps. Knows all existing crons (Offa builds, memory audits, caches), places new jobs in available time slots, manages the full overnight timeline as the source of truth.', todo: true },
+        ],
+      },
     ],
   },
   {
@@ -420,8 +437,16 @@ const liveAgents = [
         ],
       },
       {
+        name: 'Creative',
+        skills: [
+          { name: 'Daily Avatar', desc: 'Daily 7:45 AM cron. Picks today\'s Discord avatar based on yesterday\'s events, weather, D&D lore, moods, interests. Generates via york-tools.image_generate (Gemini Pro). 1:1 square, fills entire frame. Sets via Discord API.', live: true },
+          { name: 'Banner (Mon/Fri)', desc: 'Monday 3 AM + Friday 4 PM crons. Weekly and weekend banners. 16:9 cinematic. Draws from D&D, hobbies, seasonal vibes, abstract art. Complementary to avatar but independent theme.', live: true },
+        ],
+      },
+      {
         name: 'TODO',
         skills: [
+          { name: 'Avatar/Banner Improvement', desc: 'Better theme variety, memory of recent themes to avoid repetition, seasonal awareness, more creative risk-taking. Current prompts are functional but could be more interesting.', todo: true },
           { name: 'Panel Update', desc: 'XFCE genmon panel widget. 5-10 words, creative York voice.', todo: true },
           { name: 'Accountability', desc: 'Nudge timing and tone calibration. When to push, when to back off.', todo: true },
         ],
@@ -490,7 +515,7 @@ const liveAgents = [
     name: 'Hild',
     borderColor: 'sonnet',
     model: 'Sonnet',
-    cron: '6 AM daily (morning cache + stack reset), 5:30 PM M-F (after-work nudge), 9 PM daily (after-dinner nudge)',
+    cron: '6 AM daily (morning cache + stack reset), 5 PM M-F (after-work nudge), 9 PM daily (after-dinner nudge)',
     purpose: 'Home management and green light. Chore tracking via Google Tasks — status, completions, and house state reporting. Owns the green light: checks chores, food plan, workout status, and context before giving the go-ahead.',
     workspace: 'Dedicated workspace. Google Tasks (MCP via mcporter).',
     workspaceFiles: [
@@ -519,7 +544,6 @@ const liveAgents = [
           { name: 'Habit Stacks', desc: 'Ordered sequences of chores grouped into timed slots (morning M-F, after-work M-F 5:30pm, after-dinner daily 9pm, weekend Sat-Sun). Self-managed recurrence via tags. Cron-driven reset cycle, completion tracking per stack, streak counting, pattern detection.', live: true },
           { name: 'Morning Brief', desc: 'Produce chore summary for Dagr\'s morning brief. Yesterday\'s completion, today\'s stacks, streaks. Writes to shared-cache.', live: true },
           { name: 'Nudge', desc: 'Timed nudges at stack slot times. Posts to #hild with today\'s stack, carryover from earlier stacks, pattern observations.', live: true },
-          { name: 'Progressive Loading', desc: 'Auto-add items to stacks when completion rate is high, remove when consistently skipped. Adaptive difficulty.', todo: true },
         ],
       },
       {
@@ -543,7 +567,16 @@ const liveAgents = [
       {
         name: 'Schedule',
         skills: [
-          { name: 'Smart Scheduling', desc: 'Seasonal and contextual task management. Weather-dependent chores, gutter season, snow removal. Applied to stacks — not standalone.', todo: true },
+          { name: 'Smart Scheduling', desc: 'Take a group of projects, break them into tasks, schedule tasks at smart times based on context (weather, energy, day of week), present one task at a time until the project is done. Seasonal awareness (gutter season, snow, etc). The intelligence layer for when things happen.', todo: true },
+          { name: 'Ad-Hoc Tasks', desc: 'Handle random one-off tasks at a smart time. James says "I need to call the dentist" → Hild schedules it during a natural break in the calendar, nudges at the right moment.', todo: true },
+          { name: 'Task → Calendar Event', desc: 'Recognize when a task is actually a calendar event (appointment, deadline, time-specific commitment) and create the Google Calendar event automatically.', todo: true },
+        ],
+      },
+      {
+        name: 'Growth',
+        skills: [
+          { name: 'Progressive Loading', desc: 'Auto-add items to stacks when completion rate is high, remove when consistently skipped. Adaptive difficulty.', todo: true },
+          { name: 'Stack Growth', desc: 'Slowly grow habit stacks over time. Start small, build momentum, add complexity as habits stick. Track which items have been consistent for 2+ weeks and suggest additions.', todo: true },
         ],
       },
       {
@@ -633,7 +666,9 @@ const draftAgents = [
       },
       {
         name: 'Suggest',
-        skills: [],
+        skills: [
+          { name: 'Meal Pattern Learning', desc: 'After sufficient consumption data, learn what James actually cooks vs orders. Suggest meals based on history, season, and nutritional gaps. Feed suggestions to Wynn for delivery.' },
+        ],
         tbd: true,
       },
     ],

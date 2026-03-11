@@ -20,7 +20,7 @@
     <DiscordLayout v-if="currentView === 'comms'" />
     <CronSchedule v-if="currentView === 'crons'" />
 
-    <Brainstorm v-if="currentView === 'brainstorm'" />
+
     <Migration v-if="currentView === 'migration'" />
   </div>
 </template>
@@ -32,7 +32,7 @@ import AgentDetail from './views/AgentDetail.vue'
 import DiscordLayout from './views/DiscordLayout.vue'
 
 import Tools from './views/Tools.vue'
-import Brainstorm from './views/Brainstorm.vue'
+
 import CronSchedule from './views/CronSchedule.vue'
 import Migration from './views/Migration.vue'
 
@@ -46,7 +46,7 @@ const views = [
   { id: 'crons', label: 'Cron Schedule' },
 
   { id: 'migration', label: 'Migration' },
-  { id: 'brainstorm', label: 'Brainstorm' },
+
 ]
 </script>
 

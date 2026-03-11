@@ -156,6 +156,32 @@ const tools = [
     usedBy: 'York (ad-hoc collaborative docs with James).',
   },
   {
+    icon: '💰',
+    name: 'YNAB MCP',
+    color: 'yellow',
+    status: 'TODO',
+    statusClass: 'medium',
+    desc: 'YNAB (You Need A Budget) MCP server. Budget tracking, transaction categorization, spending analysis. Feeds into Alcuin finance agent. James has already built the MCP server — needs integration and registration.',
+    details: [
+      { label: 'Type', value: 'MCP Server' },
+      { label: 'Agent', value: 'Alcuin 🐦‍⬛ (finance agent, draft)' },
+    ],
+    usedBy: 'Alcuin (budget tracking, spending analysis).',
+  },
+  {
+    icon: '📱',
+    name: 'Twilio SMS',
+    color: 'yellow',
+    status: 'TODO',
+    statusClass: 'medium',
+    desc: 'SMS nudges and alerts via Twilio. york-tools.twilio_send(). For time-sensitive nudges when Discord isn\'t being checked.',
+    details: [
+      { label: 'Type', value: 'york-tools function (no separate server)' },
+      { label: 'Use case', value: 'Time-sensitive nudges, alarm clock integration, urgent alerts' },
+    ],
+    usedBy: 'Hild (chore nudges), Dagr (alarm/wake), York (urgent alerts).',
+  },
+  {
     icon: '🎲',
     name: 'dice-roller',
     color: 'green',
