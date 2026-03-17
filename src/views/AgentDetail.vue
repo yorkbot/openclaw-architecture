@@ -234,6 +234,7 @@ const liveAgents = [
         skills: [
           { name: 'Agent Building', desc: 'Full checklist for creating new agents: config entry, workspace files, Discord binding, gateway restart, verification. Includes recovery steps for broken configs.', live: true },
           { name: 'Tool Propagation', desc: 'When building new tools or updating existing ones, propagate references to all agent TOOLS.md files that need them.', live: true },
+          { name: 'Skill Fixing', desc: 'Investigation process before editing any skill. Full context audit: read entire skill, agent workspace, cross-references, cron prompts, data flow timing. Find root cause, fix holistically, verify no contradictions remain.', live: true },
         ],
       },
       {
@@ -254,8 +255,8 @@ const liveAgents = [
     id: 'wynn',
     icon: '🦌',
     name: 'Wynn',
-    borderColor: 'sonnet',
-    model: 'Sonnet 4.5 (Opus sub-agent for workout programming)',
+    borderColor: 'opus',
+    model: 'Opus 4.6 (Opus sub-agent for workout programming)',
     cron: '6:00 AM workout cache (script), weekly program review (Opus sub-agent)',
     purpose: 'All health and fitness data operations. Nutrition logging, calorie estimation, weight tracking, workout logging, workout programming. Owns the data entry layer and workout programs — Bede handles collection and analysis of that data.',
     workspace: '~/.openclaw/workspace-wynn/ — york-data access for all health domains including programs.',
@@ -308,8 +309,8 @@ const liveAgents = [
     name: 'Caedmon',
     borderColor: 'opus',
     model: 'Opus 4.6',
-    cron: '3:45 AM — overnight wiki research',
-    purpose: 'D&D campaign agent. Wiki management, lore questions, worldbuilding research, session prep, character creation, art generation. Owns the Adion Isles wiki and all campaign knowledge. Routed via #caedmon Discord channel.',
+    cron: '4:00 AM — overnight wiki improvement',
+    purpose: 'D&D campaign agent. Wiki management, lore questions, worldbuilding research, session prep, character creation, art generation. Owns the Adion Isles wiki and all campaign knowledge. Routed via #caedmon Discord channel. tools.deny: [message] — cannot post to Discord proactively.',
     workspace: '~/.openclaw/workspace-caedmon/ — D&D wiki (full repo access), campaign notes, session logs. Completely isolated from personal/health data.',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'In-world perspective, creative but never fabricates. Over-researches before writing. Wiki archivist voice.' },
@@ -343,7 +344,7 @@ const liveAgents = [
       {
         name: 'Create',
         skills: [
-          { name: 'Overnight Research (dnd-questions-cache)', desc: 'Find sparse/incomplete wiki articles, spawn sub-agents for deep research, generate 5+ worldbuilding questions for James. Writes to daily memory files. Tracks asked questions to avoid repeats.', live: true },
+          { name: 'Wiki Improvement (dnd-questions-cache)', desc: 'Nightly 4 AM cron. Reads recent session logs, finds one article that needs work (missing template sections, editorializing, outdated info), researches it, rewrites to match its template, opens a PR, asks James questions about gaps. One article per night, continuous improvement. Skips Bunglers Era (year 471), focuses on 533+ era.', live: true },
           { name: 'Art Generation (image-gen)', desc: 'Generate character portraits, scenes, maps via york-tools.image_generate (MCP). D&D-specific prompting layered on global image-gen skill. Supports text-to-image and image editing.', live: true },
         ],
       },
@@ -355,7 +356,7 @@ const liveAgents = [
     name: 'Dagr',
     borderColor: 'sonnet',
     model: 'Sonnet',
-    cron: '8 AM daily + weather 7:30 AM/PM + calendar 6:30 AM/PM',
+    cron: '8 AM daily + weather 4:30 AM/7:30 PM + calendar 4:45 AM/6:30 PM',
     purpose: 'Compile and post the morning brief from pre-cached data. One cron, one job, one post. Reads overnight caches (weather, calendar, nutrition, D&D), cross-checks against york-data, posts to #general. Editorial voice — not a data dump.',
     workspace: '~/.openclaw/workspace-dagr/ — Reads pre-cached data from ~/.openclaw/shared-cache/. Verifies against york-data.',
     workspaceFiles: [
@@ -513,10 +514,10 @@ const liveAgents = [
     id: 'hild',
     icon: '🦡',
     name: 'Hild',
-    borderColor: 'sonnet',
-    model: 'Sonnet',
+    borderColor: 'opus',
+    model: 'Opus 4.6',
     cron: '5:30 AM daily (Opus daily planner + morning sync), 4 PM M-F (after-work reset + nudge), 7 PM daily (after-dinner reset + nudge)',
-    purpose: 'Home management and green light. Task definitions and planning via york-data (intelligence layer), Google Tasks for execution (what James sees). Owns the green light: checks chores, food plan, workout status, and context before giving the go-ahead.',
+    purpose: 'Home management and green light. Task definitions and planning via york-data (intelligence layer), Google Tasks for execution (what James sees). Supports interval tasks (quarterly, annual), followup tasks (laundry → put away), and seasonal/weather awareness for candidate promotion.',
     workspace: 'Dedicated workspace. york-data tasks domain + Google Tasks (MCP via mcporter).',
     workspaceFiles: [
       { file: 'SOUL.md', desc: 'Practical, observational, brief. Reports facts without drama.' },
@@ -542,8 +543,8 @@ const liveAgents = [
       {
         name: 'Stacks',
         skills: [
-          { name: 'Habit Stacks', desc: 'Ordered task sequences grouped into timed slots (morning daily, after-work M-F 4pm, after-dinner daily 7pm, weekend Sat-Sun). Definitions in york-data with recurrence patterns (daily, weekdays, weekly:day, monthly:day). Per-stack reset at nudge time.', live: true },
-          { name: 'Daily Planner', desc: 'Opus morning cron. Computes stacks, schedules ad-hocs, evaluates growth candidates, syncs morning stack to Google Tasks, writes plan to shared-cache for Dagr.', live: true },
+          { name: 'Habit Stacks', desc: 'Ordered task sequences grouped into timed slots (morning daily, after-work M-F 4pm, after-dinner daily 7pm, weekend Sat-Sun). Recurrence patterns: daily, weekdays, weekly, biweekly, monthly, quarterly, biannual, annual, on_demand. Interval tasks surface within a due window based on last completion. Followup tasks (on_demand) auto-schedule when parent is completed.', live: true },
+          { name: 'Daily Planner', desc: 'Opus morning cron. Syncs yesterday, reads weather/calendar, computes stacks, checks interval tasks, schedules ad-hocs, evaluates growth candidates (weather-aware, calendar-aware, no arbitrary gates), syncs morning stack to Google Tasks, writes plan to shared-cache for Dagr.', live: true },
           { name: 'Nudge', desc: 'Timed nudges at stack slot times (4 PM after-work, 7 PM after-dinner). Syncs stack to Google Tasks, posts to #hild with today\'s tasks, carryover from earlier stacks.', live: true },
         ],
       },
@@ -576,7 +577,7 @@ const liveAgents = [
       {
         name: 'Growth',
         skills: [
-          { name: 'Stack Growth', desc: 'Built into the daily planner. Evaluates completion rates (>80% for 7+ days), stack capacity, and cooldowns (14 days between promotions). Promotes candidate tasks to permanent. One promotion per day max.', live: true },
+          { name: 'Stack Growth', desc: 'Built into the daily planner. Opus uses judgment — promotes candidates when stacks have capacity, considering weather, calendar, logical grouping, and recurrence fit. No artificial gates or cooldowns.', live: true },
         ],
       },
       {
