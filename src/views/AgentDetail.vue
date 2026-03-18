@@ -481,7 +481,7 @@ const liveAgents = [
         skills: [
           { name: 'Vault Schema', desc: 'Canonical vault structure, file formats, naming conventions, ownership rules. Every other skill references this.', live: true },
           { name: 'Vault Update', desc: 'Combined note processing + now.md update in one pass. Triggered by vault-watcher on Daily/ file changes. Phase 1: extract actionable items from Daily notes to board/tickets/questions/journal with board hygiene. Phase 2: classify items, determine Doing/Next/Blocked, write now.md. Replaces separate note-processing + now-management skills.', live: true },
-          { name: 'Vault Watcher', desc: 'No-LLM Node.js file watcher (systemd service). Monitors inbox/, Daily/, questions.md via inotify. Debounce (60s for Daily/) + cooldown (2min), then dispatches one-shot cron jobs to Wiglaf for vault-update or inbox-processing. Zero cost when idle.', live: true },
+          { name: 'Vault Watcher', desc: 'No-LLM Node.js file watcher (systemd service). Uses chokidar (not raw fs.watch/inotify — those break silently on btrfs + Syncthing atomic renames). Monitors inbox/, Daily/, questions.md via directory paths. awaitWriteFinish for Syncthing stability, debounce (60s for Daily/, 3s others) + cooldown (5min), then dispatches one-shot cron jobs to Wiglaf. Dep: chokidar (npm, in tools/). Zero cost when idle.', live: true },
         ],
       },
       {
