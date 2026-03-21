@@ -44,7 +44,7 @@
     <!-- Task Types -->
     <div class="card">
       <h2>📦 Task Types</h2>
-      <p class="subtitle">CHECK constraint: <code>type IN ('permanent', 'recurring', 'candidate', 'adhoc')</code></p>
+      <p class="subtitle">Types: <code>permanent</code>, <code>candidate</code>, <code>adhoc</code></p>
       <table class="ref-table">
         <thead><tr><th>Type</th><th>What It Is</th><th>Has google_task_id?</th><th>Lifecycle</th></tr></thead>
         <tbody>
@@ -274,8 +274,7 @@ const dailyLogCols = [
 ]
 
 const taskTypes = [
-  { type: 'permanent', desc: 'Active stack tasks. Show up every time their recurrence matches.', hasGtId: 'Yes — always', lifecycle: 'Created by planner promoting a candidate. Lives on the stack indefinitely.' },
-  { type: 'recurring', desc: 'Like permanent but for weekday-specific tasks (garbage Mon, bins Tue, laundry Thu).', hasGtId: 'Yes — always', lifecycle: 'Same as permanent. Separate type for semantic clarity.' },
+  { type: 'permanent', desc: 'Active stack tasks. Show up every time their recurrence matches. Includes daily tasks, weekly tasks, interval tasks — anything that\'s on the active list.', hasGtId: 'Yes — always', lifecycle: 'Created by planner promoting a candidate. Lives on the stack indefinitely.' },
   { type: 'candidate', desc: 'Backlog. The planner evaluates and promotes when ready.', hasGtId: '<strong>No — never.</strong> Not in Google Tasks until promoted.', lifecycle: 'Sits in backlog → planner promotes to permanent or adhoc → gets google_task_id.' },
   { type: 'adhoc', desc: 'One-time tasks that have been surfaced for execution by the planner or by James directly.', hasGtId: 'Yes — when surfaced', lifecycle: 'Candidate → surfaced as adhoc → gets google_task_id → completed → completed_at set → done.' },
 ]
