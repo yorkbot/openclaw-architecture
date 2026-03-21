@@ -19,8 +19,7 @@
     <Tools v-if="currentView === 'tools'" />
     <DiscordLayout v-if="currentView === 'comms'" />
     <CronSchedule v-if="currentView === 'crons'" />
-
-
+    <TaskSystem v-if="currentView === 'task-system'" />
     <Migration v-if="currentView === 'migration'" />
   </div>
 </template>
@@ -30,11 +29,10 @@ import { ref } from 'vue'
 import SystemDiagram from './views/SystemDiagram.vue'
 import AgentDetail from './views/AgentDetail.vue'
 import DiscordLayout from './views/DiscordLayout.vue'
-
 import Tools from './views/Tools.vue'
-
 import CronSchedule from './views/CronSchedule.vue'
 import Migration from './views/Migration.vue'
+import TaskSystem from './views/TaskSystem.vue'
 
 const currentView = ref('agents')
 
@@ -44,9 +42,8 @@ const views = [
   { id: 'tools', label: 'Tools' },
   { id: 'comms', label: 'Communication Channels' },
   { id: 'crons', label: 'Cron Schedule' },
-
+  { id: 'task-system', label: 'Task System' },
   { id: 'migration', label: 'Migration' },
-
 ]
 </script>
 
