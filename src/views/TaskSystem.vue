@@ -44,7 +44,7 @@
     <!-- Task Types -->
     <div class="card">
       <h2>📦 Task Types</h2>
-      <p class="subtitle">Types: <code>permanent</code>, <code>candidate</code>, <code>adhoc</code></p>
+      <p class="subtitle">Types: <code>recurring</code>, <code>candidate</code>, <code>adhoc</code></p>
       <table class="ref-table">
         <thead><tr><th>Type</th><th>What It Is</th><th>Has google_task_id?</th><th>Lifecycle</th></tr></thead>
         <tbody>
@@ -134,7 +134,7 @@
         <strong>Created:</strong> When a task is first synced to Google Tasks (via <code>sync_stack</code> or <code>create_google_task</code>)<br>
         <strong>Persists:</strong> Stays on the task_definition permanently. Used to uncomplete/reset the same Google Task each day.<br>
         <strong>Cleared:</strong> Only when a task is deactivated or deleted from york-data.<br><br>
-        <strong>Rule: Only permanent, recurring, and actively-surfaced adhoc tasks should have google_task_ids.</strong><br>
+        <strong>Rule: Only recurring and actively-surfaced adhoc tasks should have google_task_ids.</strong><br>
         Candidates should NEVER have google_task_ids — they don't exist in Google Tasks yet.
       </div>
     </div>
@@ -149,7 +149,7 @@
         <div class="arrow">↓</div>
         <div class="step">Planner evaluates: completion stats, effort budget, weather, calendar, logical grouping</div>
         <div class="arrow">↓</div>
-        <div class="step">Planner promotes: <code>update_task_definition id:X type=permanent</code></div>
+        <div class="step">Planner promotes: <code>update_task_definition id:X type=recurring</code></div>
         <div class="arrow">↓</div>
         <div class="step"><code>sync_stack</code> creates it in Google Tasks → gets google_task_id</div>
         <div class="arrow">↓</div>
@@ -245,16 +245,16 @@ const taskDefCols = [
   { name: 'id', type: 'INTEGER PK', desc: 'Auto-increment ID' },
   { name: 'title', type: 'TEXT NOT NULL', desc: 'Task name shown to James' },
   { name: 'stack', type: 'TEXT NOT NULL', desc: 'morning, after-work, after-dinner, or weekend' },
-  { name: 'type', type: 'TEXT NOT NULL', desc: 'permanent, recurring, candidate, or adhoc' },
+  { name: 'type', type: 'TEXT NOT NULL', desc: 'recurring, candidate, or adhoc' },
   { name: 'effort_minutes', type: 'INTEGER', desc: 'Estimated effort (1–60 min, default 5)' },
   { name: 'recur_pattern', type: 'TEXT', desc: 'When task fires. See recurrence patterns. NULL for unsurfaced adhocs/candidates.' },
   { name: 'position', type: 'INTEGER', desc: 'Order within the stack (lower = first)' },
   { name: 'active', type: 'INTEGER', desc: '1 = live, 0 = soft-deleted/paused. Inactive tasks are kept for history.' },
   { name: 'deadline', type: 'TEXT', desc: 'YYYY-MM-DD. Optional. For adhoc tasks with a hard deadline.' },
   { name: 'notes', type: 'TEXT', desc: 'Freeform notes. Shown in Google Tasks.' },
-  { name: 'google_task_id', type: 'TEXT', desc: 'Google Tasks ID for sync. <strong>Only permanent, recurring, and actively-surfaced adhoc tasks should have this. Candidates must NOT.</strong>' },
+  { name: 'google_task_id', type: 'TEXT', desc: 'Google Tasks ID for sync. <strong>Only recurring and actively-surfaced adhoc tasks should have this. Candidates must NOT.</strong>' },
   { name: 'created_at', type: 'TEXT', desc: 'When the task was created in york-data' },
-  { name: 'completed_at', type: 'TEXT', desc: 'When an adhoc task was completed (one-time). NULL for recurring/permanent.' },
+  { name: 'completed_at', type: 'TEXT', desc: 'When an adhoc task was completed (one-time). NULL for recurring tasks.' },
   { name: 'interval_days', type: 'INTEGER', desc: 'Days between completions for interval tasks (14=biweekly, 90=quarterly, 365=annual). NULL for non-interval.' },
   { name: 'window_days', type: 'INTEGER', desc: 'Days before due date to start surfacing (default 7)' },
   { name: 'last_completed_date', type: 'TEXT', desc: 'YYYY-MM-DD of most recent completion. Used by interval matching. NULL = never done.' },
@@ -274,8 +274,8 @@ const dailyLogCols = [
 ]
 
 const taskTypes = [
-  { type: 'permanent', desc: 'Active stack tasks. Show up every time their recurrence matches. Includes daily tasks, weekly tasks, interval tasks — anything that\'s on the active list.', hasGtId: 'Yes — always', lifecycle: 'Created by planner promoting a candidate. Lives on the stack indefinitely.' },
-  { type: 'candidate', desc: 'Backlog. The planner evaluates and promotes when ready.', hasGtId: '<strong>No — never.</strong> Not in Google Tasks until promoted.', lifecycle: 'Sits in backlog → planner promotes to permanent or adhoc → gets google_task_id.' },
+  { type: 'recurring', desc: 'Active stack tasks. Show up every time their recurrence matches. Includes daily tasks, weekly tasks, interval tasks — anything that\'s on the active list.', hasGtId: 'Yes — always', lifecycle: 'Promoted from candidate by planner. Gets google_task_id via sync_stack. Lives on the stack.' },
+  { type: 'candidate', desc: 'Backlog. The planner evaluates and promotes when ready.', hasGtId: '<strong>No — never.</strong> Not in Google Tasks until promoted.', lifecycle: 'Sits in backlog → planner promotes to recurring or adhoc → gets google_task_id.' },
   { type: 'adhoc', desc: 'One-time tasks that have been surfaced for execution by the planner or by James directly.', hasGtId: 'Yes — when surfaced', lifecycle: 'Candidate → surfaced as adhoc → gets google_task_id → completed → completed_at set → done.' },
 ]
 
@@ -313,7 +313,7 @@ const plannerSteps = [
   { step: '2', action: '<strong>Get context:</strong> Yesterday\'s completion, 7-day stack stats, weather, calendar from shared cache', tool: 'get_task_completion, get_stack_stats' },
   { step: '3', action: '<strong>Compute stacks:</strong> Get today\'s tasks by stack, filtered by recurrence. Writes to daily log.', tool: 'prepare_daily_stacks' },
   { step: '4', action: '<strong>Interval tasks:</strong> Check for due/overdue interval tasks. Due or overdue → add to the stack. Upcoming → mention in notes.', tool: 'get_interval_tasks' },
-  { step: '5', action: '<strong>Evaluate candidates:</strong> Check completion stats, effort budgets, weather, calendar, logical grouping. Promote candidates to permanent when ready. <strong>Same process for all stacks — no special cases for weekends.</strong>', tool: 'update_task_definition' },
+  { step: '5', action: '<strong>Evaluate candidates:</strong> Check completion stats, effort budgets, weather, calendar, logical grouping. Promote candidates to recurring when ready. <strong>Same process for all stacks — no special cases for weekends.</strong>', tool: 'update_task_definition' },
   { step: '6', action: '<strong>Sync morning:</strong> Always. <strong>Sync weekend:</strong> Saturday only. After-work and after-dinner are synced by their own nudge crons.', tool: 'sync_stack' },
   { step: '7', action: '<strong>Write cache:</strong> Write Home section to shared cache for Dagr\'s morning brief.', tool: 'write file' },
 ]
