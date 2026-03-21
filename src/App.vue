@@ -19,7 +19,7 @@
     <Tools v-if="currentView === 'tools'" />
     <DiscordLayout v-if="currentView === 'comms'" />
     <CronSchedule v-if="currentView === 'crons'" />
-    <TaskSystem v-if="currentView === 'task-system'" />
+    <TaskSystem v-if="currentView === 'tasks'" />
     <Migration v-if="currentView === 'migration'" />
   </div>
 </template>
@@ -43,6 +43,7 @@ const views = [
   { id: 'comms', label: 'Communication Channels' },
   { id: 'crons', label: 'Cron Schedule' },
   { id: 'task-system', label: 'Task System' },
+  { id: 'tasks', label: 'Task System' },
   { id: 'migration', label: 'Migration' },
 ]
 </script>
